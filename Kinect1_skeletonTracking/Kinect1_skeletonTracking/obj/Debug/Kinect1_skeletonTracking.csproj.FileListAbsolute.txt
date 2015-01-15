@@ -1,0 +1,7 @@
+c:\users\fabian\documents\visual studio 2012\Projects\Kinect1_skeletonTracking\Kinect1_skeletonTracking\bin\Debug\Kinect1_skeletonTracking.exe.config
+C:\Users\Fabian\documents\visual studio 2012\Projects\Kinect1_skeletonTracking\Kinect1_skeletonTracking\bin\Debug\Kinect1_skeletonTracking.exe
+C:\Users\Fabian\documents\visual studio 2012\Projects\Kinect1_skeletonTracking\Kinect1_skeletonTracking\bin\Debug\Kinect1_skeletonTracking.pdb
+C:\Users\Fabian\documents\visual studio 2012\Projects\Kinect1_skeletonTracking\Kinect1_skeletonTracking\obj\Debug\Kinect1_skeletonTracking.exe
+C:\Users\Fabian\documents\visual studio 2012\Projects\Kinect1_skeletonTracking\Kinect1_skeletonTracking\obj\Debug\Kinect1_skeletonTracking.pdb
+C:\Users\Fabian\documents\visual studio 2012\Projects\Kinect1_skeletonTracking\Kinect1_skeletonTracking\bin\Debug\Microsoft.Kinect.Toolkit.dll
+C:\Users\Fabian\documents\visual studio 2012\Projects\Kinect1_skeletonTracking\Kinect1_skeletonTracking\obj\Debug\Kinect1_skeletonTracking.csprojResolveAssemblyReference.cache
