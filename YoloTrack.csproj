@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{CEAB0179-7D73-4592-A619-75AF6B616487}</ProjectGuid>
+    <ProjectGuid>{FD0E9EB9-03D3-4A98-990A-3C4C5C6EAC84}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YoloTrack</RootNamespace>
@@ -37,7 +37,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="libfrsdknet-8.5.0">
+    <Reference Include="libfrsdknet-8.5.0, Version=8.5.0.0, Culture=neutral, PublicKeyToken=b9feb4b24e2565f5, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>.\libfrsdknet-8.5.0.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Kinect, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -76,8 +77,8 @@
     <Compile Include="Source\MVC\Model\StateMachine\State\WaitForBodyState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\WaitTakePictureState.cs" />
     <Compile Include="Source\MVC\Model\Storage\MainDatabase.cs" />
-    <Compile Include="Source\MVC\Model\Storage\RuntimeDatabase.cs" />
     <Compile Include="Source\MVC\Model\Storage\Person.cs" />
+    <Compile Include="Source\MVC\Model\Storage\RuntimeDatabase.cs" />
     <Compile Include="Source\MVC\Model\Storage\RuntimeInfo.cs" />
     <Compile Include="Source\MVC\Model\TrackingModel.cs" />
     <Compile Include="Source\MVC\View\DebugView.cs" />
@@ -88,7 +89,7 @@
     <Compile Include="Source\MVC\View\MainView.Designer.cs">
       <DependentUpon>MainView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="Source\Program.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -101,7 +102,6 @@
     <EmbeddedResource Include="Source\MVC\View\MainView.resx">
       <DependentUpon>MainView.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="ClassDiagram1.cd" />
     <None Include="frsdk.cfg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -122,6 +122,7 @@
     <Content Include="libfrsdk-8.5.0.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="libfrsdknet-8.5.0.dll" />
     <Content Include="libiomp5md.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
