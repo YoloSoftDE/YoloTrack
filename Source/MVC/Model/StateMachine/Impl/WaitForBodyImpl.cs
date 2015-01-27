@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Text;
+using Microsoft.Kinect;
+using YoloTrack.MVC.Model.Storage;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
@@ -9,11 +11,41 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
     {
         public override void Run(Arg.WaitForBodyArg arg)
         {
-            //Thread.Sleep(1000);
+            Skeleton[] wfb_skeletonData = new Skeleton[Model.Kinect.SkeletonStream.FrameSkeletonArrayLength];
+            bool body_in_list = false;
+            RuntimeInfo run_info = new RuntimeInfo();
+            Arg.WaitTakePictureArg res = new Arg.WaitTakePictureArg();
 
-            //Storage.RuntimeInfo new_info = model.RuntimeDatabase.At(1);
-            // new_info 
-            //model.RuntimeDatabase.Update(1, new_info);
+            //Thread.Sleep(1000);
+            while (true)
+            {
+                foreach (Skeleton skeleton in wfb_skeletonData)
+                {
+                    if (skeleton != null)
+                    {
+                        // compare skeleton's ID with RuntimeDatabase
+                        foreach (Storage.RuntimeInfo info in Model.RuntimeDatabase.Info)
+                        {
+                            if (skeleton.TrackingId == info.skeletonID)
+                            {
+                                body_in_list = true;
+                            }
+                        }
+
+                        if (body_in_list == false)
+                        {
+                            // new body found
+                            res.SkeletonId = skeleton.TrackingId;
+                            Result = res;
+
+                            // add in RuntimeDatabase
+                            run_info.skeletonID = skeleton.TrackingId;
+                            Model.RuntimeDatabase.add_Item(run_info);
+                            return;
+                        }
+                    }
+                }
+            }
         }
     }
 }

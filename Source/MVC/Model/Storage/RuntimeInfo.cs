@@ -7,6 +7,8 @@ namespace YoloTrack.MVC.Model.Storage
 {
     public class RuntimeInfo
     {
-
+        // *************************************
+        public int skeletonID  { get; set; }        // hinzugefügt
+        // *************************************
     }
 }

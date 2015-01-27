@@ -19,7 +19,7 @@ namespace YoloTrack.MVC.Model.StateMachine
 
         protected T RunImpl()
         {
-            m_impl.Run(m_arg);
+            //m_impl.Run(m_arg);
             return m_impl.Result;
         }
 

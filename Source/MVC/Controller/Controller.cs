@@ -30,6 +30,5 @@ namespace YoloTrack.MVC.Controller
 
             Application.Run(main_view);
         }
-
     }
 }
