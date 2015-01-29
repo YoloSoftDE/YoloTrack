@@ -16,8 +16,8 @@ namespace YoloTrack.MVC.View
 
         private void MainView_Load(object sender, EventArgs e)
         {
-            KinectSensor sensor = Model.TrackingModel.Instance().Kinect;
-            sensor.ColorFrameReady += new EventHandler<ColorImageFrameReadyEventArgs>(sensor_ColorFrameReady);
+            flowLayoutPanel1.WrapContents = false;
+            flowLayoutPanel1.AutoScroll = true;
         }
 
         void sensor_ColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
@@ -33,6 +33,30 @@ namespace YoloTrack.MVC.View
         public void Observe(Model.TrackingModel model)
         {
             // Register event handlers
+            KinectSensor sensor = model.Kinect;
+            sensor.ColorFrameReady += new EventHandler<ColorImageFrameReadyEventArgs>(sensor_ColorFrameReady);
+
+            model.MainDatabase.PersonAdded += new EventHandler(MainDatabase_Changed);
+            model.MainDatabase.PersonRemoved += new EventHandler(MainDatabase_Changed);
+        }
+
+        void MainDatabase_Changed(object sender, EventArgs e)
+        {
+            Model.Storage.MainDatabase db = (Model.Storage.MainDatabase)sender;
+
+            foreach (Model.Storage.Person p in db.People)
+            {
+                ProfileCard card = new ProfileCard()
+                {
+                    Name = p.Name,
+                    Picture = p.Picture,
+                    TrackedCount = 42,
+                    RecognizedCount = 1337,
+                    LearnedAt = p.Learned
+                };
+
+                flowLayoutPanel1.Controls.Add(card);
+            }
         }
 
         public Model.Status Status

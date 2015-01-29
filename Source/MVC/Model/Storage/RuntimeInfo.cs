@@ -5,7 +5,7 @@ using System.Text;
 
 namespace YoloTrack.MVC.Model.Storage
 {
-    public class RuntimeInfo
+    public struct RuntimeInfo
     {
 
     }

@@ -16,6 +16,7 @@ namespace YoloTrack.MVC.Controller
             View.DebugView debug_view = new View.DebugView();
             View.MainView main_view = new View.MainView();
             
+            /*
             Model.TrackingModel model = Model.TrackingModel.Instance();
 
             debug_view.Observe(model);
@@ -27,7 +28,7 @@ namespace YoloTrack.MVC.Controller
                 main_view.Status = Model.Status.RUNNING;
             else
                 main_view.Status = Model.Status.SENSOR_UNAVAILABLE;
-
+            */
             Application.Run(main_view);
         }
 

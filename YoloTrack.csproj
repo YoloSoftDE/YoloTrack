@@ -89,6 +89,12 @@
     <Compile Include="Source\MVC\View\MainView.Designer.cs">
       <DependentUpon>MainView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Source\MVC\View\ProfileCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\ProfileCard.Designer.cs">
+      <DependentUpon>ProfileCard.cs</DependentUpon>
+    </Compile>
     <Compile Include="Source\Program.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -101,6 +107,9 @@
     </Compile>
     <EmbeddedResource Include="Source\MVC\View\MainView.resx">
       <DependentUpon>MainView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Source\MVC\View\ProfileCard.resx">
+      <DependentUpon>ProfileCard.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="frsdk.cfg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
