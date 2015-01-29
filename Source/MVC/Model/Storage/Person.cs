@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 
 namespace YoloTrack.MVC.Model.Storage
 {
+    [Serializable]
     public struct IdentificationRecord : ISerializable
     {
         public FIR Value;
