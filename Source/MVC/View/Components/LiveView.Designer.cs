@@ -30,12 +30,11 @@
         {
             this.SuspendLayout();
             // 
-            // BenisView
+            // LiveView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "BenisView";
-            this.Load += new System.EventHandler(this.BenisView_Load);
+            this.Name = "LiveView";
             this.ResumeLayout(false);
 
         }

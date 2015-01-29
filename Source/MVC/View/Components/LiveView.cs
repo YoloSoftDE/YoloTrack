@@ -39,22 +39,23 @@ namespace YoloTrack.MVC.View.Components
             }
         }
 
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            if (this.Image == null)
-            {
-                return;
-            }
+        protected override void OnPaint (PaintEventArgs e)
+		{
+			if (this.Image == null) {
+				return;
+			}
             
 
-            e.Graphics.DrawImage(this.Image, new Point(0,0));
+			//e.Graphics.DrawImage (this.Image, new Point (0, 0)); /* Old Code */
+			
+			e.Graphics.DrawImage (
+				this.Image, 					/* Image instance */
+				0, 								/* Target X */
+				0, 								/* Target Y */
+				this.ClientRectangle.Height, 	/* Target Height */
+				this.ClientRectangle.Width		/* Target Width */
+			);
             
         }
-
-        private void BenisView_Load(object sender, EventArgs e)
-        {
-
-        }
-
     }
 }
