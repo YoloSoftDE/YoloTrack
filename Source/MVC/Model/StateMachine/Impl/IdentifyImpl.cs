@@ -95,7 +95,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 				}
 			}
 			
-			if (winner.score.value > this.threshold) {
+			if (winner.score.value > IdentifyImpl.threshold) {
 				return Storage.Person.fail;
 			}
 			
