@@ -39,7 +39,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			
 			public void start() { }
 			
-			public void processingImage( Image img) { }
+			public void processingImage( Cognitec.FRsdk.Image img) { }
 			
 			public void eyesFound( Eyes.Location eyes) { }
 			
@@ -48,7 +48,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			{
 				Console.WriteLine
 				("successful enrollment, \tFIR[ filename, id, size] = " +
-					"[\"{0}\", \"{1}\", {2}]", firFilename, fir.version (), fir.size ());
+					"[\"{0}\", \"{1}\"]", fir.version (), fir.size ());
 				
 				this.fir = nfir;
 			}
@@ -83,7 +83,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			EnrollmentFeedback feedback = new EnrollmentFeedback ();
 			
 			/* Process samples */
-			Model.EnrollmentProcessor.process (samples, feedback);
+			Model.EnrollmentProcessor.process (samples.ToArray(), feedback);
 			/* !Enrollment done */
 			
 			
