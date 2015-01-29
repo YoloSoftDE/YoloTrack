@@ -31,7 +31,7 @@ namespace YoloTrack.MVC.Model
         private byte[] m_buffer;
         //***************************************
         private bool sync_frame = true;
-        private Skeleton[] skeletons;
+        private Skeleton[] skeletons = new Skeleton[6];
         //***************************************
 
         private Configuration m_conf = new Configuration("frsdk.cfg");
