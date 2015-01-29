@@ -27,8 +27,9 @@ namespace YoloTrack.MVC.Model.Storage
             get { return m_data; }
         }
 
-        public void add_Item(RuntimeInfo item)
+        public void Add(RuntimeInfo item)
         {
+            item.State = TrackingState.UNIDENTIFIED;
             m_data.Add(item);
         }
     }

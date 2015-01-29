@@ -11,6 +11,8 @@ namespace YoloTrack.MVC.Model.StateMachine.State
         WAIT_TAKE_PICTURE,
         IDENTIFY,
         TRACKING_DECISION,
-        TRACK
+        TRACK,
+        LEARN,
+        SWITCH_TARGET
     }
 }
