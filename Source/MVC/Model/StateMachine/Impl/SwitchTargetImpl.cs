@@ -11,7 +11,6 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
         public override void Run(Arg.SwitchTargetArg arg)
         {
             // TODO
-<<<<<<< HEAD
             KinectSensor kinect = Model.Kinect;
             Skeleton[] skeletons = Model.skeletonData;
             Arg.TrackingArg res = new Arg.TrackingArg();
@@ -27,9 +26,6 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             }
             Result = res;
             return;
-=======
-
->>>>>>> origin/master
         }
     }
 }

@@ -11,7 +11,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
     {
         public override void Run(Arg.WaitForBodyArg arg)
         {
-            Skeleton[] wfb_skeletonData = new Skeleton[Model.Kinect.SkeletonStream.FrameSkeletonArrayLength];
+            Skeleton[] wfb_skeletonData = Model.skeletonData;
             bool body_in_list = false;
             RuntimeInfo run_info = new RuntimeInfo();
             Arg.WaitTakePictureArg res = new Arg.WaitTakePictureArg();

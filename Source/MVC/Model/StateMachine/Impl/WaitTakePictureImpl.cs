@@ -24,7 +24,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             CoordinateMapper cm = new CoordinateMapper(kinect_sensor);
             Bitmap[] headPictures = new Bitmap[5];
             kinect_sensor = Model.Kinect;
-            wtp_skeletonData = new Skeleton[kinect_sensor.SkeletonStream.FrameSkeletonArrayLength];
+            wtp_skeletonData = Model.skeletonData;
             Arg.IdentifyArg res = new Arg.IdentifyArg();
             
             pictureCount = 0;
