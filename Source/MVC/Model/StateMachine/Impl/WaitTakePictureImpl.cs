@@ -51,8 +51,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                                 // found tracked person
                                 headPoint = cm.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.Head].Position,
                                                                             ColorImageFormat.RgbResolution1280x960Fps12);
-                            }
-                            catch (InvalidCastException) { continue; }
+                            } catch (InvalidCastException) { continue; }
 
                             if (headPoint.X <= 0 || headPoint.Y <= 0)
                                 continue;
