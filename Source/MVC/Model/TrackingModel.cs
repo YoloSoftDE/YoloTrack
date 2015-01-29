@@ -55,6 +55,10 @@ namespace YoloTrack.MVC.Model
             m_fir_builder = new FIRBuilder(m_conf);
 
             m_runtime_database.OnRuntimeInfoChange += new Storage.RuntimeInfoChangeHandler(m_runtime_database_OnRuntimeInfoChange);
+
+            int MaxFIR = int.Parse(m_conf.getValue("FRSDK.LicenseSettings.MaxFIRInstances"));
+            ConfigModel.Instance().conf.MaxDatabaseEntries = MaxFIR;
+            ConfigModel.Instance().Save();            
         }
 
         void m_runtime_database_OnRuntimeInfoChange(Storage.RuntimeInfo info)

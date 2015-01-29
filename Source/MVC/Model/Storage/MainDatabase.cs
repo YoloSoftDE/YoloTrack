@@ -71,6 +71,12 @@ namespace YoloTrack.MVC.Model.Storage
 
         public void Add(Person p)
         {
+            if (m_people.Count >= ConfigModel.Instance().conf.MaxDatabaseEntries)
+            {
+                
+                return;
+            }
+
             m_people.Add(p);
             p.RTInfo.UpdateState(TrackingState.IDENTIFIED);
             OnPersonAdded();

@@ -9,6 +9,7 @@ namespace YoloTrack.MVC.Model
     public struct Config
     {
         public string DatabaseFilename;
+        public int MaxDatabaseEntries;
     }
 
     class ConfigModel

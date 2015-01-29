@@ -19,7 +19,7 @@ namespace YoloTrack.MVC.Model.Storage
 
         public Storage.RuntimeInfo At(int i)
         {
-            return m_data[i];
+            return m_data.Find(p => p.SkeletonId == i);
         }
 
         public List<Storage.RuntimeInfo> List()
