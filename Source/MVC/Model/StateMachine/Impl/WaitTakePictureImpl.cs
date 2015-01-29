@@ -59,6 +59,9 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
                 // get new frame
                 Model.sync_ColorFrame = true;
+
+                // refresh skeleton-Data
+                wtp_skeletonData = Model.skeletonData;
             }
 
             // return Faces

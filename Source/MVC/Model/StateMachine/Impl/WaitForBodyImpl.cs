@@ -47,6 +47,8 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                             return;
                         }
                     }
+                    // refresh skeleton-Data
+                    wfb_skeletonData = Model.skeletonData;
                 }
             }
         }

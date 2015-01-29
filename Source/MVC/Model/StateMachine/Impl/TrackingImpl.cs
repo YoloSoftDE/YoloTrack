@@ -29,6 +29,9 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                     Result.FocusLost = false;
                     break;
                 }
+
+                // refresh skeleton-Data
+                skeletonData = Model.skeletonData;
             } while (skeleton_found == true);
 
             // skeleton is not tracked anymore
