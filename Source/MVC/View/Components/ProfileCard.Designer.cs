@@ -178,7 +178,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.DoubleBuffered = true;
             this.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Name = "ProfileCard";
+            this.FullName = "ProfileCard";
             this.Padding = new System.Windows.Forms.Padding(1);
             this.Size = new System.Drawing.Size(163, 226);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.ProfileCard_Paint);

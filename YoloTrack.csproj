@@ -55,11 +55,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BenisView.cs">
+    <Compile Include="Source\MVC\View\Components\LiveView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="BenisView.Designer.cs">
-      <DependentUpon>BenisView.cs</DependentUpon>
+    <Compile Include="Source\MVC\View\Components\LiveView.Designer.cs">
+      <DependentUpon>LiveView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\MVC\Controller\Controller.cs" />
@@ -96,10 +96,10 @@
     <Compile Include="Source\MVC\View\MainView.Designer.cs">
       <DependentUpon>MainView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\MVC\View\ProfileCard.cs">
+    <Compile Include="Source\MVC\View\Components\ProfileCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Source\MVC\View\ProfileCard.Designer.cs">
+    <Compile Include="Source\MVC\View\Components\ProfileCard.Designer.cs">
       <DependentUpon>ProfileCard.cs</DependentUpon>
     </Compile>
     <Compile Include="Source\Program.cs" />
@@ -113,10 +113,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Source\MVC\View\Components\LiveView.resx">
+      <DependentUpon>LiveView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Source\MVC\View\MainView.resx">
       <DependentUpon>MainView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\MVC\View\ProfileCard.resx">
+    <EmbeddedResource Include="Source\MVC\View\Components\ProfileCard.resx">
       <DependentUpon>ProfileCard.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="frsdk.cfg">

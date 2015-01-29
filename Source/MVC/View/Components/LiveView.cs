@@ -9,12 +9,12 @@ using System.Windows.Forms;
 
 namespace YoloTrack
 {
-    public partial class BenisView : UserControl
+    public partial class LiveView : UserControl
     {
         protected Image m_image = null;
         protected int m_count = 0;
 
-        public BenisView()
+        public LiveView()
         {
             InitializeComponent();
             this.DoubleBuffered = true;
@@ -49,6 +49,11 @@ namespace YoloTrack
 
             e.Graphics.DrawImage(this.Image, new Point(0,0));
             
+        }
+
+        private void BenisView_Load(object sender, EventArgs e)
+        {
+
         }
 
     }

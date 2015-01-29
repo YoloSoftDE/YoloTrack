@@ -1,6 +1,6 @@
 ﻿namespace YoloTrack
 {
-    partial class BenisView
+    partial class LiveView
     {
         /// <summary> 
         /// Erforderliche Designervariable.
@@ -28,8 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // BenisView
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Name = "BenisView";
+            this.Load += new System.EventHandler(this.BenisView_Load);
+            this.ResumeLayout(false);
+
         }
 
         #endregion

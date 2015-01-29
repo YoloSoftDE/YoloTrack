@@ -26,7 +26,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                         // compare skeleton's ID with RuntimeDatabase
                         foreach (Storage.RuntimeInfo info in Model.RuntimeDatabase.Info)
                         {
-                            if (skeleton.TrackingId == info.skeletonID)
+                            if (skeleton.TrackingId == info.SkeletonId)
                             {
                                 body_in_list = true;
                             }
@@ -39,7 +39,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                             Result = res;
 
                             // add in RuntimeDatabase
-                            run_info.skeletonID = skeleton.TrackingId;
+                            run_info.SkeletonId = skeleton.TrackingId;
                             Model.RuntimeDatabase.add_Item(run_info);
                             return;
                         }

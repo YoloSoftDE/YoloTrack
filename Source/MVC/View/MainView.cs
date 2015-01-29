@@ -76,7 +76,7 @@ namespace YoloTrack.MVC.View
             {
                 ProfileCard card = new ProfileCard()
                 {
-                    Name = p.Name,
+                    FullName = p.Name,
                     Picture = p.Picture,
                     TrackedCount = 42,
                     RecognizedCount = 1337,
