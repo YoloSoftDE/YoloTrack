@@ -51,11 +51,12 @@ namespace YoloTrack.MVC.View.Components
 			int new_height, new_width;
 			
 			if (this.ClientRectangle.Width > this.ClientRectangle.Height) {
-				new_height = this.ClientRectangle.Width * this.Image.Height / this.ClientRectangle.Height;
-				new_width = this.ClientRectangle.Height * this.Image.Height / this.ClientRectangle.Height;
+				new_height = this.ClientRectangle.Height;
+				new_width = this.ClientRectangle.Width * (this.ClientRectangle.Height / this.Image.Height);
 			} else {
-				new_height = this.ClientRectangle.Width * this.Image.Width / this.ClientRectangle.Width;
-				new_width = this.ClientRectangle.Height * this.Image.Width / this.ClientRectangle.Width;	
+				
+				new_height = this.ClientRectangle.Height * (this.ClientRectangle.Width / this.Image.Width);
+				new_width = this.ClientRectangle.Width;	
 			}
 			
 			e.Graphics.DrawImage (
