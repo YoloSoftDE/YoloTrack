@@ -89,10 +89,12 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			
 			/* Create Person from Data */
 			Storage.Person person = new Storage.Person ();
-			
+			person.IR.Value = feedback.fir;
 			
 			
 			/* Add Person to Database ? */
+			this.Model.MainDatabase.Add (person);
+			
 			
 			/* Set Result ? */
 			Result = new YoloTrack.MVC.Model.StateMachine.Arg.WaitForBodyArg ();
