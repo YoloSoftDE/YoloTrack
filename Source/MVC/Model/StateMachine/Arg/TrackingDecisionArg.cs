@@ -7,6 +7,6 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
     struct TrackingDecisionArg : BaseArg
     {
-        public int PersonId { get; set; }
+        public Guid PersonId { get; set; }
     }
 }

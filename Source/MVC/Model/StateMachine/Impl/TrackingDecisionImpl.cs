@@ -9,7 +9,18 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
     {
         public override void Run(Arg.TrackingDecisionArg arg)
         {
-            //Thread.Sleep(1000);
+            Storage.Person matched = Model.MainDatabase.People.Find(p => p.Id == arg.PersonId);
+            int skeletonId = 0;
+
+            if (matched.IsTarget)
+            {
+                skeletonId = matched.RTInfo.SkeletonId;
+            }
+
+            Result = new Arg.TrackingArg()
+            {
+                SkeletonId = skeletonId
+            };
         }
     }
 }

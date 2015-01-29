@@ -88,28 +88,35 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             );
 
             Match winner;
+            Guid guid;
 
-            foreach (Match m in fb.match)
+            if (fb.match.Length > 0)
             {
-                /* ka welche werte hier rauskommen */
+                winner = fb.match[0];
 
-                Console.WriteLine("Match on FIR[{0}] has Score {1}", m.name, m.score);
+                for (int i = 1; i < fb.match.Length; i++)
+                {
+                    Match m = fb.match[i];
 
-
-                /*
-                if (mwinner == null) {
-                    mwinner = m;
-                } else if (m.score > mwinner.score) {
-                    mwinner = m;
+                    Console.WriteLine("Match on FIR[{0}] has Score {1}", m.name, m.score.value);
+                    if (m.score.value > winner.score.value)
+                    {
+                        winner = m;
+                    }
                 }
-                */
+
+                // Storage.Person match = Model.MainDatabase.People.Find(p => p.Id == Guid.Parse(winner.name));
+                guid = Guid.Parse(winner.name);
+            }
+            else
+            {
+                guid = Storage.Person.fail;
             }
 
-            /* HowTo weitergeben ? */
-            // result = mwinner.name;
-
-
-            //Thread.Sleep(1000);
+            Result = new Arg.TrackingDecisionArg()
+            {
+                PersonId = guid
+            };
         }
     }
 }

@@ -78,8 +78,8 @@ namespace YoloTrack.MVC.View
                 {
                     FullName = p.Name,
                     Picture = p.Picture,
-                    TrackedCount = 42,
-                    RecognizedCount = 1337,
+                    TrackedCount = p.RTInfo.TrackedCount,
+                    RecognizedCount = p.RTInfo.RecognizedCount,
                     LearnedAt = p.Learned
                 };
 
