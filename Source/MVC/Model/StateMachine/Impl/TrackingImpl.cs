@@ -26,6 +26,11 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                     if (skeleton.TrackingId == arg.SkeletonId)
                         skeleton_found = true;
                 }
+
+                if (!arg.RTInfo.Person.IsTarget)
+                {
+                    // ...
+                }
             } while (skeleton_found == true);
 
             // skeleton is not tracked anymore

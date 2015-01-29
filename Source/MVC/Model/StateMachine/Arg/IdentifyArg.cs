@@ -10,5 +10,9 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
     {
         public List<Bitmap> Faces { get; set; }
         public int SkeletonId { get; set; }
+        public Storage.RuntimeInfo RTInfo
+        {
+
+        }
     }
 }
