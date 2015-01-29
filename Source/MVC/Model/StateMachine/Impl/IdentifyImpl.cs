@@ -10,7 +10,8 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
     class IdentifyImpl : BaseImpl<Arg.TrackingDecisionArg, Arg.IdentifyArg>
     {
-
+		protected const float threshold = 1;
+		
         private class IdentificationFeedback : Identification.Feedback
         {
             public Match[] match = null;
@@ -63,60 +64,64 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             }
         }
 
-        public override void Run(Arg.IdentifyArg arg)
-        {
-            /* Prepare Samples for identification */
-            List<Sample> identificationSamples = new List<Sample>();
+		protected Guid Identify (List<Sample> samples)
+		{
+			/* Run Identification */
+			IdentificationFeedback fb = new IdentificationFeedback ();
 
-            foreach (Bitmap fratze in arg.Faces)
-            {
-                MemoryStream ms = new MemoryStream();
-
-                fratze.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-
-                identificationSamples.Add(new Sample(Bmp.load(ms)));
-            }
-
-            /* Needs own because shit */
-            IdentificationFeedback fb = new IdentificationFeedback();
-
-            Model.IdentificationProcessor.process(
-                identificationSamples.ToArray(),
+			Model.IdentificationProcessor.process (
+                samples.ToArray (),
                 Model.FARScore,
                 fb,
                 3
-            );
+			);
 
-            Match winner;
-            Guid guid;
+			/* Find the highest matching person */
+			Match winner;
+			Guid guid;
 
-            if (fb.match.Length > 0)
+			if (fb.match.Length > 0) {
+				return Storage.Person.fail;	
+			}
+			
+			winner = fb.match [0];
+
+			for (int i = 1; i < fb.match.Length; i++) {
+				Match m = fb.match [i];
+
+				Console.WriteLine ("Match on FIR[{0}] has Score {1}", m.name, m.score.value);
+				if (m.score.value > winner.score.value) {
+					winner = m;
+				}
+			}
+			
+			if (winner.score.value > this.threshold) {
+				return Storage.Person.fail;
+			}
+			
+			// Storage.Person match = Model.MainDatabase.People.Find(p => p.Id == Guid.Parse(winner.name));
+			return Guid.Parse (winner.name);
+		}
+		
+        public override void Run (Arg.IdentifyArg arg)
+		{
+			/* Prepare Samples for identification */
+			List<Sample> identificationSamples = new List<Sample> ();
+
+			foreach (Bitmap fratze in arg.Faces) {
+				MemoryStream ms = new MemoryStream ();
+
+				fratze.Save (ms, System.Drawing.Imaging.ImageFormat.Bmp);
+
+				identificationSamples.Add (new Sample (Bmp.load (ms)));
+			}
+			
+			
+			Result = new Arg.TrackingDecisionArg ()
             {
-                winner = fb.match[0];
-
-                for (int i = 1; i < fb.match.Length; i++)
-                {
-                    Match m = fb.match[i];
-
-                    Console.WriteLine("Match on FIR[{0}] has Score {1}", m.name, m.score.value);
-                    if (m.score.value > winner.score.value)
-                    {
-                        winner = m;
-                    }
-                }
-
-                // Storage.Person match = Model.MainDatabase.People.Find(p => p.Id == Guid.Parse(winner.name));
-                guid = Guid.Parse(winner.name);
-            }
-            else
-            {
-                guid = Storage.Person.fail;
-            }
-
-            Result = new Arg.TrackingDecisionArg()
-            {
-                PersonId = guid
-            };
+				PersonId = this.Identify(identificationSamples)
+			};
+			
         }
     }
 }
