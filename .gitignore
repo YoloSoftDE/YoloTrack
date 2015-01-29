@@ -1,4 +1,6 @@
 /bin
+/app.config
+/Kinect1_skeletonTracking
 /obj
 /ClassDiagram1.cd
 /frsdk.cfg

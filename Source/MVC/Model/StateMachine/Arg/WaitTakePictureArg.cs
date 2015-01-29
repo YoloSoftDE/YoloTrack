@@ -7,6 +7,6 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
     struct WaitTakePictureArg : BaseArg
     {
-        int m_id;
+        public int SkeletonId { get; set; }
     }
 }

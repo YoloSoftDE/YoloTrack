@@ -116,9 +116,13 @@
     <EmbeddedResource Include="Source\MVC\View\MainView.resx">
       <DependentUpon>MainView.cs</DependentUpon>
     </EmbeddedResource>
+<<<<<<< HEAD
     <EmbeddedResource Include="Source\MVC\View\ProfileCard.resx">
       <DependentUpon>ProfileCard.cs</DependentUpon>
     </EmbeddedResource>
+=======
+    <None Include="app.config" />
+>>>>>>> aec339b18c19490f7e21081374740cdc8d3fff0d
     <None Include="frsdk.cfg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

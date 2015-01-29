@@ -25,11 +25,39 @@ namespace YoloTrack.MVC.View
             ColorImageFrame frame = e.OpenColorImageFrame();
             byte[] buffer = new byte[frame.PixelDataLength];
             frame.CopyPixelDataTo(buffer);
-            Bitmap bmp = new Bitmap(1280, 800, 1280 * frame.BytesPerPixel, System.Drawing.Imaging.PixelFormat.Format24bppRgb, Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0));
-            pb_liveview.DrawToBitmap(bmp, new Rectangle(new Point(0, 0), new Size(1280, 800)));
+            Bitmap bmp = new Bitmap(1280, 960, 1280 * frame.BytesPerPixel, System.Drawing.Imaging.PixelFormat.Format32bppRgb, Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0));
+            //pb_liveview.DrawToBitmap(bmp, new Rectangle(new Point(0, 0), new Size(1280, 960)));
             //pb_liveview.Image = bmp;
+            //pb_liveview.Invalidate();
+
+            DrawLiveviewBitmap(bmp);
+
+
         }
 
+        private void DrawLiveviewBitmap(Bitmap bmp)
+        {
+            // Invoke nötig?
+            if (pb_liveview.InvokeRequired)
+            {
+                // Invoke nötig
+                pb_liveview.Invoke((MethodInvoker)delegate {
+                    //pb_liveview.DrawToBitmap(bmp, new Rectangle(new Point(0, 0), new Size(1280, 960)));
+                    //pb_liveview.Refresh();
+
+                    pb_liveview.Image = (bmp);
+                });
+            }
+            else
+            {
+                // Kein Invoke nötig - Vorgang sicher durchführbar
+                //pb_liveview.DrawToBitmap(bmp, new Rectangle(new Point(0, 0), new Size(1280, 960)));
+                //pb_liveview.Refresh();
+                pb_liveview.Image = (bmp);
+            }
+        }
+
+        
         public void Observe(Model.TrackingModel model)
         {
             // Register event handlers
@@ -87,5 +115,6 @@ namespace YoloTrack.MVC.View
         private void timer1_Tick(object sender, EventArgs e)
         {
         }
+
     }
 }

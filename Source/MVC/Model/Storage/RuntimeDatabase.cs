@@ -26,5 +26,10 @@ namespace YoloTrack.MVC.Model.Storage
         {
             get { return m_data; }
         }
+
+        public void add_Item(RuntimeInfo item)
+        {
+            m_data.Add(item);
+        }
     }
 }

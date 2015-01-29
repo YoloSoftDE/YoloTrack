@@ -28,6 +28,9 @@ namespace YoloTrack.MVC.Model
 
         private KinectSensor m_sensor = null;
         private byte[] m_buffer;
+        //***************************************
+        private bool sync_frame = true;
+        //***************************************
 
         private Configuration m_conf = new Configuration("frsdk.cfg");
         private FIRBuilder m_fir_builder = null;
@@ -73,6 +76,8 @@ namespace YoloTrack.MVC.Model
             while (m_sensor.Status != KinectStatus.Connected)
                 Thread.Sleep(200);
 
+            m_sensor.Start();
+
             m_sensor.ColorStream.Enable(ColorImageFormat.RgbResolution1280x960Fps12);
             m_sensor.SkeletonStream.Enable();
 
@@ -87,7 +92,8 @@ namespace YoloTrack.MVC.Model
                 if (frame == null)
                     return;
 
-                frame.CopyPixelDataTo(m_buffer);
+                if (sync_frame == true)
+                    frame.CopyPixelDataTo(m_buffer);
             }
         }
             
@@ -105,6 +111,19 @@ namespace YoloTrack.MVC.Model
         {
             get { return m_sensor; }
         }
+
+        //*****************************
+        public byte[] rawImageData          // hinzugefügt
+        {
+            get { return m_buffer; }        
+        }
+
+        public bool sync_ColorFrame         // hinzugefügt
+        {
+            set { sync_frame = value; }     
+            get { return sync_frame;  }
+        }
+        //*****************************
 
         public bool Running()
         {
