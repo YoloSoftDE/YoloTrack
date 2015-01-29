@@ -2,6 +2,7 @@
 using Microsoft.Kinect;
 using Cognitec.FRsdk;
 using Identification = Cognitec.FRsdk.Identification;
+using Enrollment = Cognitec.FRsdk.Enrollment;
 
 namespace YoloTrack.MVC.Model
 {
@@ -35,8 +36,9 @@ namespace YoloTrack.MVC.Model
         private Configuration m_conf = new Configuration("frsdk.cfg");
         private FIRBuilder m_fir_builder = null;
         private Population m_population = null;
-        private Identification.Processor m_proc = null;
-        private Score m_score;
+        private Identification.Processor m_proc_ident = null;
+		private Enrollment.Processor m_proc_enroll = null;
+		private Score m_score;
         
         public static TrackingModel Instance()
         {
@@ -165,31 +167,37 @@ namespace YoloTrack.MVC.Model
             get { return m_population; }
         }
 
-        private void InitCognitec()
-        {
+        private void InitCognitec ()
+		{
 
-            foreach (Storage.Person person in m_main_database.People)
-                m_population.append(
+			foreach (Storage.Person person in m_main_database.People)
+				m_population.append (
                         //m_fir_builder.build(
                             person.IdentificationRecord
                         /*)*/,
                         person.Name
-                );
+				);
 
-            /* Needed once, score is much useful */
-            ScoreMappings sm = new ScoreMappings(m_conf);
-            Score score = sm.requestFAR(0.001f);
+			/* Needed once, score is much useful */
+			ScoreMappings sm = new ScoreMappings (m_conf);
+			Score score = sm.requestFAR (0.001f);
 
-            /* Identification Processor
+			/* Identification Processor
              * Move to Runtime Storage */
-            m_proc = new Identification.Processor(m_conf, m_population);
+			m_proc_ident = new Identification.Processor (m_conf, m_population);
+			m_proc_enroll = new Enrollment.Processor (m_conf);
 
         }
 
         public Identification.Processor IdentificationProcessor
         {
-            get { return m_proc; }
+            get { return m_proc_ident; }
         }
+		
+		public Enrollment.Processor EnrollmentProcessor
+		{
+			get { return m_proc_enroll; }
+		}
 
         public Score FARScore
         {
