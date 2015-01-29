@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Source\MVC\Model\ConfigModel.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Arg\LearnArg.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Arg\SwitchTargetArg.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\LearnImpl.cs" />

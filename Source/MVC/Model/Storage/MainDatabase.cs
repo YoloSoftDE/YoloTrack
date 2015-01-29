@@ -10,6 +10,7 @@ namespace YoloTrack.MVC.Model.Storage
     {
         public event EventHandler PersonAdded;
         public event EventHandler PersonRemoved;
+        public event EventHandler PersonChanged;
 
         public void OnPersonAdded()
         {
@@ -25,6 +26,14 @@ namespace YoloTrack.MVC.Model.Storage
                 return;
 
             PersonRemoved(this, new EventArgs());
+        }
+
+        public void OnPersonChanged()
+        {
+            if (PersonChanged == null)
+                return;
+
+            PersonChanged(this, new EventArgs());
         }
 
         private List<Person> m_people = new List<Person>();
@@ -75,15 +84,23 @@ namespace YoloTrack.MVC.Model.Storage
 
         public void SaveToFile(string Filename)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(MainDatabase));
+            XmlSerializer serializer = new XmlSerializer(typeof(List<Person>));
+            if (!System.IO.File.Exists(Filename))
+            {
+                SaveToFile(Filename);
+                return;
+            }
             System.IO.FileStream fs = new System.IO.FileStream(Filename, System.IO.FileMode.OpenOrCreate);
-            serializer.Serialize(fs, this);
+            serializer.Serialize(fs, m_people);
             fs.Close();
         }
 
         public void LoadFromFile(string Filename)
         {
-
+            XmlSerializer serializer = new XmlSerializer(typeof(List<Person>));
+            System.IO.FileStream fs = new System.IO.FileStream(Filename, System.IO.FileMode.Open);
+            m_people = (List<Person>)serializer.Deserialize(fs);
+            fs.Close();
         }
     }
 }
