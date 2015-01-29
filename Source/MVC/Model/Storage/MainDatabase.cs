@@ -103,10 +103,10 @@ namespace YoloTrack.MVC.Model.Storage
 
         public void LoadFromFile(string Filename)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<Person>));
-            System.IO.FileStream fs = new System.IO.FileStream(Filename, System.IO.FileMode.Open);
-            m_people = (List<Person>)serializer.Deserialize(fs);
-            fs.Close();
+            //XmlSerializer serializer = new XmlSerializer(typeof(List<Person>));
+            //System.IO.FileStream fs = new System.IO.FileStream(Filename, System.IO.FileMode.Open);
+            //m_people = (List<Person>)serializer.Deserialize(fs);
+            //fs.Close();
         }
     }
 }
