@@ -9,7 +9,7 @@ namespace YoloTrack.MVC.Model.Storage
     {
         public event RuntimeInfoChangeHandler OnRuntimeInfoChange;
 
-        private List<Storage.RuntimeInfo> m_data;
+        private List<Storage.RuntimeInfo> m_data = new List<RuntimeInfo>();
 
         public void Update(int i, Storage.RuntimeInfo data)
         {
