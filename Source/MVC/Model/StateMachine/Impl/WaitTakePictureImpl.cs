@@ -10,13 +10,12 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
     class WaitTakePictureImpl : BaseImpl<Arg.IdentifyArg, Arg.WaitTakePictureArg>
     {
         int pictureCount = 0;
-        KinectSensor kinect_sensor;
         Skeleton[] wtp_skeletonData;
         int pixelcutout;
 
         public override void Run(Arg.WaitTakePictureArg arg)
         {
-            //Thread.Sleep(1000);
+            KinectSensor kinect_sensor = Model.Kinect;
             ColorImagePoint headPoint;
             byte[] rawHeadData;
             List<Bitmap> faces = new List<Bitmap>();
