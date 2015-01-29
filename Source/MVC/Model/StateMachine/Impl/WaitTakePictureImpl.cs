@@ -114,9 +114,6 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             bmp.UnlockBits(bmp_data);
             bmp.Save("penis123.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
             return bmp;
-            //var imgConverter = new ImageConverter();
-            //var image = (Image)imgConverter.ConvertFrom(rbg_array);
-            //return new Bitmap(image);
         }
     }
 }
