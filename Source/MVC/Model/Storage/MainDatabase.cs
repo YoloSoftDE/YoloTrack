@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace YoloTrack.MVC.Model.Storage
 {
@@ -62,6 +63,7 @@ namespace YoloTrack.MVC.Model.Storage
         public void Add(Person p)
         {
             m_people.Add(p);
+            p.RTInfo.UpdateState(TrackingState.IDENTIFIED);
             OnPersonAdded();
         }
 
@@ -69,6 +71,19 @@ namespace YoloTrack.MVC.Model.Storage
         {
             m_people.Remove(m_people.Find(pre));
             OnPersonRemoved();
+        }
+
+        public void SaveToFile(string Filename)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(MainDatabase));
+            System.IO.FileStream fs = new System.IO.FileStream(Filename, System.IO.FileMode.OpenOrCreate);
+            serializer.Serialize(fs, this);
+            fs.Close();
+        }
+
+        public void LoadFromFile(string Filename)
+        {
+
         }
     }
 }

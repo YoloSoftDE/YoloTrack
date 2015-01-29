@@ -171,7 +171,7 @@ namespace YoloTrack.MVC.Model
             foreach (Storage.Person person in m_main_database.People)
                 m_population.append(
                         //m_fir_builder.build(
-                            person.IdentificationRecord
+                            person.IR.Value
                         /*)*/,
                         person.Name
                 );
