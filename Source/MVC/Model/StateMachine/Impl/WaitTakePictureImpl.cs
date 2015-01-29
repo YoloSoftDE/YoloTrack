@@ -34,7 +34,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 // synchronisation with ColorFrameReady-Event
                 foreach (Skeleton skeleton in wtp_skeletonData)
                 {
-                    if (skeleton.TrackingId == null)
+                    if (skeleton.TrackingId == 0)
                         continue;
 
 
@@ -46,9 +46,13 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                         // search for tracked person
                         if (skeleton.TrackingId == arg.SkeletonId)
                         {
-                            // found tracked person
-                            headPoint = cm.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.Head].Position,
-                                                                        ColorImageFormat.RgbResolution1280x960Fps12);
+                            try
+                            {
+                                // found tracked person
+                                headPoint = cm.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.Head].Position,
+                                                                            ColorImageFormat.RgbResolution1280x960Fps12);
+                            }
+                            catch (InvalidCastException) { continue; }
 
                             if (headPoint.X <= 0 || headPoint.Y <= 0)
                                 continue;
