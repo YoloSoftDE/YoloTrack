@@ -17,5 +17,10 @@ namespace YoloTrack.MVC.Model.Storage
         public int TrackedCount { get; set; }
         public Person Person { get; set; }
         public TrackingState State { get; set; }
+
+        public void UpdateState(TrackingState next)
+        {
+            State = next;
+        }
     }
 }

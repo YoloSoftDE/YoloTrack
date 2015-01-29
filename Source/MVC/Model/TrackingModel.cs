@@ -31,6 +31,7 @@ namespace YoloTrack.MVC.Model
         private byte[] m_buffer;
         //***************************************
         private bool sync_frame = true;
+        private Skeleton[] skeletons;
         //***************************************
 
         private Configuration m_conf = new Configuration("frsdk.cfg");
@@ -85,6 +86,18 @@ namespace YoloTrack.MVC.Model
 
             m_buffer = new byte[Kinect.ColorStream.FramePixelDataLength];
             m_sensor.ColorFrameReady += new System.EventHandler<ColorImageFrameReadyEventArgs>(m_sensor_ColorFrameReady);
+            m_sensor.SkeletonFrameReady += m_sensor_SkeletonFrameReady;
+        }
+
+        void m_sensor_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
+        {
+            using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())     // Open the Skeleton frame
+            {
+                if (skeletonFrame != null && this.skeletonData != null)     // check that a frame is available
+                {
+                    skeletonFrame.CopySkeletonDataTo(this.skeletonData);    // get the skeletal information in this frame
+                }
+            }
         }
 
         void m_sensor_ColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
@@ -124,6 +137,12 @@ namespace YoloTrack.MVC.Model
         {
             set { sync_frame = value; }     
             get { return sync_frame;  }
+        }
+
+        public Skeleton[] skeletonData
+        {
+            set { skeletons = value; }
+            get { return skeletons;  }
         }
         //*****************************
 
@@ -173,7 +192,7 @@ namespace YoloTrack.MVC.Model
 			foreach (Storage.Person person in m_main_database.People)
 				m_population.append (
                         //m_fir_builder.build(
-                            person.IdentificationRecord
+                            person.IR.Value
                         /*)*/,
                         person.Name
 				);

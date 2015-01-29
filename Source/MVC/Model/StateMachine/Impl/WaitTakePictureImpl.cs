@@ -24,7 +24,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             CoordinateMapper cm = new CoordinateMapper(kinect_sensor);
             Bitmap[] headPictures = new Bitmap[5];
             kinect_sensor = Model.Kinect;
-            wtp_skeletonData = new Skeleton[kinect_sensor.SkeletonStream.FrameSkeletonArrayLength];
+            wtp_skeletonData = Model.skeletonData;
             Arg.IdentifyArg res = new Arg.IdentifyArg();
             
             pictureCount = 0;
@@ -49,8 +49,6 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                         rawHeadData = cutoutImage(Model.rawImageData, headPoint.X, headPoint.Y);
 
                         // save head-cutout as Bitmap-Object
-                        //headPictures[pictureCount] = write_Bitmap(rawHeadData);
-                        //headPictures[pictureCount].Save("cutout.bmp");
                         faces.Add(write_Bitmap(rawHeadData));
                         pictureCount++;
 
@@ -61,10 +59,14 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
                 // get new frame
                 Model.sync_ColorFrame = true;
+
+                // refresh skeleton-Data
+                wtp_skeletonData = Model.skeletonData;
             }
 
             // return Faces
             res.Faces = faces;
+            Result = res;
             return;
         }
 

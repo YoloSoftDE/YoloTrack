@@ -10,11 +10,8 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
         public override void Run(Arg.TrackingArg arg)
         {
             sensor = Model.Kinect;
-            skeletonData = new Skeleton[sensor.SkeletonStream.FrameSkeletonArrayLength];
+            skeletonData = Model.skeletonData;
             bool skeleton_found;
-
-            // register event
-            sensor.SkeletonFrameReady += sensor_SkeletonFrameReady;
 
             do
             {
@@ -29,24 +26,17 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
                 if (!arg.RTInfo.Person.IsTarget)
                 {
-                    // ...
+                    Result.FocusLost = false;
+                    break;
                 }
+
+                // refresh skeleton-Data
+                skeletonData = Model.skeletonData;
             } while (skeleton_found == true);
 
             // skeleton is not tracked anymore
             // exit function
             return;
-        }
-
-        void sensor_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
-        {
-            using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())     // Open the Skeleton frame
-            {
-                if (skeletonFrame != null && this.skeletonData != null)     // check that a frame is available
-                {
-                    skeletonFrame.CopySkeletonDataTo(this.skeletonData);    // get the skeletal information in this frame
-                }
-            }
         }
     }
 }

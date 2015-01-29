@@ -7,21 +7,39 @@ using System.Drawing;
 
 namespace YoloTrack.MVC.Model.Storage
 {
-    public struct Person
+    public struct IdentificationRecord
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public FIR IdentificationRecord { get; set; }
-        public DateTime Learned { get; set; }
-        public bool IsTarget { get; set; }
-        public Bitmap Picture { get; set; }
-        public RuntimeInfo RTInfo { get; set; }
+        public FIR Value;
+        // public Bitmap[] Sources;
+    }
+
+    public class Person
+    {
+        public Guid Id;
+        public string Name;
+        public DateTime Learned;
+        public bool IsTarget;
+        public IdentificationRecord IR;
+        public Bitmap Picture;
+        public bool IsPresent = false;
 
         public override bool Equals(object obj)
         {
             return ((Person)obj).Id.Equals(Id);
         }
 
-        public static const Guid fail = Guid.Parse("");
+        public static Guid fail = Guid.Parse("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF");
+
+        public RuntimeInfo RTInfo
+        {
+            get {
+                return RTInfo;
+            }
+            set
+            {
+                IsPresent = true;
+                RTInfo = value;
+            }
+        }
     }
 }
