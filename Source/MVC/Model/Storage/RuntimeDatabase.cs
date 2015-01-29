@@ -37,5 +37,10 @@ namespace YoloTrack.MVC.Model.Storage
             // item.State = TrackingState.UNIDENTIFIED;
             m_data.Add(item);
         }
+
+        internal bool Has(int p)
+        {
+            return m_data.Exists(rt => rt.SkeletonId == p);
+        }
     }
 }
