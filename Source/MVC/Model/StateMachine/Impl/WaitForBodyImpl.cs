@@ -40,7 +40,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
                             // add in RuntimeDatabase
                             run_info.SkeletonId = skeleton.TrackingId;
-                            Model.RuntimeDatabase.add_Item(run_info);
+                            Model.RuntimeDatabase.Add(run_info);
                             return;
                         }
                     }
