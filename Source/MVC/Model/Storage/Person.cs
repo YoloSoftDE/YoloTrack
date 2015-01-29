@@ -8,24 +8,81 @@ using System.Runtime.Serialization;
 
 namespace YoloTrack.MVC.Model.Storage
 {
+<<<<<<< HEAD
     [Serializable]
     public struct IdentificationRecord : ISerializable
+=======
+    public class IdentificationRecord : IFormatter
+>>>>>>> origin/master
     {
         public FIR Value;
         // public Bitmap[] Sources;
 
-        public IdentificationRecord(SerializationInfo info, StreamingContext context)
+        public SerializationBinder Binder
         {
-            FIRBuilder builder = Model.TrackingModel.Instance().FIRBuilder;
-            System.IO.MemoryStream ms = new System.IO.MemoryStream((byte[])info.GetValue("Value", typeof(byte[])));
-            Value = builder.build(ms);
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        public StreamingContext Context
         {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public object Deserialize(System.IO.Stream serializationStream)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Serialize(System.IO.Stream serializationStream, object graph)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISurrogateSelector SurrogateSelector
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+    }
+
+    public class IdentificationRecordSurrogate : ISerializationSurrogate
+    {
+        public void GetObjectData(object obj, SerializationInfo info, StreamingContext context)
+        {
+            IdentificationRecord rt = (IdentificationRecord)obj;
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            Value.serialize(ms);
+            rt.Value.serialize(ms);
             info.AddValue("Value", ms.ToArray(), typeof(byte[]));
+        }
+
+        public object SetObjectData(object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector)
+        {
+            IdentificationRecord rt = (IdentificationRecord)obj;
+            FIRBuilder builder = Model.TrackingModel.Instance().FIRBuilder;
+            System.IO.MemoryStream ms = new System.IO.MemoryStream((byte[])info.GetValue("Value", typeof(byte[])));
+            rt.Value = builder.build(ms);
+
+            return rt;
         }
     }
 
