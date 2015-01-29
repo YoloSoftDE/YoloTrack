@@ -12,6 +12,7 @@ namespace YoloTrack.MVC.Model.StateMachine.State
         IDENTIFY,
         TRACKING_DECISION,
         TRACK,
-        LEARN
+        LEARN,
+        SWITCH_TARGET
     }
 }

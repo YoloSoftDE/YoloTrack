@@ -9,5 +9,12 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
     struct TrackingArg : BaseArg
     {
         public int SkeletonId { get; set; }
+        public Storage.RuntimeInfo RTInfo
+        {
+            get
+            {
+
+            };
+        }
     }
 }
