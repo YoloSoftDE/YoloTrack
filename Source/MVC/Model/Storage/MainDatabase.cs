@@ -26,7 +26,7 @@ namespace YoloTrack.MVC.Model.Storage
             PersonRemoved(this, new EventArgs());
         }
 
-        private List<Person> m_people;
+        private List<Person> m_people = new List<Person>();
 
         public List<Person> People
         {

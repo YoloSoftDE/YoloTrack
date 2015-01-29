@@ -22,6 +22,6 @@ namespace YoloTrack.MVC.Model.Storage
             return ((Person)obj).Id.Equals(Id);
         }
 
-        public static const Guid fail = Guid.Parse("");
+        public static Guid fail = Guid.Parse("");
     }
 }

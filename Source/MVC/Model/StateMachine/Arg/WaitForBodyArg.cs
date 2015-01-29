@@ -7,5 +7,6 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
     struct WaitForBodyArg : BaseArg
     {
+        public bool FocusLost;
     }
 }

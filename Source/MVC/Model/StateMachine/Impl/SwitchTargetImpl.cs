@@ -7,9 +7,10 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
     class SwitchTargetImpl : BaseImpl<Arg.TrackingArg, Arg.SwitchTargetArg>
     {
-        public override void Run(Arg.TrackingArg arg)
+        public override void Run(Arg.SwitchTargetArg arg)
         {
             // TODO
+
         }
     }
 }
