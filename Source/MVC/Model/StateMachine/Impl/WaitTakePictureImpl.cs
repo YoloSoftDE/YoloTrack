@@ -49,8 +49,6 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                         rawHeadData = cutoutImage(Model.rawImageData, headPoint.X, headPoint.Y);
 
                         // save head-cutout as Bitmap-Object
-                        //headPictures[pictureCount] = write_Bitmap(rawHeadData);
-                        //headPictures[pictureCount].Save("cutout.bmp");
                         faces.Add(write_Bitmap(rawHeadData));
                         pictureCount++;
 
@@ -65,6 +63,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
             // return Faces
             res.Faces = faces;
+            Result = res;
             return;
         }
 
