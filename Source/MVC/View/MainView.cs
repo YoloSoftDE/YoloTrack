@@ -9,9 +9,15 @@ namespace YoloTrack.MVC.View
 {
     public partial class MainView : Form, IObserver
     {
+        private Components.LiveView pb_liveview;
+
         public MainView()
         {
             InitializeComponent();
+            pb_liveview = new Components.LiveView();
+            pb_liveview.Name = "LiveView";
+            pb_liveview.Dock = DockStyle.Fill;
+            panel1.Controls.Add(pb_liveview);
         }
 
         private void MainView_Load(object sender, EventArgs e)

@@ -10,7 +10,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
     class IdentifyImpl : BaseImpl<Arg.TrackingDecisionArg, Arg.IdentifyArg>
     {
-		protected const float threshold = 1;
+		protected float threshold = 1;
 		
         private class IdentificationFeedback : Identification.Feedback
         {

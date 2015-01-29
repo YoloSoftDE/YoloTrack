@@ -146,7 +146,6 @@
         #endregion
 
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private YoloTrack.MVC.View.Components.LiveView pb_liveview;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem programToolStripMenuItem;
