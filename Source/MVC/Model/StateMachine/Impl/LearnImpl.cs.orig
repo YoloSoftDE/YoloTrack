@@ -46,8 +46,14 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			
 			public void success (FIR nfir)
 			{
-				Console.WriteLine("successful enrollment, \tFIR[id, size] = " +
+				Console.WriteLine
+<<<<<<< HEAD
+				("successful enrollment, \tFIR[id, size] = " +
+=======
+				("successful enrollment, \tFIR[ filename, id, size] = " +
+>>>>>>> d8a05517e9ae742dad511063bab45e3fe19033e9
 					"[\"{0}\", \"{1}\"]", fir.version (), fir.size ());
+				
 				this.fir = nfir;
 			}
 			
