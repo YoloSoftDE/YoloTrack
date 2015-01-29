@@ -19,36 +19,39 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             //Thread.Sleep(1000);
             while (true)
             {
-                foreach (Skeleton skeleton in wfb_skeletonData)
+                if (wfb_skeletonData != null)
                 {
-                    if (skeleton != null)
+                    foreach (Skeleton skeleton in wfb_skeletonData)
                     {
-                        // compare skeleton's ID with RuntimeDatabase
-                        foreach (Storage.RuntimeInfo info in Model.RuntimeDatabase.Info)
+                        if (skeleton != null)
                         {
-                            if (skeleton.TrackingId == info.SkeletonId)
+                            // compare skeleton's ID with RuntimeDatabase
+                            foreach (Storage.RuntimeInfo info in Model.RuntimeDatabase.Info)
                             {
-                                body_in_list = true;
+                                if (skeleton.TrackingId == info.SkeletonId)
+                                {
+                                    body_in_list = true;
+                                }
+                            }
+
+                            if (body_in_list == false)
+                            {
+                                // enable tracking for joint-orientations
+                                skeleton.TrackingState = SkeletonTrackingState.Tracked;
+
+                                // new body found
+                                res.SkeletonId = skeleton.TrackingId;
+                                Result = res;
+
+                                // add in RuntimeDatabase
+                                run_info.SkeletonId = skeleton.TrackingId;
+                                Model.RuntimeDatabase.Add(run_info);
+                                return;
                             }
                         }
-
-                        if (body_in_list == false)
-                        {
-                            // enable tracking for joint-orientations
-                            skeleton.TrackingState = SkeletonTrackingState.Tracked;
-
-                            // new body found
-                            res.SkeletonId = skeleton.TrackingId;
-                            Result = res;
-
-                            // add in RuntimeDatabase
-                            run_info.SkeletonId = skeleton.TrackingId;
-                            Model.RuntimeDatabase.Add(run_info);
-                            return;
-                        }
+                        // refresh skeleton-Data
+                        wfb_skeletonData = Model.skeletonData;
                     }
-                    // refresh skeleton-Data
-                    wfb_skeletonData = Model.skeletonData;
                 }
             }
         }
