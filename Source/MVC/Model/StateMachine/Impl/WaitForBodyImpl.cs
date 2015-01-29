@@ -34,6 +34,9 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
                         if (body_in_list == false)
                         {
+                            // enable tracking for joint-orientations
+                            skeleton.TrackingState = SkeletonTrackingState.Tracked;
+
                             // new body found
                             res.SkeletonId = skeleton.TrackingId;
                             Result = res;
