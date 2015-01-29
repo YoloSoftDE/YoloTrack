@@ -9,24 +9,21 @@ namespace YoloTrack.MVC.Controller
     class Controller
     {
         // Model
-        private Model.TrackingModel model;
+        Model.TrackingModel model;
+        Model.ConfigModel config;
+
         // Views
-        private View.DebugView debug_view;
-        private View.MainView main_view;
+        View.DebugView debug_view;
+        View.MainView main_view;
 
         public Controller()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            try
-            {
-                model = Model.TrackingModel.Instance();
-            }
-            catch (Cognitec.FRsdk.Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
+            config = Model.ConfigModel.Instance();
+
+            CreateModel();
 
             debug_view = new View.DebugView();
             main_view = new View.MainView();
@@ -35,18 +32,32 @@ namespace YoloTrack.MVC.Controller
 
             InitStartModel();
             Application.Run(main_view);
+
+            config.Save();
         }
 
-        void initToolStripMenuItem_Click(object sender, EventArgs e)
+        private void CreateModel()
         {
             try
             {
                 model = Model.TrackingModel.Instance();
+                model.MainDatabase.LoadFromFile(config.conf.DatabaseFilename);
+                model.MainDatabase.PersonChanged += new EventHandler(MainDatabase_PersonChanged);
             }
-            catch (Cognitec.FRsdk.Exception ex)
+            catch (Cognitec.FRsdk.Exception e)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(e.Message);
             }
+        }
+
+        void MainDatabase_PersonChanged(object sender, EventArgs e)
+        {
+            model.MainDatabase.SaveToFile(config.conf.DatabaseFilename);
+        }
+
+        void initToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateModel();
             InitStartModel();
         }
 
