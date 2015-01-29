@@ -1,4 +1,4 @@
-﻿namespace YoloTrack.MVC.View
+﻿namespace YoloTrack.MVC.View.Components
 {
     partial class ProfileCard
     {

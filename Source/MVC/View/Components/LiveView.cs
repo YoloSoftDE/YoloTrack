@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace YoloTrack
+namespace YoloTrack.MVC.View.Components
 {
     public partial class LiveView : UserControl
     {

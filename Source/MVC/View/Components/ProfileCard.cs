@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace YoloTrack.MVC.View
+namespace YoloTrack.MVC.View.Components
 {
     public partial class ProfileCard : UserControl
     {

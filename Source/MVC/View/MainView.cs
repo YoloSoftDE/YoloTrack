@@ -74,7 +74,7 @@ namespace YoloTrack.MVC.View
 
             foreach (Model.Storage.Person p in db.People)
             {
-                ProfileCard card = new ProfileCard()
+                YoloTrack.MVC.View.Components.ProfileCard card = new YoloTrack.MVC.View.Components.ProfileCard()
                 {
                     FullName = p.Name,
                     Picture = p.Picture,

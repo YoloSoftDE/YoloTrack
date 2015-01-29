@@ -1,4 +1,4 @@
-﻿namespace YoloTrack
+﻿namespace YoloTrack.MVC.View.Components
 {
     partial class LiveView
     {

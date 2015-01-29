@@ -33,7 +33,7 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lbl_state = new System.Windows.Forms.Label();
-            this.pb_liveview = new LiveView();
+            this.pb_liveview = new YoloTrack.MVC.View.Components.LiveView();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
@@ -129,7 +129,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lbl_state;
-        private LiveView pb_liveview;
+        private YoloTrack.MVC.View.Components.LiveView pb_liveview;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 
