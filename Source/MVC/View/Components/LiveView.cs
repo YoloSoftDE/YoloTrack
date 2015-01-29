@@ -52,8 +52,8 @@ namespace YoloTrack.MVC.View.Components
 				this.Image, 					/* Image instance */
 				0, 								/* Target X */
 				0, 								/* Target Y */
-				this.ClientRectangle.Height, 	/* Target Height */
-				this.ClientRectangle.Width		/* Target Width */
+				this.ClientRectangle.Width, 	/* Target Width */
+				this.ClientRectangle.Height		/* Target Height */
 			);
             
         }

@@ -34,24 +34,34 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 // synchronisation with ColorFrameReady-Event
                 foreach (Skeleton skeleton in wtp_skeletonData)
                 {
+                    if (skeleton.TrackingId == null)
+                        continue;
+
+
                     // block ColorFrameReady-Event
                     Model.sync_ColorFrame = false;
 
-                    // search for tracked person
-                    if (skeleton.TrackingId == arg.SkeletonId)
+                    if (arg.SkeletonId != 0)
                     {
-                        // found tracked person
-                        headPoint = cm.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.Head].Position,
-                                                                    ColorImageFormat.RgbResolution1280x960Fps12);
+                        // search for tracked person
+                        if (skeleton.TrackingId == arg.SkeletonId)
+                        {
+                            // found tracked person
+                            headPoint = cm.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.Head].Position,
+                                                                        ColorImageFormat.RgbResolution1280x960Fps12);
 
-                        // get head-cutout
-                        rawHeadData = cutoutImage(Model.rawImageData, headPoint.X, headPoint.Y);
+                            if (headPoint.X <= 0 || headPoint.Y <= 0)
+                                continue;
 
-                        // save head-cutout as Bitmap-Object
-                        faces.Add(write_Bitmap(rawHeadData));
-                        pictureCount++;
+                            // get head-cutout
+                            rawHeadData = cutoutImage(Model.rawImageData, headPoint.X, headPoint.Y);
 
-                        res.SkeletonId = skeleton.TrackingId;
+                            // save head-cutout as Bitmap-Object
+                            faces.Add(write_Bitmap(rawHeadData));
+                            pictureCount++;
+
+                            res.SkeletonId = skeleton.TrackingId;
+                        }
                     }
                 }
                 Thread.Sleep(500);
@@ -93,9 +103,16 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
         private Bitmap write_Bitmap(byte[] rbg_array)
         {
-            var imgConverter = new ImageConverter();
-            var image = (Image)imgConverter.ConvertFrom(rbg_array);
-            return new Bitmap(image);
+            Bitmap bmp = new Bitmap(200, 200);
+            System.Drawing.Imaging.BitmapData bmp_data = bmp.LockBits(new Rectangle(0, 0, 200, 200), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            IntPtr ptr = bmp_data.Scan0;
+            System.Runtime.InteropServices.Marshal.Copy(rbg_array, 0, ptr, rbg_array.Length);
+            bmp.UnlockBits(bmp_data);
+            bmp.Save("penis123.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
+            return bmp;
+            //var imgConverter = new ImageConverter();
+            //var image = (Image)imgConverter.ConvertFrom(rbg_array);
+            //return new Bitmap(image);
         }
     }
 }

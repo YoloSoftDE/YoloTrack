@@ -23,7 +23,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 {
                     foreach (Skeleton skeleton in wfb_skeletonData)
                     {
-                        if (skeleton != null)
+                        if (skeleton != null && skeleton.TrackingId != 0)
                         {
                             // compare skeleton's ID with RuntimeDatabase
                             foreach (Storage.RuntimeInfo info in Model.RuntimeDatabase.Info)
