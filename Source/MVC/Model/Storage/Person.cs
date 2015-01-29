@@ -4,13 +4,28 @@ using System.Linq;
 using System.Text;
 using Cognitec.FRsdk;
 using System.Drawing;
+using System.Runtime.Serialization;
 
 namespace YoloTrack.MVC.Model.Storage
 {
-    public struct IdentificationRecord
+    public struct IdentificationRecord : ISerializable
     {
         public FIR Value;
         // public Bitmap[] Sources;
+
+        public IdentificationRecord(SerializationInfo info, StreamingContext context)
+        {
+            FIRBuilder builder = Model.TrackingModel.Instance().FIRBuilder;
+            System.IO.MemoryStream ms = new System.IO.MemoryStream((byte[])info.GetValue("Value", typeof(byte[])));
+            Value = builder.build(ms);
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            Value.serialize(ms);
+            info.AddValue("Value", ms.ToArray(), typeof(byte[]));
+        }
     }
 
     public class Person
