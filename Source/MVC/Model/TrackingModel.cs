@@ -29,10 +29,8 @@ namespace YoloTrack.MVC.Model
 
         private KinectSensor m_sensor = null;
         private byte[] m_buffer;
-        //***************************************
         private bool sync_frame = true;
         private Skeleton[] skeletons = new Skeleton[6];
-        //***************************************
 
         private Configuration m_conf = new Configuration("frsdk.cfg");
         private FIRBuilder m_fir_builder = null;
@@ -96,6 +94,30 @@ namespace YoloTrack.MVC.Model
                 if (skeletonFrame != null && this.skeletonData != null)     // check that a frame is available
                 {
                     skeletonFrame.CopySkeletonDataTo(this.skeletonData);    // get the skeletal information in this frame
+                    UpdateHeads();
+                }
+            }
+        }
+
+        private void UpdateHeads()
+        {
+            CoordinateMapper mapper = new CoordinateMapper(Kinect);
+            ColorImagePoint head;
+
+            foreach (Skeleton skeleton in skeletonData)
+            {
+                head = mapper.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.Head].Position, ColorImageFormat.RgbResolution1280x960Fps12);
+                System.Drawing.Rectangle head_rect = new System.Drawing.Rectangle()
+                {
+                    X = head.X - 100,
+                    Y = head.Y - 100,
+                    Width = 200,
+                    Height = 200
+                };
+                if (RuntimeDatabase.Has(skeleton.TrackingId))
+                {
+                    Storage.RuntimeInfo RTInfo = RuntimeDatabase.At(skeleton.TrackingId);
+                    OnRuntimeInfoChange(RTInfo);
                 }
             }
         }
