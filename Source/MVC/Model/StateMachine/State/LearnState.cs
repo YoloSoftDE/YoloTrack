@@ -15,7 +15,7 @@ namespace YoloTrack.MVC.Model.StateMachine.State
         {
             Arg.WaitForBodyArg result = RunImpl();
 
-            // TODO
+            return new WaitForBodyState(result);
         }
 
         public override States State

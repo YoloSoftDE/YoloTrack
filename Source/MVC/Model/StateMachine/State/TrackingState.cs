@@ -15,8 +15,10 @@ namespace YoloTrack.MVC.Model.StateMachine.State
         public override IState Transist()
         {
             Arg.WaitForBodyArg result = RunImpl();
-
-            return new WaitForBodyState(result);
+            if (result.FocusLost)
+                return new WaitForBodyState(result);
+            else
+                return new SwitchTargetState(new Arg.SwitchTargetArg());
         }
 
        public override States State

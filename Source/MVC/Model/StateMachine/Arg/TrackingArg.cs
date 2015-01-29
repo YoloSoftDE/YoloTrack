@@ -13,8 +13,9 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
         {
             get
             {
-
-            };
+                TrackingArg arg = this;
+                return Model.TrackingModel.Instance().RuntimeDatabase.List().Find(rt => rt.SkeletonId == arg.SkeletonId);
+            }
         }
     }
 }

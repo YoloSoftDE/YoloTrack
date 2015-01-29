@@ -22,6 +22,11 @@ namespace YoloTrack.MVC.Model.Storage
             return m_data[i];
         }
 
+        public List<Storage.RuntimeInfo> List()
+        {
+            return m_data;
+        }
+
         public List<Storage.RuntimeInfo> Info
         {
             get { return m_data; }
