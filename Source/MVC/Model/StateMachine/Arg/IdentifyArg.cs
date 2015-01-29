@@ -12,7 +12,11 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
         public int SkeletonId { get; set; }
         public Storage.RuntimeInfo RTInfo
         {
-
+            get
+            {
+                IdentifyArg arg = this;
+                return Model.TrackingModel.Instance().RuntimeDatabase.List().Find(rt => rt.SkeletonId == arg.SkeletonId);
+            }
         }
     }
 }

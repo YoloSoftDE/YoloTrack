@@ -14,8 +14,10 @@ namespace YoloTrack.MVC.Model.StateMachine.State
         public override IState Transist()
         {
             Arg.TrackingArg result = RunImpl();
-
-            // TODO
+            if (result.SkeletonId != 0)
+                return new TrackingState(result);
+            else
+                return new WaitForBodyState(new Arg.WaitForBodyArg());
         }
 
         public override States State
