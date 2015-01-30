@@ -17,7 +17,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
             foreach (Skeleton skeleton in skeletons)
             {
-                if (skeleton.TrackingId == Model.MainDatabase.Target.RTInfo.SkeletonId)
+                if (skeleton.TrackingId == Model.MainDatabase.Target.RuntimeInfo.SkeletonId)
                 {
                     skeleton.TrackingState = SkeletonTrackingState.Tracked;
                     res.SkeletonId = skeleton.TrackingId;

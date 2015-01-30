@@ -78,7 +78,7 @@ namespace YoloTrack.MVC.Model.Storage
             }
 
             m_people.Add(p);
-            p.RTInfo.UpdateState(TrackingState.IDENTIFIED);
+            p.RuntimeInfo.UpdateState(TrackingState.IDENTIFIED);
             OnPersonAdded();
         }
 

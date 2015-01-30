@@ -149,6 +149,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                     Result = new Arg.LearnArg()
                     {
                         SkeletonId = arg.SkeletonId,
+                        Samples = identificationSamples,
                         Faces = arg.Faces
                     };
                 }

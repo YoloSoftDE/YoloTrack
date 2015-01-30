@@ -101,15 +101,30 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
         {
             // x, y --> centre of cutout area in entire image
             int x1, y1, sourceIndex, destIndex;
-            x1 = x - pixelcutout;   // compute x of the top-left corner of the cutout image
-            y1 = y - pixelcutout;   // compute y of the top-left corner of the cutout image
+            if (x < pixelcutout)
+                x1 = 0;
+            else
+                x1 = x - pixelcutout;   // compute x of the top-left corner of the cutout image
 
+            if (y < pixelcutout)
+                y1 = 0;
+            else
+                y1 = y - pixelcutout;   // compute y of the top-left corner of the cutout image
+
+            int x2, y2;
+            x2 = x + pixelcutout;
+            if (x2 > 1280)
+                x2 = 1280;
+
+            y2 = y + pixelcutout;
+            if (y2 > 960)
+                y2 = 960;
 
             byte[] cutout = new byte[(pixelcutout * pixelcutout * 4) * 4];
             destIndex = 0;
-            for (int cy = y1; cy < y + pixelcutout; cy++)
+            for (int cy = y1; cy < y2; cy++)
             {
-                for (int cx = x1 * 4; cx < (x + pixelcutout) * 4; cx++)
+                for (int cx = x1 * 4; cx < x2 * 4; cx++)
                 {
                     sourceIndex = (4 * 1280 * cy) + cx;
                     cutout[destIndex] = rawImgData[sourceIndex];

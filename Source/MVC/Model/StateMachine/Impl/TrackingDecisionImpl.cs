@@ -13,7 +13,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
             if (matched.IsTarget)
                 Result = new Arg.TrackingArg() {
-                    SkeletonId = matched.RTInfo.SkeletonId
+                    SkeletonId = matched.RuntimeInfo.SkeletonId
                 };
             else
                 Result = new Arg.WaitForBodyArg();

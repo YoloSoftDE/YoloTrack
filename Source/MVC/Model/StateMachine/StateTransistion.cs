@@ -6,7 +6,7 @@
             : base(Message) { }
     }
 
-    abstract class StateTransistion
+    public abstract class StateTransistion
     {
         protected abstract StateTransistion Transist();
         public StateTransistion Next()
