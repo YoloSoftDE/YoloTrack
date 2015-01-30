@@ -1,99 +1,108 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Text;
 using Microsoft.Kinect;
 using System.Drawing;
+using System.Threading;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
     class WaitTakePictureImpl : BaseImpl<Arg.WaitTakePictureArg>
     {
         int pictureCount = 0;
-        Skeleton[] wtp_skeletonData;
-        int pixelcutout;
+        int pixelcutout = 100;
+        int SkeletonId;
+        Skeleton skeleton;
+        List<Bitmap> faces = new List<Bitmap>();
+        AutoResetEvent ae = new AutoResetEvent(false);
 
         public override void Run(Arg.WaitTakePictureArg arg)
         {
-            KinectSensor kinect_sensor = Model.Kinect;
-            ColorImagePoint headPoint;
-            byte[] rawHeadData;
-            List<Bitmap> faces = new List<Bitmap>();
+            EventHandler<ColorImageFrameReadyEventArgs> OnNextColorFrame = delegate(object sender, ColorImageFrameReadyEventArgs e)
+            {
+                ColorImagePoint headPoint;
+                byte[] rawHeadData;
 
-            Bitmap[] headPictures = new Bitmap[5];
-            wtp_skeletonData = Model.skeletonData;
+                try
+                {
+                    // found tracked person
+                    if (skeleton.Joints[JointType.Head].TrackingState != JointTrackingState.Tracked)
+                    {
+                        Console.WriteLine("[WaitTakePicture] Head joint not tracked, skipping.");
+                        return;
+                    }
 
-            Arg.IdentifyArg res = new Arg.IdentifyArg();
+                    headPoint = Model.Kinect.MapSkeletonPointToColor(skeleton.Joints[JointType.Head].Position,
+                                                                ColorImageFormat.RgbResolution1280x960Fps12);
+                }
+                catch (InvalidCastException)
+                {
+                    Console.WriteLine("[WaitTakePicture] InvalidCastException");
+                    return;
+                }
+
+                Console.WriteLine("[WaitTakePicture] (guessed) Head Point is at {0}|{1}", headPoint.X, headPoint.Y);
+
+                // get head-cutout
+                ColorImageFrame frame = e.OpenColorImageFrame();
+                //byte[] buffer = new byte[frame.PixelDataLength];
+                rawHeadData = cutoutImage(frame.GetRawPixelData(), headPoint.X, headPoint.Y);
+
+                // save head-cutout as Bitmap-Object
+                faces.Add(write_Bitmap(rawHeadData));
+                pictureCount++;
+            };
+
+            EventHandler<SkeletonFrameReadyEventArgs> OnNextSkeletonFrame = delegate(object sender, SkeletonFrameReadyEventArgs e)
+            {
+                SkeletonFrame frame = e.OpenSkeletonFrame();
+                Skeleton[] skeleton_list = new Skeleton[frame.SkeletonArrayLength];
+                frame.CopySkeletonDataTo(skeleton_list);
+                for (int i = 0; i < skeleton_list.Length; i++)
+                {
+                    Skeleton compare = skeleton_list[i];
+                    if (compare.TrackingId == SkeletonId)
+                    {
+                        skeleton = compare;
+                        ae.Set();
+                        return;
+                    }
+                }
+                skeleton.TrackingState = SkeletonTrackingState.NotTracked;
+            };
 
             pictureCount = 0;
-            pixelcutout = 100;
+            SkeletonId = arg.SkeletonId;
+            Model.Kinect.SkeletonFrameReady += OnNextSkeletonFrame;
+
+            ae.WaitOne();
+            Model.Kinect.ColorFrameReady += OnNextColorFrame;
 
             while (pictureCount < 5)
             {
+                // muss noch schöner gehn
+                if (skeleton == null)
+                    continue;
+
                 // synchronisation with ColorFrameReady-Event
-                foreach (Skeleton skeleton in wtp_skeletonData)
+                //Skeleton skeleton = FindSkeleton(arg.SkeletonId);
+                if (skeleton.TrackingState == SkeletonTrackingState.NotTracked)
                 {
-                    if (skeleton.TrackingId == 0)
-                        continue;
-
-                    Console.WriteLine("[WaitTakePicture] [{2}/5] Test Skeleton ({0} == {1})", skeleton.TrackingId, arg.SkeletonId, pictureCount);
-
-                    // block ColorFrameReady-Event
-                    Model.sync_ColorFrame = false;
-
-                    if (arg.SkeletonId != 0)
-                    {
-                        // search for tracked person
-                        if (skeleton.TrackingId == arg.SkeletonId)
-                        {
-                            try
-                            {
-                                // found tracked person
-                                if (skeleton.Joints[JointType.Head].TrackingState != JointTrackingState.Tracked)
-                                {
-                                    Console.WriteLine("[WaitTakePicture] Head joint not tracked, skipping.");
-                                    continue;
-                                }
-
-                                headPoint = kinect_sensor.MapSkeletonPointToColor(skeleton.Joints[JointType.Head].Position,
-                                                                            ColorImageFormat.RgbResolution1280x960Fps12);
-                            } catch (InvalidCastException) {
-                                Console.WriteLine("[WaitTakePicture] InvalidCastException");
-                                continue; 
-                            }
-
-                            Console.WriteLine("[WaitTakePicture] (guessed) Head Point is at {0}|{1}", headPoint.X, headPoint.Y);
-                            /*
-                            if (headPoint.X <= 0 || headPoint.Y <= 0)
-                                continue;
-                             */
-
-                            // get head-cutout
-                            rawHeadData = cutoutImage(Model.rawImageData, headPoint.X, headPoint.Y);
-
-                            // save head-cutout as Bitmap-Object
-                            faces.Add(write_Bitmap(rawHeadData));
-                            pictureCount++;
-
-                            res = new Arg.IdentifyArg()
-                            {
-                                SkeletonId = skeleton.TrackingId
-                            };
-                        }
-                    }
+                    Model.Kinect.ColorFrameReady -= OnNextColorFrame;
+                    Model.Kinect.SkeletonFrameReady -= OnNextSkeletonFrame;
+                    Result = new Arg.WaitForBodyArg();
+                    return;
                 }
-                Thread.Sleep(500);
 
-                // get new frame
-                Model.sync_ColorFrame = true;
-
-                // refresh skeleton-Data
-                wtp_skeletonData = Model.skeletonData;
+                System.Threading.Thread.Sleep(500);
             }
-
-            // return Faces
-            res.Faces = faces;
-            Result = res;
+            Model.Kinect.ColorFrameReady -= OnNextColorFrame;
+            Model.Kinect.SkeletonFrameReady -= OnNextSkeletonFrame;
+            
+            Result = new Arg.IdentifyArg()
+            {
+                Faces = faces,
+                SkeletonId = arg.SkeletonId
+            };
             return;
         }
 

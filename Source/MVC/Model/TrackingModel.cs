@@ -30,7 +30,6 @@ namespace YoloTrack.MVC.Model
 
         private KinectSensor m_sensor = null;
         private byte[] m_buffer;
-        private bool sync_frame = true;
         private Skeleton[] skeletons = new Skeleton[6];
 
         private Configuration m_conf = new Configuration("frsdk.cfg");
@@ -88,7 +87,6 @@ namespace YoloTrack.MVC.Model
             m_sensor.SkeletonStream.Enable();
 
             m_buffer = new byte[Kinect.ColorStream.FramePixelDataLength];
-            m_sensor.ColorFrameReady += new System.EventHandler<ColorImageFrameReadyEventArgs>(m_sensor_ColorFrameReady);
             m_sensor.SkeletonFrameReady += m_sensor_SkeletonFrameReady;
         }
 
@@ -126,18 +124,6 @@ namespace YoloTrack.MVC.Model
                 }
             }
         }
-
-        void m_sensor_ColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
-        {
-            using (ColorImageFrame frame = e.OpenColorImageFrame())
-            {
-                if (frame == null)
-                    return;
-
-                if (sync_frame == true)
-                    frame.CopyPixelDataTo(m_buffer);
-            }
-        }
             
         public Storage.MainDatabase MainDatabase
         {
@@ -158,12 +144,6 @@ namespace YoloTrack.MVC.Model
         public byte[] rawImageData          // hinzugefügt
         {
             get { return m_buffer; }        
-        }
-
-        public bool sync_ColorFrame         // hinzugefügt
-        {
-            set { sync_frame = value; }     
-            get { return sync_frame;  }
         }
 
         public Skeleton[] skeletonData

@@ -123,7 +123,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			List<Sample> identificationSamples = new List<Sample> ();
 
             int zaehler = 0;
-			foreach (Bitmap fratze in arg.Faces) {
+			foreach (Bitmap fratze in arg.Faces.ToArray()) {
                 fratze.Save("fratze-" + zaehler++ + ".bmp");
                 
 				//MemoryStream ms = new MemoryStream ();
