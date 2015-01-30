@@ -34,7 +34,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 }
 
                 // Remove obsolete RuntimeInfos from RuntimeDB
-                foreach (KeyValuePair<int, RuntimeInfo> entry in Model.RuntimeDatabase)
+                foreach (KeyValuePair<int, RuntimeInfo> entry in new Dictionary<int, RuntimeInfo>(Model.RuntimeDatabase))
                 {
                     bool present = false;
                     foreach (Skeleton skel in wfb_skeletonData)

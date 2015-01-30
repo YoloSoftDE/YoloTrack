@@ -27,14 +27,14 @@ namespace YoloTrack.MVC.View
             model.OnStateChange += new Model.StateChangeHandler(model_OnStateChange);
         }
 
-        void model_OnStateChange(Model.StateMachine.State.States current_state, Model.StateMachine.State.States next_state)
+        void model_OnStateChange(Model.StateMachine.StateTransistion current_state, Model.StateMachine.StateTransistion next_state)
         {
-            Log(String.Format("StateChanged {0} -> {1}", current_state, next_state), DebugLevel.INFO);
+            Log(String.Format("StateChanged {0} -> {1}", current_state.GetType().Name, next_state.GetType().Name), DebugLevel.INFO);
         }
 
         void model_OnRuntimeInfoChange(Model.Storage.RuntimeInfo info)
         {
-            Log("RuntimeInfoChanged", DebugLevel.NOTICE);
+            //Log("RuntimeInfoChanged", DebugLevel.NOTICE);
         }
 
         private void Log(string Message, DebugLevel level = DebugLevel.NOTICE)

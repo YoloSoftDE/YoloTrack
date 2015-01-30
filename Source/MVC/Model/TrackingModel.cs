@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Microsoft.Kinect;
 using Cognitec.FRsdk;
 using Identification = Cognitec.FRsdk.Identification;
@@ -6,7 +7,7 @@ using Enrollment = Cognitec.FRsdk.Enrollment;
 
 namespace YoloTrack.MVC.Model
 {
-    public delegate void StateChangeHandler(StateMachine.State.States current_state, StateMachine.State.States next_state);
+    public delegate void StateChangeHandler(StateMachine.StateTransistion current, StateMachine.StateTransistion next);
 
     public enum Status
     {
@@ -197,12 +198,13 @@ namespace YoloTrack.MVC.Model
             while (!m_stop_machine)
             {
                 //StateMachine.State.States previous = m_state.State;
-                m_state = m_state.Next();
+                StateMachine.StateTransistion m_next_state = m_state.Next();
                 if (OnStateChange != null)
                 {
                     //OnStateChange(previous, m_state.State);
-                    OnStateChange(StateMachine.State.States.IDENTIFY, StateMachine.State.States.IDENTIFY);
+                    OnStateChange(m_state, m_next_state);
                 }
+                m_state = m_next_state;
             }
         }
 

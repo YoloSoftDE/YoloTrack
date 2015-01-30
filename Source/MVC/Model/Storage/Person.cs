@@ -9,11 +9,11 @@ using System.Runtime.Serialization;
 namespace YoloTrack.MVC.Model.Storage
 {
 
-    public class IdentificationRecord : IFormatter
+    public class IdentificationRecord
     {
         public FIR Value;
         // public Bitmap[] Sources;
-
+        /*
         public SerializationBinder Binder
         {
             get
@@ -59,6 +59,7 @@ namespace YoloTrack.MVC.Model.Storage
                 throw new NotImplementedException();
             }
         }
+         */
     }
 
     public class IdentificationRecordSurrogate : ISerializationSurrogate
@@ -91,21 +92,22 @@ namespace YoloTrack.MVC.Model.Storage
         public IdentificationRecord IR;
         public Bitmap Picture;
         public bool IsPresent = false;
+        private RuntimeInfo runtime_info;
 
         public override bool Equals(object obj)
         {
             return ((Person)obj).Id.Equals(Id);
         }
 
-        public RuntimeInfo RTInfo
+        public RuntimeInfo RuntimeInfo
         {
             get {
-                return RTInfo;
+                return runtime_info;
             }
             set
             {
                 IsPresent = true;
-                RTInfo = value;
+                runtime_info = value;
                 value.Person = this;
             }
         }

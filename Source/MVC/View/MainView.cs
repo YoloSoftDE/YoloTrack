@@ -83,17 +83,29 @@ namespace YoloTrack.MVC.View
 
             foreach (Model.Storage.Person p in db.People)
             {
-                YoloTrack.MVC.View.Components.ProfileCard card = new YoloTrack.MVC.View.Components.ProfileCard()
+                if (InvokeRequired)
                 {
-                    FullName = p.Name,
-                    Picture = p.Picture,
-                    TrackedCount = p.RTInfo.TrackedCount,
-                    RecognizedCount = p.RTInfo.RecognizedCount,
-                    LearnedAt = p.Learned
-                };
-
-                flowLayoutPanel1.Controls.Add(card);
+                    Invoke((MethodInvoker)delegate { AddProfileCard(p); });
+                }
+                else
+                {
+                    AddProfileCard(p);
+                }
             }
+        }
+
+        void AddProfileCard(Model.Storage.Person p)
+        {
+            YoloTrack.MVC.View.Components.ProfileCard card = new YoloTrack.MVC.View.Components.ProfileCard()
+            {
+                FullName = p.Name,
+                Picture = p.Picture,
+                TrackedCount = p.RuntimeInfo.TrackedCount,
+                RecognizedCount = p.RuntimeInfo.RecognizedCount,
+                LearnedAt = p.Learned
+            };
+
+            flowLayoutPanel1.Controls.Add(card);
         }
 
         public Model.Status Status
