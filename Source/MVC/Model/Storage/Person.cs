@@ -8,12 +8,8 @@ using System.Runtime.Serialization;
 
 namespace YoloTrack.MVC.Model.Storage
 {
-<<<<<<< HEAD
-    [Serializable]
-    public struct IdentificationRecord : ISerializable
-=======
+
     public class IdentificationRecord : IFormatter
->>>>>>> origin/master
     {
         public FIR Value;
         // public Bitmap[] Sources;
@@ -112,6 +108,7 @@ namespace YoloTrack.MVC.Model.Storage
             {
                 IsPresent = true;
                 RTInfo = value;
+                value.Person = this;
             }
         }
     }

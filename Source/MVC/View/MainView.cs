@@ -29,6 +29,9 @@ namespace YoloTrack.MVC.View
         void sensor_ColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
         {
             ColorImageFrame frame = e.OpenColorImageFrame();
+            if (frame == null)
+                return;
+
             byte[] buffer = new byte[frame.PixelDataLength];
             frame.CopyPixelDataTo(buffer);
             Bitmap bmp = new Bitmap(1280, 960, 1280 * frame.BytesPerPixel, System.Drawing.Imaging.PixelFormat.Format32bppRgb, Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0));

@@ -90,10 +90,12 @@ namespace YoloTrack.MVC.Model.Storage
 
         public void SaveToFile(string Filename)
         {
+            /*
             XmlSerializer serializer = new XmlSerializer(typeof(List<Person>));
             System.IO.FileStream fs = new System.IO.FileStream(Filename, System.IO.FileMode.OpenOrCreate);
             serializer.Serialize(fs, m_people);
             fs.Close();
+            */
         }
 
         public void LoadFromFile(string Filename)

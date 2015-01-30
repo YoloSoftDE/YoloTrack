@@ -11,46 +11,57 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
     {
         public override void Run(Arg.WaitForBodyArg arg)
         {
-            Skeleton[] wfb_skeletonData = Model.skeletonData;
-            bool body_in_list = false;
-            RuntimeInfo run_info = new RuntimeInfo();
-            Arg.WaitTakePictureArg res = new Arg.WaitTakePictureArg();
-
-            //Thread.Sleep(1000);
             while (true)
             {
-                if (wfb_skeletonData != null)
+                // refresh skeleton-Data
+                Skeleton[] wfb_skeletonData = (Skeleton[])Model.skeletonData.Clone();
+
+                if (wfb_skeletonData == null)
+                    continue;
+
+                // Add newly appered Persons (?) to RuntimeDB
+                foreach (Skeleton skeleton in wfb_skeletonData)
                 {
-                    foreach (Skeleton skeleton in wfb_skeletonData)
+                    if (skeleton != null && skeleton.TrackingId != 0)
                     {
-                        if (skeleton != null && skeleton.TrackingId != 0)
+                        // compare skeleton's ID with RuntimeDatabase
+                        if (!Model.RuntimeDatabase.ContainsKey(skeleton.TrackingId))
                         {
-                            // compare skeleton's ID with RuntimeDatabase
-                            foreach (Storage.RuntimeInfo info in Model.RuntimeDatabase.Info)
-                            {
-                                if (skeleton.TrackingId == info.SkeletonId)
-                                {
-                                    body_in_list = true;
-                                }
-                            }
-
-                            if (body_in_list == false)
-                            {
-                                // enable tracking for joint-orientations
-                                skeleton.TrackingState = SkeletonTrackingState.Tracked;
-
-                                // new body found
-                                res.SkeletonId = skeleton.TrackingId;
-                                Result = res;
-
-                                // add in RuntimeDatabase
-                                run_info.SkeletonId = skeleton.TrackingId;
-                                Model.RuntimeDatabase.Add(run_info);
-                                return;
-                            }
+                            // add in RuntimeDatabase
+                            Model.RuntimeDatabase.Insert(skeleton.TrackingId);
                         }
-                        // refresh skeleton-Data
-                        wfb_skeletonData = Model.skeletonData;
+                    }
+                }
+
+                // Remove obsolete RuntimeInfos from RuntimeDB
+                foreach (KeyValuePair<int, RuntimeInfo> entry in Model.RuntimeDatabase)
+                {
+                    bool present = false;
+                    foreach (Skeleton skel in wfb_skeletonData)
+                    {
+                        if (skel.TrackingId == entry.Key)
+                            present = true;
+                    }
+                    if (!present)
+                        Model.RuntimeDatabase.Remove(entry.Key);
+                }
+
+                // Search for those RuntimeInfos that need clarification (maybe identification?)
+                foreach (KeyValuePair<int, RuntimeInfo> entry in Model.RuntimeDatabase)
+                {
+                    if (entry.Value.State == TrackingState.UNIDENTIFIED ||
+                        entry.Value.State == TrackingState.UNKNOWN)
+                    {
+                        // enable tracking for joint-orientations
+                        for (int i = 0; i < Model.skeletonData.Length; i++)
+                        {
+                            if (Model.skeletonData[i].TrackingId == entry.Key)
+                                Model.skeletonData[i].TrackingState = SkeletonTrackingState.Tracked;
+                        }
+
+                        // new body found
+                        Result.SkeletonId = entry.Key;
+                        return;
                     }
                 }
             }

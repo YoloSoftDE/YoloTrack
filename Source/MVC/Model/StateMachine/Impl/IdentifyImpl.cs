@@ -11,6 +11,14 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
     class IdentifyImpl : BaseImpl<Arg.TrackingDecisionArg, Arg.IdentifyArg>
     {
 		protected float threshold = 1;
+
+        private class IdentificationException : System.Exception
+        {
+            public IdentificationException(string message)
+                : base(message)
+            {
+            }
+        }
 		
         private class IdentificationFeedback : Identification.Feedback
         {
@@ -19,17 +27,17 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
             public void eyesNotFound()
             {
-                throw new System.Exception("Eyes not found");
+                throw new IdentificationException("eyesNotFound");
             }
 
             public void sampleQualityTooLow()
             {
-                throw new System.Exception("Quality to low");
+                throw new IdentificationException("sampleQualityTooLow");
             }
 
             public void failure()
             {
-                throw new System.Exception("Error: Out of magic dust");
+                throw new IdentificationException("failure");
             }
 
             public void sampleQuality(float f)
@@ -66,6 +74,8 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
 		protected Guid Identify (List<Sample> samples)
 		{
+            
+
 			/* Run Identification */
 			IdentificationFeedback fb = new IdentificationFeedback ();
 
@@ -80,7 +90,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			Match winner;
 			Guid guid;
 
-			if (fb.match.Length > 0) {
+			if (fb.match.Length == 0) {
 				return Storage.Person.fail;	
 			}
 			
@@ -108,20 +118,34 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			/* Prepare Samples for identification */
 			List<Sample> identificationSamples = new List<Sample> ();
 
+            int zaehler = 0;
 			foreach (Bitmap fratze in arg.Faces) {
-				MemoryStream ms = new MemoryStream ();
+                fratze.Save("fratze-" + zaehler++ + ".bmp");
+                
+				//MemoryStream ms = new MemoryStream ();
 
-				fratze.Save (ms, System.Drawing.Imaging.ImageFormat.Bmp);
+				//fratze.Save (ms, System.Drawing.Imaging.ImageFormat.Bmp);
 
-				identificationSamples.Add (new Sample (Bmp.load (ms)));
+				//identificationSamples.Add (new Sample (Bmp.load (ms)));
+                
+                Util.CompatibleImage ci = Util.CompatibleImage.FromBitmap(fratze);
+                identificationSamples.Add(new Sample(ci));
 			}
-			
-			
-			Result = new Arg.TrackingDecisionArg ()
+
+            try
             {
-				PersonId = this.Identify(identificationSamples)
-			};
-			
+                Result = new Arg.TrackingDecisionArg()
+                {
+                    PersonId = this.Identify(identificationSamples)
+                };
+            }
+            catch (IdentificationException)
+            {
+                Result = new Arg.TrackingDecisionArg()
+                {
+                    PersonId = Storage.Person.fail
+                };
+            }			
         }
     }
 }
