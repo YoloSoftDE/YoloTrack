@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
-    struct SwitchTargetArg : BaseArg
+    class SwitchTargetArg : BaseArg
     {
     }
 }

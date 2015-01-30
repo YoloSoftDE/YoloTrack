@@ -8,7 +8,7 @@ using Identification = Cognitec.FRsdk.Identification;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
-    class IdentifyImpl : BaseImpl<Arg.TrackingDecisionArg, Arg.IdentifyArg>
+    class IdentifyImpl : BaseImpl<Arg.IdentifyArg>
     {
 		protected float threshold = 1;
 
@@ -72,7 +72,13 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             }
         }
 
-		protected Guid Identify (List<Sample> samples)
+        protected struct IdentifyResult
+        {
+            public Guid PersonId;
+            public float Score;
+        }
+
+		protected IdentifyResult Identify (List<Sample> samples)
 		{
             
 
@@ -88,10 +94,11 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
 			/* Find the highest matching person */
 			Match winner;
-			Guid guid;
+            IdentifyResult result = new IdentifyResult();
 
 			if (fb.match.Length == 0) {
-				return Storage.Person.fail;	
+                result.Score = 0;
+                return result;
 			}
 			
 			winner = fb.match [0];
@@ -104,13 +111,10 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 					winner = m;
 				}
 			}
-			
-			if (winner.score.value > this.threshold) {
-				return Storage.Person.fail;
-			}
-			
+
+            result.PersonId = Guid.Parse(winner.name);
 			// Storage.Person match = Model.MainDatabase.People.Find(p => p.Id == Guid.Parse(winner.name));
-			return Guid.Parse (winner.name);
+			return result;
 		}
 		
         public override void Run (Arg.IdentifyArg arg)
@@ -132,20 +136,38 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 identificationSamples.Add(new Sample(ci));
 			}
 
+            /* 0-20% -> Unknown -> Learn
+             * 21%-80% -> Unidentified -> WaitForBody
+             * 81%-100% -> Identified -> Track
+             */
             try
             {
-                Result = new Arg.TrackingDecisionArg()
+                IdentifyResult result = this.Identify(identificationSamples);
+
+                if (result.Score <= 0.2)
                 {
-                    PersonId = this.Identify(identificationSamples)
-                };
+                    Result = new Arg.LearnArg()
+                    {
+                        SkeletonId = arg.SkeletonId,
+                        Faces = arg.Faces
+                    };
+                }
+                else if (result.Score <= 0.8)
+                {
+                    Result = new Arg.WaitForBodyArg();
+                }
+                else
+                {
+                    Result = new Arg.TrackingDecisionArg()
+                    {
+                        PersonId = result.PersonId
+                    };
+                }
             }
             catch (IdentificationException)
             {
-                Result = new Arg.TrackingDecisionArg()
-                {
-                    PersonId = Storage.Person.fail
-                };
-            }			
+                Result = new Arg.WaitForBodyArg();
+            }
         }
     }
 }

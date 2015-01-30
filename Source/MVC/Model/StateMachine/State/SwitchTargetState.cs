@@ -5,24 +5,23 @@ using System.Text;
 
 namespace YoloTrack.MVC.Model.StateMachine.State
 {
-    class SwitchTargetState : BaseState<Arg.TrackingArg, Arg.SwitchTargetArg>
+    class SwitchTargetState : BaseState<Arg.SwitchTargetArg>
     {
         public SwitchTargetState(Arg.SwitchTargetArg arg)
             : base(new Impl.SwitchTargetImpl(), arg)
         { }
 
-        public override IState Transist()
+        protected override StateTransistion Transist()
         {
-            Arg.TrackingArg result = RunImpl();
-            if (result.SkeletonId != 0)
-                return new TrackingState(result);
-            else
-                return new WaitForBodyState(new Arg.WaitForBodyArg());
-        }
+            BaseArg result = RunImpl();
+            
+            if (result.GetType() == typeof(Arg.WaitForBodyArg))
+                return new WaitForBodyState((Arg.WaitForBodyArg)result);
+            
+            else if (result.GetType() == typeof(Arg.TrackingArg))
+                return new TrackingState((Arg.TrackingArg)result);
 
-        public override States State
-        {
-            get { return States.SWITCH_TARGET; }
+            return null;
         }
     }
 }

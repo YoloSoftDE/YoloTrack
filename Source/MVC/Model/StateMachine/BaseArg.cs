@@ -5,7 +5,7 @@ using System.Text;
 
 namespace YoloTrack.MVC.Model.StateMachine
 {
-    interface BaseArg
+    class BaseArg
     {
     }
 }

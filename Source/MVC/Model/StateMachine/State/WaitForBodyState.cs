@@ -5,22 +5,20 @@ using System.Text;
 
 namespace YoloTrack.MVC.Model.StateMachine.State
 {
-    class WaitForBodyState : BaseState<Arg.WaitTakePictureArg, Arg.WaitForBodyArg>
+    class WaitForBodyState : BaseState<Arg.WaitForBodyArg>
     {
         public WaitForBodyState(Arg.WaitForBodyArg arg)
             : base(new Impl.WaitForBodyImpl(), arg)
         { }
 
-        public override IState Transist()
+        protected override StateTransistion Transist()
         {
-            Arg.WaitTakePictureArg result = RunImpl();
+            BaseArg result = RunImpl();
 
-            return new WaitTakePictureState(result);
-        }
+            if (result.GetType() == typeof(Arg.WaitTakePictureArg))
+                return new WaitTakePictureState((Arg.WaitTakePictureArg)result);
 
-        public override States State
-        {
-            get { return States.WAIT_FOR_BODY; }
+            return null;
         }
     }
 }

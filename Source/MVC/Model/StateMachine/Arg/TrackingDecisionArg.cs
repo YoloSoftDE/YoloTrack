@@ -5,7 +5,7 @@ using System.Text;
 
 namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
-    struct TrackingDecisionArg : BaseArg
+    class TrackingDecisionArg : BaseArg
     {
         public Guid PersonId { get; set; }
     }

@@ -23,7 +23,7 @@ namespace YoloTrack.MVC.Model
         private Storage.RuntimeDatabase m_runtime_database = new Storage.RuntimeDatabase();
         private Storage.MainDatabase m_main_database = new Storage.MainDatabase();
 
-        private StateMachine.IState m_state;
+        private StateMachine.StateTransistion m_state;
         private bool m_stop_machine = false;
         private Thread m_th = null;
 
@@ -37,7 +37,7 @@ namespace YoloTrack.MVC.Model
         private Population m_population = null;
         private Identification.Processor m_proc_ident = null;
 		private Enrollment.Processor m_proc_enroll = null;
-		private Score m_score;
+        private Score m_score;
         
         public static TrackingModel Instance()
         {
@@ -196,11 +196,12 @@ namespace YoloTrack.MVC.Model
 
             while (!m_stop_machine)
             {
-                StateMachine.State.States previous = m_state.State;
-                m_state = m_state.Transist();
+                //StateMachine.State.States previous = m_state.State;
+                m_state = m_state.Next();
                 if (OnStateChange != null)
                 {
-                    OnStateChange(previous, m_state.State);
+                    //OnStateChange(previous, m_state.State);
+                    OnStateChange(StateMachine.State.States.IDENTIFY, StateMachine.State.States.IDENTIFY);
                 }
             }
         }
@@ -215,7 +216,7 @@ namespace YoloTrack.MVC.Model
             get { return m_population; }
         }
 
-        private void InitCognitec ()
+        private void InitCognitec()
 		{
 
 			foreach (Storage.Person person in m_main_database.People)
@@ -228,7 +229,7 @@ namespace YoloTrack.MVC.Model
 
 			/* Needed once, score is much useful */
 			ScoreMappings sm = new ScoreMappings (m_conf);
-			Score score = sm.requestFAR (0.001f);
+			m_score = sm.requestFAR (0.001f);
 
 			/* Identification Processor
              * Move to Runtime Storage */

@@ -9,7 +9,7 @@ namespace YoloTrack.MVC.Model.Storage
     {
         public event RuntimeInfoChangeHandler OnRuntimeInfoChange;
 
-        public RuntimeInfo this[int key]
+        public new RuntimeInfo this[int key]
         {
             get {
                 return base[key];

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
-    struct WaitTakePictureArg : BaseArg
+    class WaitTakePictureArg : BaseArg
     {
         public int SkeletonId { get; set; }
     }

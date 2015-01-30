@@ -61,6 +61,7 @@
     <Compile Include="Source\MVC\Model\StateMachine\Impl\LearnImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\SwitchTargetImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\Util\CompatibleImage.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\StateTransistion.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\LearnState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\SwitchTargetState.cs" />
     <Compile Include="Source\MVC\View\Components\LiveView.cs">
@@ -84,7 +85,6 @@
     <Compile Include="Source\MVC\Model\StateMachine\Impl\TrackingImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\WaitForBodyImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\WaitTakePictureImpl.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\IState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\IdentifyState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\States.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\TrackingDecisionState.cs" />

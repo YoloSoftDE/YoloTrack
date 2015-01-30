@@ -6,16 +6,8 @@ using Microsoft.Kinect;
 
 namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
-    struct TrackingArg : BaseArg
+    class TrackingArg : BaseArg
     {
         public int SkeletonId { get; set; }
-        public Storage.RuntimeInfo RTInfo
-        {
-            get
-            {
-                TrackingArg arg = this;
-                return Model.TrackingModel.Instance().RuntimeDatabase[arg.SkeletonId];
-            }
-        }
     }
 }

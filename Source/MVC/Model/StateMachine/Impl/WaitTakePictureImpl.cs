@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
-    class WaitTakePictureImpl : BaseImpl<Arg.IdentifyArg, Arg.WaitTakePictureArg>
+    class WaitTakePictureImpl : BaseImpl<Arg.WaitTakePictureArg>
     {
         int pictureCount = 0;
         Skeleton[] wtp_skeletonData;
@@ -22,8 +22,9 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
             Bitmap[] headPictures = new Bitmap[5];
             wtp_skeletonData = Model.skeletonData;
+
             Arg.IdentifyArg res = new Arg.IdentifyArg();
-            
+
             pictureCount = 0;
             pixelcutout = 100;
 
@@ -74,7 +75,10 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                             faces.Add(write_Bitmap(rawHeadData));
                             pictureCount++;
 
-                            res.SkeletonId = skeleton.TrackingId;
+                            res = new Arg.IdentifyArg()
+                            {
+                                SkeletonId = skeleton.TrackingId
+                            };
                         }
                     }
                 }

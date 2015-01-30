@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
-    struct LearnArg : BaseArg
+    class LearnArg : BaseArg
     {
 		public List<Bitmap> Faces { get; set; }
         public int SkeletonId;

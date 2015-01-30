@@ -6,7 +6,7 @@ using Microsoft.Kinect;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
-    class SwitchTargetImpl : BaseImpl<Arg.TrackingArg, Arg.SwitchTargetArg>
+    class SwitchTargetImpl : BaseImpl<Arg.SwitchTargetArg>
     {
         public override void Run(Arg.SwitchTargetArg arg)
         {

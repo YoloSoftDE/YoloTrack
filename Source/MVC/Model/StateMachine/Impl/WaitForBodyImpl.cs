@@ -7,7 +7,7 @@ using YoloTrack.MVC.Model.Storage;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
-    class WaitForBodyImpl : BaseImpl<Arg.WaitTakePictureArg, Arg.WaitForBodyArg>
+    class WaitForBodyImpl : BaseImpl<Arg.WaitForBodyArg>
     {
         public override void Run(Arg.WaitForBodyArg arg)
         {
@@ -60,7 +60,10 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                         }
 
                         // new body found
-                        Result.SkeletonId = entry.Key;
+                        Result = new Arg.WaitTakePictureArg()
+                        {
+                            SkeletonId = entry.Key
+                        };
                         return;
                     }
                 }
