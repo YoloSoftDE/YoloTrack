@@ -20,9 +20,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             byte[] rawHeadData;
             List<Bitmap> faces = new List<Bitmap>();
 
-            CoordinateMapper cm = new CoordinateMapper(kinect_sensor);
             Bitmap[] headPictures = new Bitmap[5];
-            kinect_sensor = Model.Kinect;
             wtp_skeletonData = Model.skeletonData;
             Arg.IdentifyArg res = new Arg.IdentifyArg();
             
@@ -37,6 +35,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                     if (skeleton.TrackingId == 0)
                         continue;
 
+                    Console.WriteLine("[WaitTakePicture] [{2}/5] Test Skeleton ({0} == {1})", skeleton.TrackingId, arg.SkeletonId, pictureCount);
 
                     // block ColorFrameReady-Event
                     Model.sync_ColorFrame = false;
@@ -49,12 +48,24 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                             try
                             {
                                 // found tracked person
-                                headPoint = cm.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.Head].Position,
-                                                                            ColorImageFormat.RgbResolution1280x960Fps12);
-                            } catch (InvalidCastException) { continue; }
+                                if (skeleton.Joints[JointType.Head].TrackingState != JointTrackingState.Tracked)
+                                {
+                                    Console.WriteLine("[WaitTakePicture] Head joint not tracked, skipping.");
+                                    continue;
+                                }
 
+                                headPoint = kinect_sensor.MapSkeletonPointToColor(skeleton.Joints[JointType.Head].Position,
+                                                                            ColorImageFormat.RgbResolution1280x960Fps12);
+                            } catch (InvalidCastException) {
+                                Console.WriteLine("[WaitTakePicture] InvalidCastException");
+                                continue; 
+                            }
+
+                            Console.WriteLine("[WaitTakePicture] (guessed) Head Point is at {0}|{1}", headPoint.X, headPoint.Y);
+                            /*
                             if (headPoint.X <= 0 || headPoint.Y <= 0)
                                 continue;
+                             */
 
                             // get head-cutout
                             rawHeadData = cutoutImage(Model.rawImageData, headPoint.X, headPoint.Y);
@@ -111,7 +122,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             IntPtr ptr = bmp_data.Scan0;
             System.Runtime.InteropServices.Marshal.Copy(rbg_array, 0, ptr, rbg_array.Length);
             bmp.UnlockBits(bmp_data);
-            bmp.Save("penis123.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
+            //bmp.Save("penis123.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
             return bmp;
         }
     }

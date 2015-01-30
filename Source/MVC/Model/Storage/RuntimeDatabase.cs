@@ -5,42 +5,28 @@ namespace YoloTrack.MVC.Model.Storage
 {
     public delegate void RuntimeInfoChangeHandler(Storage.RuntimeInfo info);
 
-    public class RuntimeDatabase
+    public class RuntimeDatabase : Dictionary<int, Storage.RuntimeInfo>
     {
         public event RuntimeInfoChangeHandler OnRuntimeInfoChange;
 
-        private List<Storage.RuntimeInfo> m_data = new List<RuntimeInfo>();
-
-        public void Update(int i, Storage.RuntimeInfo data)
+        public RuntimeInfo this[int key]
         {
-            // ...
-            OnRuntimeInfoChange(data);
+            get {
+                return base[key];
+            }
+            set {
+                base[key] = value;
+                OnRuntimeInfoChange(value);
+            }
         }
 
-        public Storage.RuntimeInfo At(int i)
+        public void Insert(int SkeletonId)
         {
-            return m_data.Find(p => p.SkeletonId == i);
-        }
-
-        public List<Storage.RuntimeInfo> List()
-        {
-            return m_data;
-        }
-
-        public List<Storage.RuntimeInfo> Info
-        {
-            get { return m_data; }
-        }
-
-        public void Add(RuntimeInfo item)
-        {
-            // item.State = TrackingState.UNIDENTIFIED;
-            m_data.Add(item);
-        }
-
-        internal bool Has(int p)
-        {
-            return m_data.Exists(rt => rt.SkeletonId == p);
+            base[SkeletonId] = new RuntimeInfo()
+            {
+                SkeletonId = SkeletonId,
+                State = TrackingState.UNIDENTIFIED
+            };
         }
     }
 }

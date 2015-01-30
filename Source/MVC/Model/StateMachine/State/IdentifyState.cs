@@ -15,6 +15,7 @@ namespace YoloTrack.MVC.Model.StateMachine.State
         {
             Arg.TrackingDecisionArg result = RunImpl();
 
+            // TODO: much.
             if (result.PersonId != Storage.Person.fail)
             {
                 return new TrackingDecisionState(result);

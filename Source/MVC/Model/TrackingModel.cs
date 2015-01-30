@@ -6,7 +6,7 @@ using Enrollment = Cognitec.FRsdk.Enrollment;
 
 namespace YoloTrack.MVC.Model
 {
-    public delegate void StateChangeHandler(StateMachine.State.States next_state);
+    public delegate void StateChangeHandler(StateMachine.State.States current_state, StateMachine.State.States next_state);
 
     public enum Status
     {
@@ -118,9 +118,9 @@ namespace YoloTrack.MVC.Model
                     Width = 200,
                     Height = 200
                 };
-                if (RuntimeDatabase.Has(skeleton.TrackingId))
+                if (RuntimeDatabase.ContainsKey(skeleton.TrackingId))
                 {
-                    Storage.RuntimeInfo RTInfo = RuntimeDatabase.At(skeleton.TrackingId);
+                    Storage.RuntimeInfo RTInfo = RuntimeDatabase[skeleton.TrackingId];
                     OnRuntimeInfoChange(RTInfo);
                 }
             }
@@ -183,6 +183,8 @@ namespace YoloTrack.MVC.Model
             if (!Running())
                 return;
 
+            InitCognitec();
+
             m_stop_machine = false;
             m_th = new Thread(new ThreadStart(RunMachine));
             m_th.Start();
@@ -194,10 +196,11 @@ namespace YoloTrack.MVC.Model
 
             while (!m_stop_machine)
             {
+                StateMachine.State.States previous = m_state.State;
                 m_state = m_state.Transist();
                 if (OnStateChange != null)
                 {
-                    OnStateChange(m_state.State);
+                    OnStateChange(previous, m_state.State);
                 }
             }
         }
