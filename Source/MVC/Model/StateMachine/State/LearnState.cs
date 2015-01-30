@@ -5,22 +5,20 @@ using System.Text;
 
 namespace YoloTrack.MVC.Model.StateMachine.State
 {
-    class LearnState : BaseState<Arg.WaitForBodyArg, Arg.LearnArg>
+    class LearnState : BaseState<Arg.LearnArg>
     {
         public LearnState(Arg.LearnArg arg)
             : base(new Impl.LearnImpl(), arg)
         { }
 
-        public override IState Transist()
+        protected override StateTransistion Transist()
         {
-            Arg.WaitForBodyArg result = RunImpl();
+            BaseArg result = RunImpl();
+            
+            if (result.GetType() == typeof(Arg.WaitForBodyArg))
+                return new WaitForBodyState((Arg.WaitForBodyArg)result);
 
-            return new WaitForBodyState(result);
-        }
-
-        public override States State
-        {
-            get { return States.LEARN; }
+            return null;
         }
     }
 }

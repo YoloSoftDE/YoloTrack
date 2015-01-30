@@ -2,7 +2,7 @@
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
-    class TrackingImpl : BaseImpl<Arg.WaitForBodyArg, Arg.TrackingArg>
+    class TrackingImpl : BaseImpl<Arg.TrackingArg>
     {
         private KinectSensor sensor;
         private Skeleton[] skeletonData;
@@ -24,9 +24,9 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                         skeleton_found = true;
                 }
 
-                if (!arg.RTInfo.Person.IsTarget)
+                if (!Model.RuntimeDatabase[arg.SkeletonId].Person.IsTarget)
                 {
-                    Result.FocusLost = false;
+                    Result = new Arg.SwitchTargetArg();
                     break;
                 }
 

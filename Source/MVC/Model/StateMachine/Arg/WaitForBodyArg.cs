@@ -5,8 +5,7 @@ using System.Text;
 
 namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
-    struct WaitForBodyArg : BaseArg
+    class WaitForBodyArg : BaseArg
     {
-        public bool FocusLost;
     }
 }

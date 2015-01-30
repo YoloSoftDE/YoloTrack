@@ -5,31 +5,27 @@ using System.Text;
 
 namespace YoloTrack.MVC.Model.StateMachine
 {
-    abstract class BaseState<T, U> : IState
+    abstract class BaseState<U> : StateTransistion
     {
-        private BaseImpl<T, U> m_impl;
+        private BaseImpl<U> m_impl;
         private U m_arg;
-        protected static BaseState<T, U> m_instance = null;
+        protected static BaseState<U> m_instance = null;
 
-        public BaseState(BaseImpl<T, U> impl, U arg)
+        public BaseState(BaseImpl<U> impl, U arg)
         {
             m_impl = impl;
             m_arg = arg;
         }
 
-        protected T RunImpl()
+        protected BaseArg RunImpl()
         {
             m_impl.Run(m_arg);
             return m_impl.Result;
         }
 
-        public static BaseState<T, U> Instance()
+        public static BaseState<U> Instance()
         {
             return m_instance;
         }
-
-        public abstract State.States State { get; }
-
-        public abstract IState Transist();
     }
 }

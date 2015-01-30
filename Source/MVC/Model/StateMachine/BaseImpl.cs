@@ -1,9 +1,9 @@
 ﻿
 namespace YoloTrack.MVC.Model.StateMachine
 {
-    abstract class BaseImpl<T, U>
+    abstract class BaseImpl<U>
     {
-        public T Result;
+        public BaseArg Result;
 
         protected BaseImpl()
         {

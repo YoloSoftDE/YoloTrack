@@ -10,7 +10,7 @@ using Enrollment = Cognitec.FRsdk.Enrollment;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
-    class LearnImpl : BaseImpl<Arg.WaitForBodyArg, Arg.LearnArg>
+    class LearnImpl : BaseImpl<Arg.LearnArg>
     {
 		class EnrollmentFeedback: Enrollment.Feedback
 		{
@@ -91,11 +91,11 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             person.RTInfo = Model.RuntimeDatabase[arg.SkeletonId];
 			
 			/* Add Person to Database ? */
-			this.Model.MainDatabase.Add (person);
+			this.Model.MainDatabase.Add(person);
 			
 			
 			/* Set Result ? */
-			Result = new YoloTrack.MVC.Model.StateMachine.Arg.WaitForBodyArg ();
+			Result = new YoloTrack.MVC.Model.StateMachine.Arg.WaitForBodyArg();
         }
     }
 }

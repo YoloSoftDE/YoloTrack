@@ -97,8 +97,6 @@ namespace YoloTrack.MVC.Model.Storage
             return ((Person)obj).Id.Equals(Id);
         }
 
-        public static Guid fail = Guid.Parse("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF");
-
         public RuntimeInfo RTInfo
         {
             get {
