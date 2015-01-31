@@ -36,7 +36,7 @@ namespace YoloTrack.MVC.Model.Storage
             PersonChanged(this, new EventArgs());
         }
 
-        List<Person> m_people;
+        List<Person> m_people = new List<Person>();
 
         public List<Person> People
         {
