@@ -41,7 +41,7 @@ namespace YoloTrack.MVC.Controller
             try
             {
                 model = Model.TrackingModel.Instance();
-                model.MainDatabase.LoadFromFile(config.conf.DatabaseFilename);
+                //model.MainDatabase.LoadFromFile(config.conf.DatabaseFilename);
                 model.MainDatabase.PersonChanged += new EventHandler(MainDatabase_PersonChanged);
             }
             catch (Cognitec.FRsdk.Exception e)
@@ -52,7 +52,7 @@ namespace YoloTrack.MVC.Controller
 
         void MainDatabase_PersonChanged(object sender, EventArgs e)
         {
-            model.MainDatabase.SaveToFile(config.conf.DatabaseFilename);
+            //model.MainDatabase.SaveToFile(config.conf.DatabaseFilename);
         }
 
         void initToolStripMenuItem_Click(object sender, EventArgs e)

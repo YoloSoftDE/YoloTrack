@@ -81,12 +81,35 @@ namespace YoloTrack.MVC.Model
                 Thread.Sleep(200);
 
             // Configure Kinect
-            m_sensor.ColorStream.Enable(ColorImageFormat.RgbResolution1280x960Fps12);
+            m_sensor.ColorStream.Enable(ColorStreamFormat);
+            m_sensor.ColorFrameReady += new EventHandler<ColorImageFrameReadyEventArgs>(OnColorFrameReady);
             m_sensor.SkeletonStream.Enable();
             m_sensor.SkeletonStream.AppChoosesSkeletons = true;
 
             // Start
             m_sensor.Start();
+        }
+
+        ColorImageFrame m_current_frame;
+        void OnColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
+        {
+            m_current_frame = e.OpenColorImageFrame();
+        }
+
+        public System.Drawing.Size ColorStreamSize
+        {
+            get 
+            {
+                return new System.Drawing.Size(Kinect.ColorStream.FrameWidth, Kinect.ColorStream.FrameHeight);
+            }
+        }
+
+        public ColorImageFormat ColorStreamFormat
+        {
+            get
+            {
+                return ColorImageFormat.RgbResolution1280x960Fps12;
+            }
         }
 
         public Storage.MainDatabase MainDatabase
@@ -187,6 +210,11 @@ namespace YoloTrack.MVC.Model
         public Score FARScore
         {
             get { return m_score; }
+        }
+
+        public ColorImageFrame OpenNextColorFrame()
+        {
+            return m_current_frame;
         }
     }
 }

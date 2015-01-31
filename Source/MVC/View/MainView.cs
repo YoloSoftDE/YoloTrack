@@ -12,7 +12,6 @@ namespace YoloTrack.MVC.View
     public partial class MainView : Form, IObserver
     {
         Components.LiveView pb_liveview;
-        Thread m_th;
 
         public MainView()
         {
@@ -33,35 +32,35 @@ namespace YoloTrack.MVC.View
         {
             byte[] buffer = new byte[frame.PixelDataLength];
             frame.CopyPixelDataTo(buffer);
-            Bitmap bmp = new Bitmap(1280, 960, 1280 * frame.BytesPerPixel, System.Drawing.Imaging.PixelFormat.Format32bppRgb, Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0));
-            //pb_liveview.DrawToBitmap(bmp, new Rectangle(new Point(0, 0), new Size(1280, 960)));
-            //pb_liveview.Image = bmp;
-            //pb_liveview.Invalidate();
-
+            Model.TrackingModel model = Model.TrackingModel.Instance();
+            Bitmap bmp = new Bitmap(model.ColorStreamSize.Width, model.ColorStreamSize.Height, 
+                model.ColorStreamSize.Width * frame.BytesPerPixel, 
+                System.Drawing.Imaging.PixelFormat.Format32bppRgb, 
+                Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0));
+            
             Graphics g = Graphics.FromImage(bmp);
             Pen pen = new Pen(Color.Blue);
             Pen pen_red = new Pen(Color.Red);
 
-            Model.Storage.RuntimeDatabase db = Model.TrackingModel.Instance().RuntimeDatabase;
+            Model.Storage.RuntimeDatabase db = model.RuntimeDatabase;
             db.Use();
             foreach (KeyValuePair<int, Model.Storage.RuntimeInfo> entry in db) // FIXME: may throw due to change of db
             {
                 g.DrawRectangle(pen, entry.Value.HeadRect);
 
-                SkeletonPoint pt = new SkeletonPoint() 
-                {
-                    X = entry.Value.Skeleton.BoneOrientations[JointType.Head].AbsoluteRotation.Quaternion.X,
-                    Y = entry.Value.Skeleton.BoneOrientations[JointType.Head].AbsoluteRotation.Quaternion.Y,
-                    Z = entry.Value.Skeleton.BoneOrientations[JointType.Head].AbsoluteRotation.Quaternion.Z,
-                };
                 ColorImagePoint begin, end;
-                begin = Model.TrackingModel.Instance().Kinect.MapSkeletonPointToColor(entry.Value.Skeleton.Joints[JointType.Head].Position, ColorImageFormat.RgbResolution1280x960Fps12);
-                end = Model.TrackingModel.Instance().Kinect.MapSkeletonPointToColor(pt, ColorImageFormat.RgbResolution1280x960Fps12);
+                begin = model.Kinect.CoordinateMapper.MapSkeletonPointToColorPoint(
+                    entry.Value.Skeleton.Joints[JointType.Head].Position,
+                    model.ColorStreamFormat);
+                end = model.Kinect.CoordinateMapper.MapSkeletonPointToColorPoint(
+                    entry.Value.Skeleton.Joints[JointType.ShoulderCenter].Position,
+                    model.ColorStreamFormat);
 
                 g.DrawLine(pen_red, new Point(begin.X, begin.Y), new Point(end.X, end.Y));
             }
             db.UnUse();
             g.Dispose();
+             
             DrawLiveviewBitmap(bmp);
         }
 
@@ -96,7 +95,6 @@ namespace YoloTrack.MVC.View
                 if (frame == null)
                     continue;
                 OnNextColorFrame(frame);
-                Thread.Sleep(30);
             }
         }
         
@@ -107,8 +105,17 @@ namespace YoloTrack.MVC.View
             model.MainDatabase.PersonRemoved += new EventHandler(MainDatabase_Changed);
             model.MainDatabase.PersonChanged += new EventHandler(MainDatabase_Changed);
 
-            m_th = new Thread(new ThreadStart(PollFrame));
-            m_th.Start();
+            model.Kinect.ColorFrameReady += new EventHandler<ColorImageFrameReadyEventArgs>(
+                delegate(object sender, ColorImageFrameReadyEventArgs e) 
+                {
+                    ColorImageFrame frame = e.OpenColorImageFrame();
+                    if (frame == null)
+                        return;
+                    OnNextColorFrame(frame);
+                }
+            );
+            //m_th = new Thread(new ThreadStart(PollFrame));
+            //m_th.Start();
         }
 
         void MainDatabase_Changed(object sender, EventArgs e)
@@ -179,7 +186,11 @@ namespace YoloTrack.MVC.View
 
         private void MainView_FormClosed(object sender, FormClosedEventArgs e)
         {
-            m_th.Abort();
+        }
+
+        private void initToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
