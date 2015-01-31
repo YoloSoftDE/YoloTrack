@@ -18,7 +18,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
                 Result = new Arg.TrackingArg()
                 {
-                    SkeletonId = matched.RuntimeInfo.SkeletonId
+                    SkeletonId = matched.RuntimeInfo.Skeleton.TrackingId
                 };
             }
             else

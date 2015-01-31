@@ -11,13 +11,14 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
         public override void Run(Arg.SwitchTargetArg arg)
         {
             // TODO
+            /*
+
             KinectSensor kinect = Model.Kinect;
-            Skeleton[] skeletons = Model.skeletonData;
             Arg.TrackingArg res = new Arg.TrackingArg();
 
             foreach (Skeleton skeleton in skeletons)
             {
-                if (skeleton.TrackingId == Model.MainDatabase.Target.RuntimeInfo.SkeletonId)
+                if (skeleton.TrackingId == Model.MainDatabase.Target.RuntimeInfo.Skeleton.TrackingId)
                 {
                     skeleton.TrackingState = SkeletonTrackingState.Tracked;
                     res.SkeletonId = skeleton.TrackingId;
@@ -26,6 +27,10 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             }
             Result = res;
             return;
+             */
+
+            // TODO: adopt to the "new" concept, that all data is obtained from the runtimedatabase
+            throw new NotImplementedException();
         }
     }
 }

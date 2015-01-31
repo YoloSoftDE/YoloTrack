@@ -1,41 +1,30 @@
 ﻿using Microsoft.Kinect;
+using System;
+using System.Threading;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
     class TrackingImpl : BaseImpl<Arg.TrackingArg>
-    {
-        private KinectSensor sensor;
-        private Skeleton[] skeletonData;
-
+    {        
         public override void Run(Arg.TrackingArg arg)
         {
-            sensor = Model.Kinect;
-            skeletonData = Model.skeletonData;
-            bool skeleton_found;
+            Skeleton skeleton = Model.RuntimeDatabase[arg.SkeletonId].Skeleton;
 
-            do
+            while (true)
             {
-                skeleton_found = false;
-
-                // find TrackingID in skeleton Collection
-                foreach (Skeleton skeleton in skeletonData)
+                if (skeleton.TrackingState == SkeletonTrackingState.NotTracked) 
                 {
-                    if (skeleton.TrackingId == arg.SkeletonId)
-                        skeleton_found = true;
-                }
-
-                if (!Model.RuntimeDatabase[arg.SkeletonId].Person.IsTarget)
-                {
-                    Result = new Arg.SwitchTargetArg();
+                    Result = new Arg.WaitForBodyArg();
                     break;
                 }
 
-                // refresh skeleton-Data
-                skeletonData = Model.skeletonData;
-            } while (skeleton_found == true);
+                if (Model.RuntimeDatabase[arg.SkeletonId].Person.IsTarget == false)
+                {
+                    Result = new Arg.SwitchTargetArg();
+                    break;
+                } 
+            };
 
-            // skeleton is not tracked anymore
-            // exit function
             return;
         }
     }

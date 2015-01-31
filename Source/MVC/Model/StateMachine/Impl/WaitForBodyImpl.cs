@@ -13,38 +13,9 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
         {
             while (true)
             {
-                // refresh skeleton-Data
-                Skeleton[] wfb_skeletonData = (Skeleton[])Model.skeletonData.Clone();
-
-                if (wfb_skeletonData == null)
-                    continue;
-
-                // Add newly appered Persons (?) to RuntimeDB
-                foreach (Skeleton skeleton in wfb_skeletonData)
-                {
-                    if (skeleton != null && skeleton.TrackingId != 0)
-                    {
-                        // compare skeleton's ID with RuntimeDatabase
-                        if (!Model.RuntimeDatabase.ContainsKey(skeleton.TrackingId))
-                        {
-                            // add in RuntimeDatabase
-                            Model.RuntimeDatabase.Insert(skeleton.TrackingId);
-                        }
-                    }
-                }
-
-                // Remove obsolete RuntimeInfos from RuntimeDB
-                foreach (KeyValuePair<int, RuntimeInfo> entry in new Dictionary<int, RuntimeInfo>(Model.RuntimeDatabase))
-                {
-                    bool present = false;
-                    foreach (Skeleton skel in wfb_skeletonData)
-                    {
-                        if (skel.TrackingId == entry.Key)
-                            present = true;
-                    }
-                    if (!present)
-                        Model.RuntimeDatabase.Remove(entry.Key);
-                }
+                Model.Kinect.SkeletonStream.AppChoosesSkeletons = true;
+                Model.Kinect.SkeletonStream.ChooseSkeletons();
+                Model.RuntimeDatabase.Refresh();
 
                 // Search for those RuntimeInfos that need clarification (maybe identification?)
                 foreach (KeyValuePair<int, RuntimeInfo> entry in Model.RuntimeDatabase)
@@ -52,14 +23,8 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                     if (entry.Value.State == TrackingState.UNIDENTIFIED ||
                         entry.Value.State == TrackingState.UNKNOWN)
                     {
-                        // enable tracking for joint-orientations
-                        for (int i = 0; i < Model.skeletonData.Length; i++)
-                        {
-                            if (Model.skeletonData[i].TrackingId == entry.Key)
-                                Model.skeletonData[i].TrackingState = SkeletonTrackingState.Tracked;
-                        }
-
-                        // new body found
+                        // Enable tracking for joint-orientations
+                        Model.Kinect.SkeletonStream.ChooseSkeletons(entry.Key);
                         Result = new Arg.WaitTakePictureArg()
                         {
                             SkeletonId = entry.Key

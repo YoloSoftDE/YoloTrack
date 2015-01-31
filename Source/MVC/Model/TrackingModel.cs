@@ -87,9 +87,10 @@ namespace YoloTrack.MVC.Model
             m_sensor.SkeletonStream.Enable();
 
             m_buffer = new byte[Kinect.ColorStream.FramePixelDataLength];
-            m_sensor.SkeletonFrameReady += m_sensor_SkeletonFrameReady;
+            //m_sensor.SkeletonFrameReady += m_sensor_SkeletonFrameReady;
         }
 
+        /*
         void m_sensor_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
             using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())     // Open the Skeleton frame
@@ -97,11 +98,13 @@ namespace YoloTrack.MVC.Model
                 if (skeletonFrame != null && this.skeletonData != null)     // check that a frame is available
                 {
                     skeletonFrame.CopySkeletonDataTo(this.skeletonData);    // get the skeletal information in this frame
-                    UpdateHeads();
+                    //UpdateHeads();
                 }
             }
         }
+         */
 
+        /*
         private void UpdateHeads()
         {
             CoordinateMapper mapper = new CoordinateMapper(Kinect);
@@ -109,6 +112,12 @@ namespace YoloTrack.MVC.Model
 
             foreach (Skeleton skeleton in skeletonData)
             {
+                if (skeleton.TrackingState == SkeletonTrackingState.NotTracked)
+                    continue;
+
+                if (skeleton.Joints[JointType.Head].TrackingState == JointTrackingState.NotTracked)
+                    continue;
+
                 head = mapper.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.Head].Position, ColorImageFormat.RgbResolution1280x960Fps12);
                 System.Drawing.Rectangle head_rect = new System.Drawing.Rectangle()
                 {
@@ -117,13 +126,18 @@ namespace YoloTrack.MVC.Model
                     Width = 200,
                     Height = 200
                 };
+                //RuntimeDatabase.Use();
                 if (RuntimeDatabase.ContainsKey(skeleton.TrackingId))
                 {
                     Storage.RuntimeInfo RTInfo = RuntimeDatabase[skeleton.TrackingId];
-                    OnRuntimeInfoChange(RTInfo);
+                    RTInfo.HeadRect = head_rect;
+                    RuntimeDatabase[skeleton.TrackingId] = RTInfo;
+                    //OnRuntimeInfoChange(RTInfo);
                 }
+                //RuntimeDatabase.UnUse();
             }
         }
+         */
             
         public Storage.MainDatabase MainDatabase
         {
@@ -140,7 +154,7 @@ namespace YoloTrack.MVC.Model
             get { return m_sensor; }
         }
 
-        //*****************************
+        /*****************************
         public byte[] rawImageData          // hinzugefügt
         {
             get { return m_buffer; }        
@@ -151,7 +165,7 @@ namespace YoloTrack.MVC.Model
             set { skeletons = value; }
             get { return skeletons;  }
         }
-        //*****************************
+        //*****************************/
 
         public bool Running()
         {
