@@ -29,8 +29,6 @@ namespace YoloTrack.MVC.Model
         private Thread m_th = null;
 
         private KinectSensor m_sensor = null;
-        private byte[] m_buffer;
-        private Skeleton[] skeletons = new Skeleton[6];
 
         private Configuration m_conf = new Configuration("frsdk.cfg");
         private FIRBuilder m_fir_builder = null;
@@ -68,77 +66,29 @@ namespace YoloTrack.MVC.Model
 
         void StartSensor()
         {
+            // Select Kinect
             foreach (KinectSensor sensor in KinectSensor.KinectSensors)
                 if (sensor.Status == KinectStatus.Connected)
                 {
                     m_sensor = sensor;
                     break;
                 }
-
             if (m_sensor == null)
                 return;
 
+            // Wait Until fully Initialized (Connected)
             while (m_sensor.Status != KinectStatus.Connected)
                 Thread.Sleep(200);
 
-            m_sensor.Start();
-
+            // Configure Kinect
             m_sensor.ColorStream.Enable(ColorImageFormat.RgbResolution1280x960Fps12);
             m_sensor.SkeletonStream.Enable();
+            m_sensor.SkeletonStream.AppChoosesSkeletons = true;
 
-            m_buffer = new byte[Kinect.ColorStream.FramePixelDataLength];
-            //m_sensor.SkeletonFrameReady += m_sensor_SkeletonFrameReady;
+            // Start
+            m_sensor.Start();
         }
 
-        /*
-        void m_sensor_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
-        {
-            using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())     // Open the Skeleton frame
-            {
-                if (skeletonFrame != null && this.skeletonData != null)     // check that a frame is available
-                {
-                    skeletonFrame.CopySkeletonDataTo(this.skeletonData);    // get the skeletal information in this frame
-                    //UpdateHeads();
-                }
-            }
-        }
-         */
-
-        /*
-        private void UpdateHeads()
-        {
-            CoordinateMapper mapper = new CoordinateMapper(Kinect);
-            ColorImagePoint head;
-
-            foreach (Skeleton skeleton in skeletonData)
-            {
-                if (skeleton.TrackingState == SkeletonTrackingState.NotTracked)
-                    continue;
-
-                if (skeleton.Joints[JointType.Head].TrackingState == JointTrackingState.NotTracked)
-                    continue;
-
-                head = mapper.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.Head].Position, ColorImageFormat.RgbResolution1280x960Fps12);
-                System.Drawing.Rectangle head_rect = new System.Drawing.Rectangle()
-                {
-                    X = head.X - 100,
-                    Y = head.Y - 100,
-                    Width = 200,
-                    Height = 200
-                };
-                //RuntimeDatabase.Use();
-                if (RuntimeDatabase.ContainsKey(skeleton.TrackingId))
-                {
-                    Storage.RuntimeInfo RTInfo = RuntimeDatabase[skeleton.TrackingId];
-                    RTInfo.HeadRect = head_rect;
-                    RuntimeDatabase[skeleton.TrackingId] = RTInfo;
-                    //OnRuntimeInfoChange(RTInfo);
-                }
-                //RuntimeDatabase.UnUse();
-            }
-        }
-         */
-            
         public Storage.MainDatabase MainDatabase
         {
             get { return m_main_database; }
@@ -154,26 +104,15 @@ namespace YoloTrack.MVC.Model
             get { return m_sensor; }
         }
 
-        /*****************************
-        public byte[] rawImageData          // hinzugefügt
-        {
-            get { return m_buffer; }        
-        }
-
-        public Skeleton[] skeletonData
-        {
-            set { skeletons = value; }
-            get { return skeletons;  }
-        }
-        //*****************************/
-
         public bool Running()
         {
+            // TODO: Needs rewrite
             return m_sensor != null;
         }
 
         public void Start()
         {
+            // TODO: Needs rewrite
             StartSensor();
             if (!Running())
                 return;

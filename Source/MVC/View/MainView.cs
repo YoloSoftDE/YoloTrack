@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Kinect;
 using System.Drawing;
@@ -10,7 +11,8 @@ namespace YoloTrack.MVC.View
 {
     public partial class MainView : Form, IObserver
     {
-        private Components.LiveView pb_liveview;
+        Components.LiveView pb_liveview;
+        Thread m_th;
 
         public MainView()
         {
@@ -27,12 +29,8 @@ namespace YoloTrack.MVC.View
             flowLayoutPanel1.AutoScroll = true;
         }
 
-        void sensor_ColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
+        void OnNextColorFrame(ColorImageFrame frame)
         {
-            ColorImageFrame frame = e.OpenColorImageFrame();
-            if (frame == null)
-                return;
-
             byte[] buffer = new byte[frame.PixelDataLength];
             frame.CopyPixelDataTo(buffer);
             Bitmap bmp = new Bitmap(1280, 960, 1280 * frame.BytesPerPixel, System.Drawing.Imaging.PixelFormat.Format32bppRgb, Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0));
@@ -42,15 +40,27 @@ namespace YoloTrack.MVC.View
 
             Graphics g = Graphics.FromImage(bmp);
             Pen pen = new Pen(Color.Blue);
+            Pen pen_red = new Pen(Color.Red);
 
-            //Model.TrackingModel.Instance().RuntimeDatabase.Use();
             Model.Storage.RuntimeDatabase db = Model.TrackingModel.Instance().RuntimeDatabase;
-            foreach (KeyValuePair<int, Model.Storage.RuntimeInfo> entry in db)
+            db.Use();
+            foreach (KeyValuePair<int, Model.Storage.RuntimeInfo> entry in db) // FIXME: may throw due to change of db
             {
                 g.DrawRectangle(pen, entry.Value.HeadRect);
-            }
-            //Model.TrackingModel.Instance().RuntimeDatabase.UnUse();
 
+                SkeletonPoint pt = new SkeletonPoint() 
+                {
+                    X = entry.Value.Skeleton.BoneOrientations[JointType.Head].AbsoluteRotation.Quaternion.X,
+                    Y = entry.Value.Skeleton.BoneOrientations[JointType.Head].AbsoluteRotation.Quaternion.Y,
+                    Z = entry.Value.Skeleton.BoneOrientations[JointType.Head].AbsoluteRotation.Quaternion.Z,
+                };
+                ColorImagePoint begin, end;
+                begin = Model.TrackingModel.Instance().Kinect.MapSkeletonPointToColor(entry.Value.Skeleton.Joints[JointType.Head].Position, ColorImageFormat.RgbResolution1280x960Fps12);
+                end = Model.TrackingModel.Instance().Kinect.MapSkeletonPointToColor(pt, ColorImageFormat.RgbResolution1280x960Fps12);
+
+                g.DrawLine(pen_red, new Point(begin.X, begin.Y), new Point(end.X, end.Y));
+            }
+            db.UnUse();
             g.Dispose();
             DrawLiveviewBitmap(bmp);
         }
@@ -77,16 +87,28 @@ namespace YoloTrack.MVC.View
             }
         }
 
+        void PollFrame()
+        {
+            KinectSensor sensor = Model.TrackingModel.Instance().Kinect;
+            while (true)
+            {
+                ColorImageFrame frame = sensor.ColorStream.OpenNextFrame(500);
+                if (frame == null)
+                    continue;
+                OnNextColorFrame(frame);
+                Thread.Sleep(30);
+            }
+        }
         
         public void Observe(Model.TrackingModel model)
         {
             // Register event handlers
-            KinectSensor sensor = model.Kinect;
-            sensor.ColorFrameReady += new EventHandler<ColorImageFrameReadyEventArgs>(sensor_ColorFrameReady);
-
             model.MainDatabase.PersonAdded += new EventHandler(MainDatabase_Changed);
             model.MainDatabase.PersonRemoved += new EventHandler(MainDatabase_Changed);
             model.MainDatabase.PersonChanged += new EventHandler(MainDatabase_Changed);
+
+            m_th = new Thread(new ThreadStart(PollFrame));
+            m_th.Start();
         }
 
         void MainDatabase_Changed(object sender, EventArgs e)
@@ -155,7 +177,9 @@ namespace YoloTrack.MVC.View
         {
         }
 
-       
-
+        private void MainView_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            m_th.Abort();
+        }
     }
 }

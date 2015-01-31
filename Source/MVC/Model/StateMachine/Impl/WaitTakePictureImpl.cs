@@ -6,31 +6,6 @@ using System.Threading;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
-    /*
-    class Helper<T, D>
-    {
-        delegate void test(T sender, D e);
-        test fun;
-
-        Helper(test t)
-        {
-            fun = t;
-        }
-
-        void Call(T sender, D e)
-        {
-            if (fun != null)
-                fun(sender, e);
-        }
-
-        void Release()
-        {
-            fun = null;
-        }
-    }
-    */
-
-
     class WaitTakePictureImpl : BaseImpl<Arg.WaitTakePictureArg>
     {
         int pixelcutout = 100;
@@ -52,17 +27,14 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                     return;
                 }
 
-                Skeleton skeleton = Model.RuntimeDatabase[arg.SkeletonId].Skeleton;
+                Storage.RuntimeInfo info = Model.RuntimeDatabase[arg.SkeletonId];
+                Skeleton skeleton = info.Skeleton;
+
                 // Lost skeleton? TODO: check if still needed
                 if (skeleton.TrackingState == SkeletonTrackingState.NotTracked)
                 {
                     Result = new Arg.WaitForBodyArg();
                     return;
-                }
-                else if (skeleton.TrackingState != SkeletonTrackingState.Tracked)
-                {
-                    Console.WriteLine("[WaitTakePicture] Not yet tracking, skipping.");
-                    continue;
                 }
 
                 ColorImagePoint head_point;
@@ -70,28 +42,22 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 {
                     // found tracked person
                     if (skeleton.Joints[JointType.Head].TrackingState != JointTrackingState.Tracked)
-                    {
-                        Console.WriteLine("[WaitTakePicture] Head joint not tracked, skipping.");
                         continue;
-                    }
 
                     head_point = mapper.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.Head].Position, ColorImageFormat.RgbResolution1280x960Fps12);
                 }
                 catch (InvalidCastException)
                 {
-                    Console.WriteLine("[WaitTakePicture] InvalidCastException");
+                    //Console.WriteLine("[WaitTakePicture] InvalidCastException");
                     return;
                 }
 
-                //Console.WriteLine("[WaitTakePicture] (guessed) Head Point is at {0}|{1}", headPoint.X, headPoint.Y);
-
-                // get head-cutout
-                ColorImageFrame frame = Model.Kinect.ColorStream.OpenNextFrame(10);
+                ColorImageFrame frame = Model.Kinect.ColorStream.OpenNextFrame(1000);
                 if (frame == null)
                     continue;
 
                 //byte[] buffer = new byte[frame.PixelDataLength];
-                byte[] rawHeadData = cutoutImage(frame.GetRawPixelData(), head_point.X, head_point.Y);
+                byte[] rawHeadData = GetHeadPicture(frame.GetRawPixelData(), info.HeadRect);
 
                 // save head-cutout as Bitmap-Object
                 faces.Add(write_Bitmap(rawHeadData));
@@ -107,26 +73,25 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             return;
         }
 
-        private byte[] cutoutImage(byte[] rawImgData, int x, int y)
+        private byte[] GetHeadPicture(byte[] p, Rectangle rectangle)
         {
-            // x, y --> centre of cutout area in entire image
             int x1, y1, sourceIndex, destIndex;
-            if (x < pixelcutout)
+            if (rectangle.X < pixelcutout)
                 x1 = 0;
             else
-                x1 = x - pixelcutout;   // compute x of the top-left corner of the cutout image
+                x1 = rectangle.X - pixelcutout;
 
-            if (y < pixelcutout)
+            if (rectangle.Y < pixelcutout)
                 y1 = 0;
             else
-                y1 = y - pixelcutout;   // compute y of the top-left corner of the cutout image
+                y1 = rectangle.Y - pixelcutout;
 
             int x2, y2;
-            x2 = x + pixelcutout;
+            x2 = rectangle.X + pixelcutout;
             if (x2 > 1280)
                 x2 = 1280;
 
-            y2 = y + pixelcutout;
+            y2 = rectangle.Y + pixelcutout;
             if (y2 > 960)
                 y2 = 960;
 
@@ -137,7 +102,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 for (int cx = x1 * 4; cx < x2 * 4; cx++)
                 {
                     sourceIndex = (4 * 1280 * cy) + cx;
-                    cutout[destIndex] = rawImgData[sourceIndex];
+                    cutout[destIndex] = p[sourceIndex];
                     destIndex++;
                 }
             }

@@ -11,6 +11,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
         public override void Run(Arg.SwitchTargetArg arg)
         {
             // TODO
+            throw new NotImplementedException();
             /*
 
             KinectSensor kinect = Model.Kinect;
