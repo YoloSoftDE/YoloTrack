@@ -98,6 +98,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
                 /* Add Person to Database ? */
                 this.Model.MainDatabase.Add(person);
+                Model.Population.append(person.IR.Value, person.Id.ToString());
 			
             }
             catch (EnrollmentException)

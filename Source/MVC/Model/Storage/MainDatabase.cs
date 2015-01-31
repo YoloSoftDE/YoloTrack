@@ -111,5 +111,10 @@ namespace YoloTrack.MVC.Model.Storage
             m_people = (List<Person>)serializer.Deserialize(fs);
             fs.Close();
         }
+
+        public void Update(Person p)
+        {
+            OnPersonChanged();
+        }
     }
 }

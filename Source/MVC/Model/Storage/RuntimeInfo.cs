@@ -9,12 +9,18 @@ namespace YoloTrack.MVC.Model.Storage
 
     public struct RuntimeInfo
     {
-        public int SkeletonId { get; set; }
-        public Rectangle HeadRect { get; set; }
-        public int RecognizedCount { get; set; }
-        public int TrackedCount { get; set; }
-        public Person Person { get; set; }
-        public TrackingState State { get; set; }
+        public int SkeletonId;
+        public Rectangle HeadRect;
+        public Person Person;
+        public TrackingState State;
+
+        public RuntimeInfo(RuntimeInfo original)
+        {
+            SkeletonId = original.SkeletonId;
+            HeadRect = new Rectangle(original.HeadRect.X, original.HeadRect.Y, original.HeadRect.Width, original.HeadRect.Height);
+            Person = original.Person; // Shoudl always be a reference, not a copy!
+            State = original.State; // TODO: check if true copy or reference
+        }
 
         public void UpdateState(TrackingState next)
         {

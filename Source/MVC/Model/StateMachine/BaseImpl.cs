@@ -3,7 +3,19 @@ namespace YoloTrack.MVC.Model.StateMachine
 {
     abstract class BaseImpl<U>
     {
-        public BaseArg Result;
+        private BaseArg result;
+
+        public BaseArg Result
+        {
+            get 
+            { 
+                return (BaseArg)(result.Clone()); 
+            }
+            set 
+            { 
+                result = value; 
+            }
+        }
 
         protected BaseImpl()
         {

@@ -7,5 +7,9 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
     class WaitForBodyArg : BaseArg
     {
+        public override object Clone()
+        {
+            return new WaitForBodyArg();
+        }
     }
 }

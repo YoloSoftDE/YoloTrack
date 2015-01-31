@@ -200,7 +200,8 @@ namespace YoloTrack.MVC.Model
 
         private void InitCognitec()
 		{
-
+            // TODO: Move to the MainDatabases' Add Method
+            
 			foreach (Storage.Person person in m_main_database.People)
 				m_population.append (
                         //m_fir_builder.build(
@@ -208,6 +209,7 @@ namespace YoloTrack.MVC.Model
                         /*)*/,
                         person.Name
 				);
+            
 
 			/* Needed once, score is much useful */
 			ScoreMappings sm = new ScoreMappings (m_conf);
@@ -217,7 +219,6 @@ namespace YoloTrack.MVC.Model
              * Move to Runtime Storage */
 			m_proc_ident = new Identification.Processor (m_conf, m_population);
 			m_proc_enroll = new Enrollment.Processor (m_conf);
-
         }
 
         public Identification.Processor IdentificationProcessor
