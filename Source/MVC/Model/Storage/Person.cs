@@ -128,6 +128,11 @@ namespace YoloTrack.MVC.Model.Storage
             return ((Person)obj).Id.Equals(Id);
         }
 
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
         public RuntimeInfo RuntimeInfo
         {
             get {

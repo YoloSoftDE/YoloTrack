@@ -142,7 +142,6 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
              * 21%-80% -> Unidentified -> WaitForBody
              * 81%-100% -> Identified -> Track
              */
-            //Model.RuntimeDatabase.Use();
             try
             {
                 IdentifyResult result = this.Identify(identificationSamples);
@@ -190,7 +189,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 Result = new Arg.WaitForBodyArg();
             }
 
-            //Model.RuntimeDatabase.UnUse();
+            return;
         } // End Run()
         
     } // End Class IdentifyImpl

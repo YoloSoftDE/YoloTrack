@@ -58,8 +58,9 @@ namespace YoloTrack.MVC.Model.Storage
         public void Watch()
         {
             KinectSensor sensor = Model.TrackingModel.Instance().Kinect;
-            sensor.SkeletonStream.AppChoosesSkeletons = true;
             sensor.SkeletonStream.ChooseSkeletons(Skeleton.TrackingId);
+            
+            return;
         } // End Watch()
     }
 }

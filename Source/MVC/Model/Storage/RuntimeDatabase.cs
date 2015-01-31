@@ -11,6 +11,7 @@ namespace YoloTrack.MVC.Model.Storage
     public class RuntimeDatabase : Dictionary<int, Storage.RuntimeInfo>
     {
         ManualResetEvent m_refresh_lock = new ManualResetEvent(false);
+        Mutex m_lock = new Mutex();
 
         public event RuntimeInfoChangeHandler OnRuntimeInfoChange;
 
@@ -35,6 +36,7 @@ namespace YoloTrack.MVC.Model.Storage
 
         public void Refresh()
         {
+            Use();
             SkeletonFrame frame = Model.TrackingModel.Instance().Kinect.SkeletonStream.OpenNextFrame(1000);
             if (frame == null)
                 return;
@@ -49,7 +51,7 @@ namespace YoloTrack.MVC.Model.Storage
             {
                 skeleton = skeletons[i];
 
-                if (skeleton == null || skeleton.TrackingId == 0)
+                if (skeleton.TrackingId == 0)
                     continue;
 
                 if (!ContainsKey(skeleton.TrackingId))
@@ -58,7 +60,9 @@ namespace YoloTrack.MVC.Model.Storage
                 }
                 else
                 {
-                    this[skeleton.TrackingId].UpdateSkeleton(skeleton);
+                    RuntimeInfo changed = this[skeleton.TrackingId];
+                    changed.UpdateSkeleton(skeleton);
+                    this[skeleton.TrackingId] = changed;
                 }
             }
 
@@ -73,13 +77,27 @@ namespace YoloTrack.MVC.Model.Storage
                 foreach (Skeleton skel in skeletons)
                 {
                     if (skel.TrackingId == id)
+                    {
                         present = true;
+                        break;
+                    }
                 }
                 if (!present)
                     Remove(id);
             }
 
+            UnUse();
             return;
+        }
+
+        public void Use()
+        {
+            m_lock.WaitOne();
+        }
+
+        public void UnUse()
+        {
+            m_lock.ReleaseMutex();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                         entry.Value.State == TrackingState.UNKNOWN)
                     {
                         // Enable tracking for joint-orientations
-                        Model.Kinect.SkeletonStream.ChooseSkeletons(entry.Key);
+                        entry.Value.Watch();
                         Result = new Arg.WaitTakePictureArg()
                         {
                             SkeletonId = entry.Key
