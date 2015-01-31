@@ -88,30 +88,6 @@ namespace YoloTrack.MVC.Model.Storage
             OnPersonRemoved();
         }
 
-        public void SaveToFile(string Filename)
-        {
-            /*
-            XmlSerializer serializer = new XmlSerializer(typeof(List<Person>));
-            System.IO.FileStream fs = new System.IO.FileStream(Filename, System.IO.FileMode.OpenOrCreate);
-            serializer.Serialize(fs, m_people);
-            fs.Close();
-            */
-        }
-
-        public void LoadFromFile(string Filename)
-        {
-            if (!System.IO.File.Exists(Filename))
-            {
-                m_people = new List<Person>();
-                SaveToFile(Filename);
-                return;
-            }
-            XmlSerializer serializer = new XmlSerializer(typeof(List<Person>));
-            System.IO.FileStream fs = new System.IO.FileStream(Filename, System.IO.FileMode.Open);
-            m_people = (List<Person>)serializer.Deserialize(fs);
-            fs.Close();
-        }
-
         public void Update(Person p)
         {
             OnPersonChanged();

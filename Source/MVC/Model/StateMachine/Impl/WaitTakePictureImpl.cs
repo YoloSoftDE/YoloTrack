@@ -8,8 +8,6 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
     class WaitTakePictureImpl : BaseImpl<Arg.WaitTakePictureArg>
     {
-        int pixelcutout = 100;
-
         public override void Run(Arg.WaitTakePictureArg arg)
         {
             int picture_count = 0;
@@ -44,7 +42,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                     if (skeleton.Joints[JointType.Head].TrackingState != JointTrackingState.Tracked)
                         continue;
 
-                    head_point = mapper.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.Head].Position, ColorImageFormat.RgbResolution1280x960Fps12);
+                    head_point = mapper.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.Head].Position, Model.ColorStreamFormat);
                 }
                 catch (InvalidCastException)
                 {
@@ -52,7 +50,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                     return;
                 }
 
-                ColorImageFrame frame = Model.Kinect.ColorStream.OpenNextFrame(1000);
+                ColorImageFrame frame = Model.OpenNextColorFrame();
                 if (frame == null)
                     continue;
 
@@ -60,7 +58,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 byte[] rawHeadData = GetHeadPicture(frame.GetRawPixelData(), info.HeadRect);
 
                 // save head-cutout as Bitmap-Object
-                faces.Add(write_Bitmap(rawHeadData));
+                faces.Add(write_Bitmap(rawHeadData, info.HeadRect));
                 picture_count++;
             }
             
@@ -76,32 +74,32 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
         private byte[] GetHeadPicture(byte[] p, Rectangle rectangle)
         {
             int x1, y1, sourceIndex, destIndex;
-            if (rectangle.X < pixelcutout)
+            if (rectangle.X < 0)
                 x1 = 0;
             else
-                x1 = rectangle.X - pixelcutout;
+                x1 = rectangle.X;
 
-            if (rectangle.Y < pixelcutout)
+            if (rectangle.Y < 0)
                 y1 = 0;
             else
-                y1 = rectangle.Y - pixelcutout;
+                y1 = rectangle.Y;
 
             int x2, y2;
-            x2 = rectangle.X + pixelcutout;
-            if (x2 > 1280)
-                x2 = 1280;
+            x2 = rectangle.X + rectangle.Width;
+            if (x2 >= Model.ColorStreamSize.Width)
+                x2 = Model.ColorStreamSize.Width-1;
 
-            y2 = rectangle.Y + pixelcutout;
-            if (y2 > 960)
-                y2 = 960;
+            y2 = rectangle.Y + rectangle.Height;
+            if (y2 >= Model.ColorStreamSize.Height)
+                y2 = Model.ColorStreamSize.Height-1;
 
-            byte[] cutout = new byte[(pixelcutout * pixelcutout * 4) * 4];
+            byte[] cutout = new byte[rectangle.Width * rectangle.Height * 4];
             destIndex = 0;
             for (int cy = y1; cy < y2; cy++)
             {
                 for (int cx = x1 * 4; cx < x2 * 4; cx++)
                 {
-                    sourceIndex = (4 * 1280 * cy) + cx;
+                    sourceIndex = (4 * Model.ColorStreamSize.Width * cy) + cx;
                     cutout[destIndex] = p[sourceIndex];
                     destIndex++;
                 }
@@ -109,10 +107,10 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             return cutout;
         }
 
-        private Bitmap write_Bitmap(byte[] rbg_array)
+        private Bitmap write_Bitmap(byte[] rbg_array, Rectangle rect)
         {
-            Bitmap bmp = new Bitmap(200, 200);
-            System.Drawing.Imaging.BitmapData bmp_data = bmp.LockBits(new Rectangle(0, 0, 200, 200), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            Bitmap bmp = new Bitmap(rect.Width, rect.Height);
+            System.Drawing.Imaging.BitmapData bmp_data = bmp.LockBits(new Rectangle(0, 0, rect.Width, rect.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
             IntPtr ptr = bmp_data.Scan0;
             System.Runtime.InteropServices.Marshal.Copy(rbg_array, 0, ptr, rbg_array.Length);
             bmp.UnlockBits(bmp_data);

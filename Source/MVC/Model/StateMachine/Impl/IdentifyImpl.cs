@@ -80,8 +80,6 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
 		protected IdentifyResult Identify (List<Sample> samples)
 		{
-            
-
 			/* Run Identification */
 			IdentificationFeedback fb = new IdentificationFeedback();
 
@@ -124,28 +122,16 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			/* Prepare Samples for identification */
 			List<Sample> identificationSamples = new List<Sample> ();
 
-            int zaehler = 0;
 			foreach (Bitmap fratze in arg.Faces) {
-                fratze.Save("fratze-" + zaehler++ + ".bmp");
-                
-				//MemoryStream ms = new MemoryStream ();
-
-				//fratze.Save (ms, System.Drawing.Imaging.ImageFormat.Bmp);
-
-				//identificationSamples.Add (new Sample (Bmp.load (ms)));
-                
                 Util.CompatibleImage ci = Util.CompatibleImage.FromBitmap(fratze);
                 identificationSamples.Add(new Sample(ci));
 			}
 
-            /* 0-20% -> Unknown -> Learn
-             * 21%-80% -> Unidentified -> WaitForBody
-             * 81%-100% -> Identified -> Track
-             */
             try
             {
                 IdentifyResult result = this.Identify(identificationSamples);
 
+                // 0% - 20% -> Unknown -> Learn
                 if (result.Score <= 0.2)
                 {
                     Storage.RuntimeInfo info = Model.RuntimeDatabase[arg.SkeletonId];
@@ -159,6 +145,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                         Faces = arg.Faces
                     };
                 }
+                // >20% - 50% -> Unidentified -> WaitForBody
                 else if (result.Score <= 0.5)
                 {
                     Storage.RuntimeInfo info = Model.RuntimeDatabase[arg.SkeletonId];
@@ -167,6 +154,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
                     Result = new Arg.WaitForBodyArg();
                 }
+                // >50% - 100% -> Identified -> Track
                 else
                 {
                     Storage.RuntimeInfo info = Model.RuntimeDatabase[arg.SkeletonId];
