@@ -6,33 +6,76 @@ using System.Threading;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
+    /*
+    class Helper<T, D>
+    {
+        delegate void test(T sender, D e);
+        test fun;
+
+        Helper(test t)
+        {
+            fun = t;
+        }
+
+        void Call(T sender, D e)
+        {
+            if (fun != null)
+                fun(sender, e);
+        }
+
+        void Release()
+        {
+            fun = null;
+        }
+    }
+    */
+
+
     class WaitTakePictureImpl : BaseImpl<Arg.WaitTakePictureArg>
     {
-        int pictureCount = 0;
         int pixelcutout = 100;
-        int SkeletonId;
-        Skeleton skeleton;
-        List<Bitmap> faces = new List<Bitmap>();
-        AutoResetEvent ae = new AutoResetEvent(false);
 
         public override void Run(Arg.WaitTakePictureArg arg)
         {
-            EventHandler<ColorImageFrameReadyEventArgs> OnNextColorFrame = delegate(object sender, ColorImageFrameReadyEventArgs e)
-            {
-                ColorImagePoint headPoint;
-                byte[] rawHeadData;
+            int picture_count = 0;
+            List<Bitmap> faces = new List<Bitmap>();
+            CoordinateMapper mapper = new CoordinateMapper(Model.Kinect);
 
+            while (picture_count < 5)
+            {
+                Model.RuntimeDatabase.Refresh();
+                
+                // Lost skeleton?
+                if (!Model.RuntimeDatabase.ContainsKey(arg.SkeletonId))
+                {
+                    Result = new Arg.WaitForBodyArg();
+                    return;
+                }
+
+                Skeleton skeleton = Model.RuntimeDatabase[arg.SkeletonId].Skeleton;
+                // Lost skeleton? TODO: check if still needed
+                if (skeleton.TrackingState == SkeletonTrackingState.NotTracked)
+                {
+                    Result = new Arg.WaitForBodyArg();
+                    return;
+                }
+                else if (skeleton.TrackingState != SkeletonTrackingState.Tracked)
+                {
+                    Console.WriteLine("[WaitTakePicture] Not yet tracking, skipping.");
+                    continue;
+                }
+
+                ColorImagePoint head_point;
                 try
                 {
                     // found tracked person
                     if (skeleton.Joints[JointType.Head].TrackingState != JointTrackingState.Tracked)
                     {
                         Console.WriteLine("[WaitTakePicture] Head joint not tracked, skipping.");
-                        return;
+                        continue;
                     }
 
-                    headPoint = Model.Kinect.MapSkeletonPointToColor(skeleton.Joints[JointType.Head].Position,
-                                                                ColorImageFormat.RgbResolution1280x960Fps12);
+                    head_point = mapper.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.Head].Position, ColorImageFormat.RgbResolution1280x960Fps12);
                 }
                 catch (InvalidCastException)
                 {
@@ -40,70 +83,27 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                     return;
                 }
 
-                Console.WriteLine("[WaitTakePicture] (guessed) Head Point is at {0}|{1}", headPoint.X, headPoint.Y);
+                //Console.WriteLine("[WaitTakePicture] (guessed) Head Point is at {0}|{1}", headPoint.X, headPoint.Y);
 
                 // get head-cutout
-                ColorImageFrame frame = e.OpenColorImageFrame();
+                ColorImageFrame frame = Model.Kinect.ColorStream.OpenNextFrame(10);
+                if (frame == null)
+                    continue;
+
                 //byte[] buffer = new byte[frame.PixelDataLength];
-                rawHeadData = cutoutImage(frame.GetRawPixelData(), headPoint.X, headPoint.Y);
+                byte[] rawHeadData = cutoutImage(frame.GetRawPixelData(), head_point.X, head_point.Y);
 
                 // save head-cutout as Bitmap-Object
                 faces.Add(write_Bitmap(rawHeadData));
-                pictureCount++;
-            };
-
-            EventHandler<SkeletonFrameReadyEventArgs> OnNextSkeletonFrame = delegate(object sender, SkeletonFrameReadyEventArgs e)
-            {
-                SkeletonFrame frame = e.OpenSkeletonFrame();
-                Skeleton[] skeleton_list = new Skeleton[frame.SkeletonArrayLength];
-                frame.CopySkeletonDataTo(skeleton_list);
-                for (int i = 0; i < skeleton_list.Length; i++)
-                {
-                    Skeleton compare = skeleton_list[i];
-                    if (compare.TrackingId == SkeletonId)
-                    {
-                        skeleton = compare;
-                        ae.Set();
-                        return;
-                    }
-                }
-                // FIXME: Possible NULL-Reference
-                skeleton.TrackingState = SkeletonTrackingState.NotTracked;
-            };
-
-            pictureCount = 0;
-            SkeletonId = arg.SkeletonId;
-            Model.Kinect.SkeletonFrameReady += OnNextSkeletonFrame;
-
-            ae.WaitOne();
-            Model.Kinect.ColorFrameReady += OnNextColorFrame;
-
-            while (pictureCount < 5)
-            {
-                // muss noch schöner gehn
-                if (skeleton == null)
-                    continue;
-
-                // synchronisation with ColorFrameReady-Event
-                //Skeleton skeleton = FindSkeleton(arg.SkeletonId);
-                if (skeleton.TrackingState == SkeletonTrackingState.NotTracked)
-                {
-                    Model.Kinect.ColorFrameReady -= OnNextColorFrame;
-                    Model.Kinect.SkeletonFrameReady -= OnNextSkeletonFrame;
-                    Result = new Arg.WaitForBodyArg();
-                    return;
-                }
-
-                System.Threading.Thread.Sleep(500);
+                picture_count++;
             }
-            Model.Kinect.ColorFrameReady -= OnNextColorFrame;
-            Model.Kinect.SkeletonFrameReady -= OnNextSkeletonFrame;
             
             Result = new Arg.IdentifyArg()
             {
                 Faces = faces,
                 SkeletonId = arg.SkeletonId
             };
+
             return;
         }
 

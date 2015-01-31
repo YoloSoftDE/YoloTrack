@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using Microsoft.Kinect;
 using System.Drawing;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -39,9 +40,19 @@ namespace YoloTrack.MVC.View
             //pb_liveview.Image = bmp;
             //pb_liveview.Invalidate();
 
+            Graphics g = Graphics.FromImage(bmp);
+            Pen pen = new Pen(Color.Blue);
+
+            //Model.TrackingModel.Instance().RuntimeDatabase.Use();
+            Model.Storage.RuntimeDatabase db = Model.TrackingModel.Instance().RuntimeDatabase;
+            foreach (KeyValuePair<int, Model.Storage.RuntimeInfo> entry in db)
+            {
+                g.DrawRectangle(pen, entry.Value.HeadRect);
+            }
+            //Model.TrackingModel.Instance().RuntimeDatabase.UnUse();
+
+            g.Dispose();
             DrawLiveviewBitmap(bmp);
-
-
         }
 
         private void DrawLiveviewBitmap(Bitmap bmp)

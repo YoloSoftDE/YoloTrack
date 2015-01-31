@@ -125,7 +125,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			List<Sample> identificationSamples = new List<Sample> ();
 
             int zaehler = 0;
-			foreach (Bitmap fratze in arg.Faces.ToArray()) { // FIXME: Manchmal zu viele Faces, WaitTakePicture korrigieren!!!
+			foreach (Bitmap fratze in arg.Faces) {
                 fratze.Save("fratze-" + zaehler++ + ".bmp");
                 
 				//MemoryStream ms = new MemoryStream ();
@@ -142,6 +142,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
              * 21%-80% -> Unidentified -> WaitForBody
              * 81%-100% -> Identified -> Track
              */
+            //Model.RuntimeDatabase.Use();
             try
             {
                 IdentifyResult result = this.Identify(identificationSamples);
@@ -183,11 +184,14 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                         PersonId = result.PersonId
                     };
                 }
-            }
+            } // End try
             catch (IdentificationException)
             {
                 Result = new Arg.WaitForBodyArg();
             }
-        }
-    }
-}
+
+            //Model.RuntimeDatabase.UnUse();
+        } // End Run()
+        
+    } // End Class IdentifyImpl
+} // End Namespace

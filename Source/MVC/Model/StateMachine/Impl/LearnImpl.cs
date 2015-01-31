@@ -79,6 +79,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			/* Stupid class */
 			EnrollmentFeedback feedback = new EnrollmentFeedback ();
 
+            //Model.RuntimeDatabase.Use();
             try
             {
                 /* Process samples */
@@ -111,7 +112,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 /* Set Result ? */
                 Result = new Arg.WaitForBodyArg();
             }
-			
+            //Model.RuntimeDatabase.UnUse();
 			
         }
     }
