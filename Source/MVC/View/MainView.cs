@@ -43,24 +43,25 @@ namespace YoloTrack.MVC.View
             Pen pen_red = new Pen(Color.Red);
 
             Model.Storage.RuntimeDatabase db = model.RuntimeDatabase;
+
             db.Use();
             foreach (KeyValuePair<int, Model.Storage.RuntimeInfo> entry in db) // FIXME: may throw due to change of db
             {
                 g.DrawRectangle(pen, entry.Value.HeadRect);
 
                 ColorImagePoint begin, end;
-                begin = model.Kinect.CoordinateMapper.MapSkeletonPointToColorPoint(
+                begin = model.Kinect.MapSkeletonPointToColor(
                     entry.Value.Skeleton.Joints[JointType.Head].Position,
                     model.ColorStreamFormat);
-                end = model.Kinect.CoordinateMapper.MapSkeletonPointToColorPoint(
+                end = model.Kinect.MapSkeletonPointToColor(
                     entry.Value.Skeleton.Joints[JointType.ShoulderCenter].Position,
                     model.ColorStreamFormat);
 
                 g.DrawLine(pen_red, new Point(begin.X, begin.Y), new Point(end.X, end.Y));
             }
             db.UnUse();
-            g.Dispose();
-             
+
+            g.Dispose(); 
             DrawLiveviewBitmap(bmp);
         }
 

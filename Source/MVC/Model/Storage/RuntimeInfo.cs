@@ -37,18 +37,17 @@ namespace YoloTrack.MVC.Model.Storage
                     return new Rectangle(0, 0, 0, 0);
 
                 KinectSensor sensor = Model.TrackingModel.Instance().Kinect;
-                //CoordinateMapper mapper = new CoordinateMapper(sensor);
                 ColorImagePoint pt_center;
                 try
                 {
-                    pt_center = sensor.CoordinateMapper.MapSkeletonPointToColorPoint(head_joint.Position, Model.TrackingModel.Instance().ColorStreamFormat);
+                    pt_center = sensor.MapSkeletonPointToColor(head_joint.Position, Model.TrackingModel.Instance().ColorStreamFormat);
                     int radius;
 
                     // Button (ShoulderCenter) available?
                     if (Skeleton.Joints[JointType.ShoulderCenter].TrackingState == JointTrackingState.Tracked)
                     {
                         // Calculation by 2-Tracked-Points (more accurate)
-                        ColorImagePoint pt_bottom = sensor.CoordinateMapper.MapSkeletonPointToColorPoint(Skeleton.Joints[JointType.ShoulderCenter].Position, Model.TrackingModel.Instance().ColorStreamFormat);
+                        ColorImagePoint pt_bottom = sensor.MapSkeletonPointToColor(Skeleton.Joints[JointType.ShoulderCenter].Position, Model.TrackingModel.Instance().ColorStreamFormat);
                         radius = System.Math.Abs(pt_bottom.Y - pt_center.Y);
                     }
                     else
