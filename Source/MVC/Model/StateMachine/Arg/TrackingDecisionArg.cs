@@ -7,6 +7,14 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
     class TrackingDecisionArg : BaseArg
     {
-        public Guid PersonId { get; set; }
+        public Guid PersonId;
+
+        public override object Clone()
+        {
+            return new TrackingDecisionArg()
+            {
+                PersonId = new Guid(PersonId.ToString())
+            };
+        }
     }
 }

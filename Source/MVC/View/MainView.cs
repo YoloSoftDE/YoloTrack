@@ -75,11 +75,18 @@ namespace YoloTrack.MVC.View
 
             model.MainDatabase.PersonAdded += new EventHandler(MainDatabase_Changed);
             model.MainDatabase.PersonRemoved += new EventHandler(MainDatabase_Changed);
+            model.MainDatabase.PersonChanged += new EventHandler(MainDatabase_Changed);
         }
 
         void MainDatabase_Changed(object sender, EventArgs e)
         {
             Model.Storage.MainDatabase db = (Model.Storage.MainDatabase)sender;
+
+            if (InvokeRequired)
+                Invoke((MethodInvoker)delegate { flowLayoutPanel1.Controls.Clear(); ; });
+            else
+                flowLayoutPanel1.Controls.Clear();
+            
 
             foreach (Model.Storage.Person p in db.People)
             {
@@ -100,8 +107,8 @@ namespace YoloTrack.MVC.View
             {
                 FullName = p.Name,
                 Picture = p.Picture,
-                TrackedCount = p.RuntimeInfo.TrackedCount,
-                RecognizedCount = p.RuntimeInfo.RecognizedCount,
+                TrackedCount = p.TrackedCount,
+                RecognizedCount = p.RecognizedCount,
                 LearnedAt = p.Learned
             };
 

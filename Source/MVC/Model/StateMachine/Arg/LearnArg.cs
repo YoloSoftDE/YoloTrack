@@ -9,5 +9,15 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
         public List<Sample> Samples;
         public List<Bitmap> Faces;
         public int SkeletonId;
+
+        public override object Clone()
+        {
+            return new LearnArg()
+            {
+                Samples = new List<Sample>(Samples),
+                Faces = new List<Bitmap>(Faces),
+                SkeletonId = SkeletonId
+            };
+        }
     }
 }

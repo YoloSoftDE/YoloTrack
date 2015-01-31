@@ -83,10 +83,10 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             
 
 			/* Run Identification */
-			IdentificationFeedback fb = new IdentificationFeedback ();
+			IdentificationFeedback fb = new IdentificationFeedback();
 
 			Model.IdentificationProcessor.process (
-                samples.ToArray (),
+                samples.ToArray(),
                 Model.FARScore,
                 fb,
                 3
@@ -102,6 +102,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			}
 			
 			winner = fb.match [0];
+            Console.WriteLine("Match on FIR[{0}] has Score {1}", winner.name, winner.score.value);
 
 			for (int i = 1; i < fb.match.Length; i++) {
 				Match m = fb.match [i];
@@ -113,6 +114,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			}
 
             result.PersonId = Guid.Parse(winner.name);
+            result.Score = winner.score.value;
 			// Storage.Person match = Model.MainDatabase.People.Find(p => p.Id == Guid.Parse(winner.name));
 			return result;
 		}
@@ -123,7 +125,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			List<Sample> identificationSamples = new List<Sample> ();
 
             int zaehler = 0;
-			foreach (Bitmap fratze in arg.Faces.ToArray()) {
+			foreach (Bitmap fratze in arg.Faces.ToArray()) { // FIXME: Manchmal zu viele Faces, WaitTakePicture korrigieren!!!
                 fratze.Save("fratze-" + zaehler++ + ".bmp");
                 
 				//MemoryStream ms = new MemoryStream ();
@@ -146,6 +148,10 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
                 if (result.Score <= 0.2)
                 {
+                    Storage.RuntimeInfo info = Model.RuntimeDatabase[arg.SkeletonId];
+                    info.State = Storage.TrackingState.UNKNOWN;
+                    Model.RuntimeDatabase[arg.SkeletonId] = info;
+
                     Result = new Arg.LearnArg()
                     {
                         SkeletonId = arg.SkeletonId,
@@ -153,12 +159,25 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                         Faces = arg.Faces
                     };
                 }
-                else if (result.Score <= 0.8)
+                else if (result.Score <= 0.5)
                 {
+                    Storage.RuntimeInfo info = Model.RuntimeDatabase[arg.SkeletonId];
+                    info.State = Storage.TrackingState.UNIDENTIFIED;
+                    Model.RuntimeDatabase[arg.SkeletonId] = info;
+
                     Result = new Arg.WaitForBodyArg();
                 }
                 else
                 {
+                    Storage.RuntimeInfo info = Model.RuntimeDatabase[arg.SkeletonId];
+                    info.State = Storage.TrackingState.IDENTIFIED;
+                    Model.RuntimeDatabase[arg.SkeletonId] = info;
+
+                    Storage.Person p = Model.MainDatabase.People.Find(pers => pers.Id == result.PersonId);
+                    p.RuntimeInfo = info;
+                    p.RecognizedCount++;
+                    Model.MainDatabase.Update(p);
+
                     Result = new Arg.TrackingDecisionArg()
                     {
                         PersonId = result.PersonId

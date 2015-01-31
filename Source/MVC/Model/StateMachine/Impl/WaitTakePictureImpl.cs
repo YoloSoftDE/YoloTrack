@@ -67,6 +67,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                         return;
                     }
                 }
+                // FIXME: Possible NULL-Reference
                 skeleton.TrackingState = SkeletonTrackingState.NotTracked;
             };
 

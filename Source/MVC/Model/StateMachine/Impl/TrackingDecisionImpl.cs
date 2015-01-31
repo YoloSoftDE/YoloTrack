@@ -12,11 +12,19 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             Storage.Person matched = Model.MainDatabase.People.Find(p => p.Id == arg.PersonId);
 
             if (matched.IsTarget)
-                Result = new Arg.TrackingArg() {
+            {
+                matched.TrackedCount++;
+                Model.MainDatabase.Update(matched);
+
+                Result = new Arg.TrackingArg()
+                {
                     SkeletonId = matched.RuntimeInfo.SkeletonId
                 };
+            }
             else
+            {
                 Result = new Arg.WaitForBodyArg();
+            }
         }
     }
 }

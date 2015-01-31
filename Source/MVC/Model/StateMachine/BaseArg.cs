@@ -5,7 +5,11 @@ using System.Text;
 
 namespace YoloTrack.MVC.Model.StateMachine
 {
-    class BaseArg
+    class BaseArg : ICloneable
     {
+        public virtual object Clone()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

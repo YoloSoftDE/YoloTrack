@@ -18,5 +18,14 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
                 return Model.TrackingModel.Instance().RuntimeDatabase[arg.SkeletonId];
             }
         }
+
+        public override object Clone()
+        {
+            return new IdentifyArg()
+            {
+                Faces = new List<Bitmap>(Faces),
+                SkeletonId = SkeletonId
+            };
+        }
     }
 }

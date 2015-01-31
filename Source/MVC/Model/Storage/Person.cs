@@ -12,6 +12,16 @@ namespace YoloTrack.MVC.Model.Storage
     public class IdentificationRecord
     {
         public FIR Value;
+
+        public IdentificationRecord()
+        {
+        }
+
+        public IdentificationRecord(IdentificationRecord orginal)
+        {
+            Value = orginal.Value;
+        }
+
         // public Bitmap[] Sources;
         /*
         public SerializationBinder Binder
@@ -93,6 +103,25 @@ namespace YoloTrack.MVC.Model.Storage
         public Bitmap Picture;
         public bool IsPresent = false;
         private RuntimeInfo runtime_info;
+        public int RecognizedCount;
+        public int TrackedCount;
+
+        public Person()
+        {
+        }
+
+        public Person(Person original)
+        {
+            Id = new Guid(original.Id.ToString());
+            Name = (string)original.Name.Clone();
+            IsTarget = original.IsTarget;
+            IR = new IdentificationRecord(original.IR);
+            Picture = new Bitmap(original.Picture);
+            IsPresent = original.IsPresent;
+            runtime_info = new RuntimeInfo(runtime_info);
+            RecognizedCount = original.RecognizedCount;
+            TrackedCount = original.TrackedCount;
+        }
 
         public override bool Equals(object obj)
         {

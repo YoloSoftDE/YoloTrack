@@ -8,5 +8,9 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
     class SwitchTargetArg : BaseArg
     {
+        public override object Clone()
+        {
+            return new SwitchTargetArg();
+        }
     }
 }
