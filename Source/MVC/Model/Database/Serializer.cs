@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace YoloTrack.MVC.Model.Database
 {
@@ -97,21 +98,6 @@ namespace YoloTrack.MVC.Model.Database
         }
 
         /// <summary>
-        /// Serializes a variable of type dictionary
-        /// </summary>
-        /// <param name="ms"></param>
-        /// <param name="d"></param>
-        public static void Serialize(MemoryStream ms, Dictionary<int, Record> d)
-        {
-            Serialize(ms, d.Count);
-            foreach (KeyValuePair<int, Record> i in d)
-            {
-                Serialize(ms, i.Key);
-                Serialize(ms, i.Value);
-            }
-        }
-
-        /// <summary>
         /// Serializes a variable of type datetime
         /// </summary>
         /// <param name="ms"></param>
@@ -126,9 +112,28 @@ namespace YoloTrack.MVC.Model.Database
         /// </summary>
         /// <param name="ms"></param>
         /// <param name="d"></param>
-        public static void Serialize(MemoryStream ms, System.Drawing.Image d)
+        public static void Serialize(MemoryStream ms, System.Drawing.Bitmap Bitmap)
         {
-            d.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            Serialize(ms, Bitmap.Height);
+            Serialize(ms, Bitmap.Width);
+
+            var data_ptr = Bitmap.LockBits(
+                new System.Drawing.Rectangle(0, 0, Bitmap.Width, Bitmap.Height), 
+                System.Drawing.Imaging.ImageLockMode.ReadWrite, 
+                System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+
+            int length = data_ptr.Stride * data_ptr.Height;
+            Serialize(ms, length);
+
+            byte[] bytes = new byte[length];
+
+            Marshal.Copy(data_ptr.Scan0, bytes, 0, length);
+            Bitmap.UnlockBits(data_ptr);
+
+            for (int i = 0; i < length; i++)
+            {
+                ms.WriteByte(bytes[i]);
+            }
         }
 
         #endregion
@@ -140,33 +145,23 @@ namespace YoloTrack.MVC.Model.Database
         /// </summary>
         /// <param name="ms"></param>
         /// <param name="d"></param>
-        public static void Unserialize(MemoryStream ms, ref ISerializable d)
-        {
-            d.Unserialize(ms);
-        }
-
-        /// <summary>
-        /// Unserializes a variable of type bool
-        /// </summary>
-        /// <param name="ms"></param>
-        /// <param name="d"></param>
-        public static void Unserialize(MemoryStream ms, ref bool d)
+        public static bool UnserializeBool(MemoryStream ms)
         {
             byte[] buffer = new byte[sizeof(bool)];
             ms.Read(buffer, 0, sizeof(bool));
-            d = BitConverter.ToBoolean(buffer, 0);
+            return BitConverter.ToBoolean(buffer, 0);
         }
 
         /// <summary>
-        /// Unserializes a variable of type int
+        /// 
         /// </summary>
         /// <param name="ms"></param>
-        /// <param name="d"></param>
-        public static void Unserialize(MemoryStream ms, ref int d)
+        /// <returns></returns>
+        public static int UnserializeInt(MemoryStream ms)
         {
             byte[] buffer = new byte[sizeof(int)];
             ms.Read(buffer, 0, sizeof(int));
-            d = BitConverter.ToInt32(buffer, 0);
+            return BitConverter.ToInt32(buffer, 0);
         }
 
         /// <summary>
@@ -174,11 +169,11 @@ namespace YoloTrack.MVC.Model.Database
         /// </summary>
         /// <param name="ms"></param>
         /// <param name="d"></param>
-        public static void Unserialize(MemoryStream ms, ref long d)
+        public static long UnserializeLong(MemoryStream ms)
         {
             byte[] buffer = new byte[sizeof(long)];
             ms.Read(buffer, 0, sizeof(long));
-            d = BitConverter.ToInt64(buffer, 0);
+            return BitConverter.ToInt64(buffer, 0);
         }
 
         /// <summary>
@@ -186,11 +181,11 @@ namespace YoloTrack.MVC.Model.Database
         /// </summary>
         /// <param name="ms"></param>
         /// <param name="d"></param>
-        public static void Unserialize(MemoryStream ms, ref double d)
+        public static double UnserializeDouble(MemoryStream ms)
         {
             byte[] buffer = new byte[sizeof(double)];
             ms.Read(buffer, 0, sizeof(double));
-            d = BitConverter.ToDouble(buffer, 0);
+            return BitConverter.ToDouble(buffer, 0);
         }
 
         /// <summary>
@@ -198,11 +193,11 @@ namespace YoloTrack.MVC.Model.Database
         /// </summary>
         /// <param name="ms"></param>
         /// <param name="d"></param>
-        public static void Unserialize(MemoryStream ms, ref float d)
+        public static float UnserializeFloat(MemoryStream ms)
         {
             byte[] buffer = new byte[sizeof(float)];
             ms.Read(buffer, 0, sizeof(float));
-            d = BitConverter.ToSingle(buffer, 0);
+            return BitConverter.ToSingle(buffer, 0);
         }
 
         /// <summary>
@@ -210,11 +205,11 @@ namespace YoloTrack.MVC.Model.Database
         /// </summary>
         /// <param name="ms"></param>
         /// <param name="d"></param>
-        public static void Unserialize(MemoryStream ms, ref char d)
+        public static char UnserializeChar(MemoryStream ms)
         {
             byte[] buffer = new byte[sizeof(char)];
             ms.Read(buffer, 0, sizeof(char));
-            d = BitConverter.ToChar(buffer, 0);
+            return BitConverter.ToChar(buffer, 0);
         }
 
         /// <summary>
@@ -222,28 +217,27 @@ namespace YoloTrack.MVC.Model.Database
         /// </summary>
         /// <param name="ms"></param>
         /// <param name="d"></param>
-        public static void Unserialize(MemoryStream ms, ref string d)
+        public static string UnserializeString(MemoryStream ms)
         {
-            int length = 0;
-            Unserialize(ms, ref length);
-            d = "";
+            int length = UnserializeInt(ms);
+            string str = "";
+
             for (int i = 0; i < length; i++)
             {
-                Char ch = new Char();
-                Unserialize(ms, ref ch);
-                d += ch;
-            }            
+                str += UnserializeChar(ms);
+            }
+
+            return str;
         }
 
         /// <summary>
         /// Unserializes a variable of type DateTime
         /// </summary>
         /// <param name="?"></param>
-        public static void Unserialize(MemoryStream ms, ref DateTime d)
+        public static DateTime UnserializeDateTime(MemoryStream ms)
         {
-            long imm = 0;
-            Unserialize(ms, ref imm);
-            d = new DateTime(imm);
+            long ts = UnserializeLong(ms);
+            return DateTime.FromBinary(ts);
         }
 
         /// <summary>
@@ -251,11 +245,30 @@ namespace YoloTrack.MVC.Model.Database
         /// </summary>
         /// <param name="ms"></param>
         /// <param name="d"></param>
-        public static void Unserialize(MemoryStream ms, ref System.Drawing.Image d)
+        public static System.Drawing.Bitmap UnserializeImage(MemoryStream ms)
         {
-            d = System.Drawing.Image.FromStream(ms);
-        }
+            int height = UnserializeInt(ms);
+            int width = UnserializeInt(ms);
+            int length = UnserializeInt(ms);
+            
+            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(width, height);
 
+            var data_ptr = bitmap.LockBits(
+                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                System.Drawing.Imaging.ImageLockMode.ReadWrite,
+                System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+
+            byte[] bytes = new byte[length];
+            for (int i = 0; i < length; i++) 
+            {
+                bytes[i] = (byte)ms.ReadByte();
+            }
+
+            Marshal.Copy(bytes, 0, data_ptr.Scan0, length);
+
+            bitmap.UnlockBits(data_ptr);
+            return bitmap;
+        }
         #endregion
     } // End class
 } // End namespace

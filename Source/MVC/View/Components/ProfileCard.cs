@@ -23,29 +23,57 @@ namespace YoloTrack.MVC.View.Components
 
         public int Id { get; set; }
 
-        public string FullName
+        public string FirstName
         {
-            set { lbl_name.Text = value; }
+            set { lbl_first_name.Text = value; }
+        }
+
+        public string LastName
+        {
+            set { lbl_last_name.Text = value; }
         }
 
         public int TrackedCount
         {
-            set { lbl_tracked.Text = value.ToString(); }
+            set { lbl_tracked_count.Text = value.ToString(); }
         }
 
         public int RecognizedCount
         {
-            set { lbl_view_count.Text = value.ToString(); }
+            set { lbl_recognized_count.Text = value.ToString(); }
         }
 
         public DateTime LearnedAt
         {
-            set { lbl_learned.Text = value.ToShortDateString(); }
+            set {  }
         }
 
         public Image Picture
         {
-            set { pictureBox1.Image = value; }
+            set { pb_profile_picture.Image = value; }
+        }
+
+        private void lbl_first_name_Click(object sender, EventArgs e)
+        {
+            TextBox tb_first_name = new TextBox() 
+            {
+                Text = lbl_first_name.Text,
+                Left = lbl_first_name.Left,
+                Top = lbl_first_name.Top
+            };
+
+            lbl_first_name.Visible = false;
+            lbl_first_name.Parent.Controls.Add(tb_first_name);
+
+            tb_first_name.Leave += new EventHandler(tb_first_name_Leave);
+        }
+
+        void tb_first_name_Leave(object sender, EventArgs e)
+        {
+            TextBox tb_first_name = (TextBox)sender;
+            lbl_first_name.Text = tb_first_name.Text;
+            lbl_first_name.Parent.Controls.Remove(tb_first_name);
+            lbl_first_name.Visible = true;
         }
     }
 }

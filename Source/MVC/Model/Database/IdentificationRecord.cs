@@ -1,5 +1,6 @@
 ﻿using System;
 using Cognitec.FRsdk;
+using System.IO;
 
 namespace YoloTrack.MVC.Model.Database
 {
@@ -25,10 +26,22 @@ namespace YoloTrack.MVC.Model.Database
         /// <summary>
         /// 
         /// </summary>
+        public IdentificationRecord()
+        {
+            Value = null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="ms"></param>
         public void Serialize(System.IO.MemoryStream ms)
         {
-            Value.serialize(ms);
+            MemoryStream tmp = new MemoryStream();
+            Value.serialize(tmp);
+            Serializer.Serialize(ms, tmp.Length);
+            tmp.Seek(0, SeekOrigin.Begin);
+            tmp.CopyTo(ms);
         }
 
         /// <summary>

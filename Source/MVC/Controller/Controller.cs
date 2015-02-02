@@ -84,17 +84,17 @@ namespace YoloTrack.MVC.Controller
             m_sensor = Sensor.GrabAny();
             m_sensor.Initialize();
 
+            // Instanciate the identification data model
+            m_identification_data = new IdentificationData("frsdk.cfg"); // m_configuration.Options.IdentificationData.ConfigurationFileName
+
             // Initialize the Database
-            m_database = Database.LoadFrom(m_configuration.Options.Database.FileName);
+            m_database = Database.LoadFromOrEmpty("test.ydb", m_identification_data); //m_configuration.Options.Database.FileName);
             m_database.RecordAdded += new EventHandler<Model.Database.RecordAddedEventArgs>(OnDatabaseRecordAdded);
             m_database.RecordRemoved += new EventHandler<Model.Database.RecordRemovedEventArgs>(OnDatabaseRecordRemoved);
             
             // Initialize the runtime database
             m_runtime_database = new RuntimeDatabase();
             m_runtime_database.Bind(m_sensor);
-
-            // Instanciate the identification data model
-            m_identification_data = new IdentificationData("frsdk.cfg"); // m_configuration.Options.IdentificationData.ConfigurationFileName
 
             // Start the state machine
             m_state_machine = new StateMachine();
@@ -121,6 +121,8 @@ namespace YoloTrack.MVC.Controller
             m_app_view = new ApplicationView();
             m_app_view.Bind(m_sensor);
             m_app_view.Bind(m_runtime_database);
+            m_app_view.Bind(m_database);
+            m_app_view.Observe(m_state_machine);
             m_app_view.Observe(m_sensor);
             m_app_view.Observe(m_runtime_database);
             m_app_view.Observe(m_identification_data);
@@ -134,11 +136,33 @@ namespace YoloTrack.MVC.Controller
 
         #region Model Event handlers
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void OnDatabaseRecordAdded(object sender, Model.Database.RecordAddedEventArgs e)
+        {
+            m_database.SaveTo("test.ydb");
+
+            e.Record.RecordChanged += new EventHandler<Model.Database.RecordChangedEventArgs>(OnDatabaseRecordChanged);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void OnDatabaseRecordChanged(object sender, Model.Database.RecordChangedEventArgs e)
         {
             m_database.SaveTo("test.ydb");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void OnDatabaseRecordRemoved(object sender, Model.Database.RecordRemovedEventArgs e)
         {
             m_database.SaveTo("test.ydb");

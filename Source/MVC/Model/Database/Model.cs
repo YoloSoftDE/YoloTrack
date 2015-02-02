@@ -44,9 +44,30 @@ namespace YoloTrack.MVC.Model.Database
         private Mutex m_container_modification_mutex = new Mutex();
 
         /// <summary>
+        /// 
+        /// </summary>
+        private IdentificationData.Model m_identification_api;
+
+        /// <summary>
         /// Holding the last id, that was assigned by the database
         /// </summary>
         public int LastId { get; private set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Record CreateRecord(IdentificationRecord IdentificationRecord)
+        {
+            LastId++;
+            Record record = new Record(LastId, IdentificationRecord)
+            {
+                LearnedAt = DateTime.Now
+            };
+
+            Add(record.Id, record);
+            return record;
+        }
 
         /// <summary>
         /// Create a flat copy only. No contaied data will be copied.
@@ -98,22 +119,6 @@ namespace YoloTrack.MVC.Model.Database
 
             // Release lock
             m_container_modification_mutex.ReleaseMutex();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public Record CreateRecord(IdentificationRecord IdentificationRecord)
-        {
-            LastId++;
-            Record record = new Record(LastId, IdentificationRecord)
-            {
-                LearnedAt = DateTime.Now
-            };
-
-            Add(record.Id, record);
-            return record;
         }
 
         /// <summary>
@@ -235,10 +240,51 @@ namespace YoloTrack.MVC.Model.Database
         /// </summary>
         /// <param name="FileName"></param>
         /// <returns></returns>
-        public static Model LoadFrom(string FileName)
+        public static Model LoadFrom(string FileName, IdentificationData.Model IdentificationAPI)
         {
+            FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
+            MemoryStream ms = new MemoryStream();
+
+            byte[] bytes = new byte[fs.Length];
+            int bytes_to_read = (int)fs.Length;
+            int bytes_read = 0;
+            while (bytes_to_read > 0)
+            {
+                int n = fs.Read(bytes, bytes_read, bytes_to_read);
+                if (n == 0)
+                    break;
+
+                ms.Write(bytes, bytes_read, n);
+                bytes_read += n;
+                bytes_to_read -= n;
+            }
+            fs.Close();
+            ms.Seek(0, SeekOrigin.Begin);
+
             Model model = new Model();
-            //Serializer.Unserialize(
+            model.Bind(IdentificationAPI);
+            model._unserialize_from(ms);
+
+            ms.Close();
+
+            return model;
+        }
+
+        /// <summary>
+        /// Tries to load from the given filename. If it does not exist
+        /// an empty instance will be created.
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public static Model LoadFromOrEmpty(string FileName, IdentificationData.Model IdentificationAPI)
+        {
+            if (System.IO.File.Exists(FileName))
+            {
+                return LoadFrom(FileName, IdentificationAPI);
+            }
+
+            Model model = new Model();
+            model.Bind(IdentificationAPI);
             return model;
         }
 
@@ -248,7 +294,52 @@ namespace YoloTrack.MVC.Model.Database
         /// <param name="ms"></param>
         private void _serialize_to(MemoryStream ms)
         {
-            Serializer.Serialize(ms, this);
+            Serializer.Serialize(ms, Count);
+            foreach (KeyValuePair<int, Record> i in this)
+            {
+                Serializer.Serialize(ms, i.Key);
+                i.Value.IdentificationRecord.Serialize(ms);
+                Serializer.Serialize(ms, i.Value);
+            }
+        }
+
+        /// <summary>
+        /// Unserializes the instance from a memory stream
+        /// </summary>
+        /// <param name="ms"></param>
+        private void _unserialize_from(MemoryStream ms)
+        {
+            int count = Serializer.UnserializeInt(ms);
+            for (int i = 0; i < count; i++)
+            {
+                int key = Serializer.UnserializeInt(ms);
+                
+                long fir_length = Serializer.UnserializeLong(ms);
+                MemoryStream fir_stream = new MemoryStream();
+                for (long j = 0; j < fir_length; j++)
+                {
+                    fir_stream.WriteByte((byte)ms.ReadByte());
+                }
+                fir_stream.Seek(0, SeekOrigin.Begin);
+                IdentificationRecord ir = new IdentificationRecord(m_identification_api.IdentificationRecordBuilder.build(fir_stream));
+                fir_stream.Close();
+                Record value = new Record(key, ir);
+                value.Unserialize(ms);
+
+                if (LastId < key)
+                    LastId = key;
+                Add(key, value);
+                m_identification_api.Population.append(ir.Value, key.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Binder for the identification API
+        /// </summary>
+        /// <param name="IdentificationAPI"></param>
+        public void Bind(IdentificationData.Model IdentificationAPI)
+        {
+            m_identification_api = IdentificationAPI;
         }
     } // End class
 } // End namespace
