@@ -34,11 +34,9 @@
             this.initToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.lbl_state = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -70,7 +68,7 @@
             // initToolStripMenuItem
             // 
             this.initToolStripMenuItem.Name = "initToolStripMenuItem";
-            this.initToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.initToolStripMenuItem.Size = new System.Drawing.Size(91, 22);
             this.initToolStripMenuItem.Text = "Init";
             // 
             // tableLayoutPanel1
@@ -91,21 +89,11 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.lbl_state);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(906, 169);
             this.panel1.TabIndex = 0;
-            // 
-            // lbl_state
-            // 
-            this.lbl_state.AutoSize = true;
-            this.lbl_state.Location = new System.Drawing.Point(20, 20);
-            this.lbl_state.Name = "lbl_state";
-            this.lbl_state.Size = new System.Drawing.Size(35, 13);
-            this.lbl_state.TabIndex = 3;
-            this.lbl_state.Text = "label1";
             // 
             // flowLayoutPanel1
             // 
@@ -115,7 +103,7 @@
             this.flowLayoutPanel1.Size = new System.Drawing.Size(906, 257);
             this.flowLayoutPanel1.TabIndex = 1;
             // 
-            // MainView
+            // View
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -124,13 +112,11 @@
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "MainView";
+            this.Name = "View";
             this.Text = "YoloTrack";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -143,7 +129,6 @@
         private System.Windows.Forms.ToolStripMenuItem programToolStripMenuItem;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label lbl_state;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         public System.Windows.Forms.ToolStripMenuItem initToolStripMenuItem;
 

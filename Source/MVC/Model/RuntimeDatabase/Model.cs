@@ -6,7 +6,7 @@ using Microsoft.Kinect;
 namespace YoloTrack.MVC.Model.RuntimeDatabase
 {
     /// <summary>
-    /// 
+    /// Event args provided when a new record becomes available
     /// </summary>
     public class RecordAddedEventArgs : EventArgs
     {
@@ -14,7 +14,7 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
     } // End class
 
     /// <summary>
-    /// 
+    /// Event args provided on removal of a record
     /// </summary>
     public class RecordRemovedEventArgs : EventArgs
     {
@@ -37,7 +37,10 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
     } // End class
 
     /// <summary>
-    /// 
+    /// Storage of all runtime information. this is moreless considered the stateful part of the
+    /// state machines internal process beside the state itself.
+    /// All information that is required directly during runtime is stored here, except of those
+    /// information that belongs into the "main" database.
     /// </summary>
     public class Model : Dictionary<int, Record>
     {
@@ -155,6 +158,8 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
             return;
         }
 
+        #region Foreign model bindings
+
         /// <summary>
         /// Binder for sensor model instance.
         /// </summary>
@@ -163,5 +168,7 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
         {
             m_sensor = Sensor;
         }
+
+        #endregion
     } // End class
 } // End namespace

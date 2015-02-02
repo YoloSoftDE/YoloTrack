@@ -9,6 +9,10 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
     /// </summary>
     class TrackingImpl : BaseImpl<Arg.TrackingArg>
     {        
+        /// <summary>
+        /// State logic
+        /// </summary>
+        /// <param name="arg"></param>
         public override void Run(Arg.TrackingArg arg)
         {
             while (true)

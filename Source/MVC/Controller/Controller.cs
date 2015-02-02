@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region Usings
+
+using System;
 using System.Windows.Forms;
 
 using Sensor = YoloTrack.MVC.Model.Sensor.Model;
@@ -10,6 +12,8 @@ using Database = YoloTrack.MVC.Model.Database.Model;
 
 using DebugView = YoloTrack.MVC.View.Debug.View;
 using ApplicationView = YoloTrack.MVC.View.Application.View;
+
+#endregion
 
 namespace YoloTrack.MVC.Controller
 {

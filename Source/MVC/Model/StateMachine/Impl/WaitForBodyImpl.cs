@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Text;
-using Microsoft.Kinect;
+﻿using System.Collections.Generic;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
+    /// <summary>
+    /// Implementation of the state logic for WaitForBody
+    /// </summary>
     class WaitForBodyImpl : BaseImpl<Arg.WaitForBodyArg>
     {
+        /// <summary>
+        /// State logic
+        /// </summary>
+        /// <param name="arg"></param>
         public override void Run(Arg.WaitForBodyArg arg)
         {
             while (true)
@@ -32,5 +35,5 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 }
             }
         }
-    }
-}
+    } // End class
+} // End Namespace
