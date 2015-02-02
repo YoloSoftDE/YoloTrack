@@ -1,24 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Text;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
+    /// <summary>
+    /// Implementation of the state logic for 'TrackingDecision'
+    /// </summary>
     class TrackingDecisionImpl : BaseImpl<Arg.TrackingDecisionArg>
     {
+        /// <summary>
+        /// Actual state logic.
+        /// </summary>
+        /// <param name="arg"></param>
         public override void Run(Arg.TrackingDecisionArg arg)
         {
-            Storage.Person matched = Model.MainDatabase.People.Find(p => p.Id == arg.PersonId);
-
-            if (matched.IsTarget)
+            // Get person from database...
+            Database.Record record = m_database[arg.DatabaseRecordId];
+            
+            /// ...and check if it is the target
+            if (record.IsTarget)
             {
-                matched.TrackedCount++;
-                Model.MainDatabase.Update(matched);
+                record.IncrementTimesTracked();
 
                 Result = new Arg.TrackingArg()
                 {
-                    SkeletonId = matched.RuntimeInfo.Skeleton.TrackingId
+                    TrackingId = record.RuntimeRecord.KinectResource.Skeleton.TrackingId
                 };
             }
             else
@@ -26,5 +31,5 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 Result = new Arg.WaitForBodyArg();
             }
         }
-    }
-}
+    } // End class
+} // End namespace

@@ -1,16 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace YoloTrack.MVC.Model.StateMachine.State
 {
-    class WaitTakePictureState : BaseState<Arg.WaitTakePictureArg>
+    /// <summary>
+    /// State transistion logic for 'WaitTakePicture'
+    /// </summary>
+    class WaitTakePictureState : BaseState<Impl.WaitTakePictureImpl, Arg.WaitTakePictureArg>
     {
+        /// <summary>
+        /// Generalized construcor. No way to omit the arguments paremeter here.
+        /// </summary>
+        /// <param name="arg"></param>
         public WaitTakePictureState(Arg.WaitTakePictureArg arg)
-            : base(new Impl.WaitTakePictureImpl(), arg)
-        { }
+            : base(arg)
+        {
+        }
 
+        /// <summary>
+        /// Transistion logic
+        /// </summary>
+        /// <returns></returns>
         protected override StateTransistion Transist()
         {
             BaseArg result = RunImpl();
@@ -23,5 +32,5 @@ namespace YoloTrack.MVC.Model.StateMachine.State
 
             return null;
         }
-    }
-}
+    } // End class
+} // End namespace

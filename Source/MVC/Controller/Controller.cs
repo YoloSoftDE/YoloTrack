@@ -1,83 +1,128 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+
+using Sensor = YoloTrack.MVC.Model.Sensor.Model;
+using StateMachine = YoloTrack.MVC.Model.StateMachine.Model;
+using Configuration = YoloTrack.MVC.Model.Configuration.Model;
+using IdentificationData = YoloTrack.MVC.Model.IdentificationData.Model;
+using RuntimeDatabase = YoloTrack.MVC.Model.RuntimeDatabase.Model;
+using Database = YoloTrack.MVC.Model.Database.Model;
+
+using DebugView = YoloTrack.MVC.View.Debug.View;
+using ApplicationView = YoloTrack.MVC.View.Application.View;
 
 namespace YoloTrack.MVC.Controller
 {
     class Controller
     {
-        // Model
-        Model.TrackingModel model;
-        Model.ConfigModel config;
+        #region Models
 
-        // Views
-        View.DebugView debug_view;
-        View.MainView main_view;
+        /// <summary>
+        /// Sensor model instance.
+        /// </summary>
+        Sensor m_sensor;
 
+        /// <summary>
+        /// StateMachine Model instance.
+        /// </summary>
+        StateMachine m_state_machine;
+
+        /// <summary>
+        /// Application configuration model instance.
+        /// </summary>
+        Configuration m_configuration;
+
+        /// <summary>
+        /// Identification processing API.
+        /// </summary>
+        IdentificationData m_identification_data;
+
+        /// <summary>
+        /// Database containing runtime information.
+        /// </summary>
+        RuntimeDatabase m_runtime_database;
+
+        /// <summary>
+        /// ...
+        /// </summary>
+        Database m_database;
+
+        #endregion
+
+        #region Views
+
+        /// <summary>
+        /// Main view of the application.
+        /// </summary>
+        ApplicationView m_app_view;
+
+        /// <summary>
+        /// Debug output window.
+        /// </summary>
+        DebugView m_debug_view;
+
+        #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
         public Controller()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            config = Model.ConfigModel.Instance();
+            #region Init models
 
-            CreateModel();
+            // Load the configuration from default config file
+            m_configuration = Configuration.LoadDefault();
 
-            debug_view = new View.DebugView();
-            main_view = new View.MainView();
+            // Grab the sensor & init
+            m_sensor = Sensor.GrabAny();
+            m_sensor.Initialize();
 
-            main_view.initToolStripMenuItem.Click += new EventHandler(initToolStripMenuItem_Click);
+            // Initialize the Database
+            m_database = Database.LoadFrom(m_configuration.Options.Database.FileName);
+            
+            // Initialize the runtime database
+            m_runtime_database = new RuntimeDatabase();
+            m_runtime_database.Bind(m_sensor);
 
-            InitStartModel();
-            Application.Run(main_view);
+            // Instanciate the identification data model
+            m_identification_data = new IdentificationData("frsdk.cfg"); // m_configuration.Options.IdentificationData.ConfigurationFileName
 
-            config.Save();
-        }
+            // Start the state machine
+            m_state_machine = new StateMachine();
+            m_state_machine.Bind(m_configuration);
+            m_state_machine.Bind(m_sensor);
+            m_state_machine.Bind(m_identification_data);
+            m_state_machine.Bind(m_runtime_database);
+            m_state_machine.Bind(m_database);
 
-        private void CreateModel()
-        {
-            try
-            {
-                model = Model.TrackingModel.Instance();
-                //model.MainDatabase.LoadFromFile(config.conf.DatabaseFilename);
-                model.MainDatabase.PersonChanged += new EventHandler(MainDatabase_PersonChanged);
-            }
-            catch (Cognitec.FRsdk.Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
-        }
+            #endregion
 
-        void MainDatabase_PersonChanged(object sender, EventArgs e)
-        {
-            //model.MainDatabase.SaveToFile(config.conf.DatabaseFilename);
-        }
+            #region Init views
 
-        void initToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CreateModel();
-            InitStartModel();
-        }
+            // Init Debug view
+            m_debug_view = new DebugView();
+            m_debug_view.Bind(m_configuration);
+            m_debug_view.Observe(m_sensor);
+            m_debug_view.Observe(m_runtime_database);
+            m_debug_view.Observe(m_identification_data);
+            m_debug_view.Observe(m_database);
 
-        private void InitStartModel()
-        {
-            if (model == null)
-            {
-                main_view.Status = Model.Status.SENSOR_UNAVAILABLE;
-                return;
-            }
+            // Init Application view
+            m_app_view = new ApplicationView();
+            m_app_view.Bind(m_sensor);
+            m_app_view.Bind(m_runtime_database);
+            m_app_view.Observe(m_sensor);
+            m_app_view.Observe(m_runtime_database);
+            m_app_view.Observe(m_identification_data);
+            m_app_view.Observe(m_database);
 
-            model.Start();
-            if (model.Running())
-            {
-                main_view.Status = Model.Status.RUNNING;
-                debug_view.Observe(model);
-                main_view.Observe(model);
-            }
-            else
-                main_view.Status = Model.Status.SENSOR_UNAVAILABLE;
+            #endregion
+
+            m_state_machine.Start();
+            Application.Run(m_app_view);
         }
     }
 }

@@ -21,6 +21,8 @@ namespace YoloTrack.MVC.View.Components
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.Gray, ButtonBorderStyle.Solid);
         }
 
+        public int Id { get; set; }
+
         public string FullName
         {
             set { lbl_name.Text = value; }

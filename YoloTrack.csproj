@@ -55,12 +55,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\MVC\Model\ConfigModel.cs" />
+    <Compile Include="Source\MVC\Model\Configuration\IConfigurable.cs" />
+    <Compile Include="Source\MVC\Model\Configuration\Model.cs" />
+    <Compile Include="Source\MVC\Model\Configuration\Options.cs" />
+    <Compile Include="Source\MVC\Model\Database\IdentificationRecord.cs" />
+    <Compile Include="Source\MVC\Model\Database\Model.cs" />
+    <Compile Include="Source\MVC\Model\Database\Record.cs" />
+    <Compile Include="Source\MVC\Model\IdentificationData\EnrollmentFeedback.cs" />
+    <Compile Include="Source\MVC\Model\IdentificationData\IdentificationFeedback.cs" />
+    <Compile Include="Source\MVC\Model\IdentificationData\Model.cs" />
+    <Compile Include="Source\MVC\Model\RuntimeDatabase\Model.cs" />
+    <Compile Include="Source\MVC\Model\RuntimeDatabase\Record.cs" />
+    <Compile Include="Source\MVC\Model\Sensor\ColorImageStream.cs" />
+    <Compile Include="Source\MVC\Model\Sensor\CoordinateMapper.cs" />
+    <Compile Include="Source\MVC\Model\Sensor\Model.cs" />
+    <Compile Include="Source\MVC\Model\Sensor\SkeletonStream.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Arg\LearnArg.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Arg\SwitchTargetArg.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\LearnImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\SwitchTargetImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\Util\CompatibleImage.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Model.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\StateTransistion.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\LearnState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\SwitchTargetState.cs" />
@@ -86,23 +101,16 @@
     <Compile Include="Source\MVC\Model\StateMachine\Impl\WaitForBodyImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\WaitTakePictureImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\IdentifyState.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\State\States.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\TrackingDecisionState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\TrackingState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\WaitForBodyState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\WaitTakePictureState.cs" />
-    <Compile Include="Source\MVC\Model\Storage\MainDatabase.cs" />
-    <Compile Include="Source\MVC\Model\Storage\Person.cs" />
-    <Compile Include="Source\MVC\Model\Storage\RuntimeDatabase.cs" />
-    <Compile Include="Source\MVC\Model\Storage\RuntimeInfo.cs" />
-    <Compile Include="Source\MVC\Model\TrackingModel.cs" />
-    <Compile Include="Source\MVC\View\DebugView.cs" />
-    <Compile Include="Source\MVC\View\IObserver.cs" />
-    <Compile Include="Source\MVC\View\MainView.cs">
+    <Compile Include="Source\MVC\View\Debug\View.cs" />
+    <Compile Include="Source\MVC\View\Application\View.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Source\MVC\View\MainView.Designer.cs">
-      <DependentUpon>MainView.cs</DependentUpon>
+    <Compile Include="Source\MVC\View\Application\View.Designer.cs">
+      <DependentUpon>View.cs</DependentUpon>
     </Compile>
     <Compile Include="Source\MVC\View\Components\ProfileCard.cs">
       <SubType>UserControl</SubType>
@@ -124,8 +132,8 @@
     <EmbeddedResource Include="Source\MVC\View\Components\LiveView.resx">
       <DependentUpon>LiveView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\MVC\View\MainView.resx">
-      <DependentUpon>MainView.cs</DependentUpon>
+    <EmbeddedResource Include="Source\MVC\View\Application\View.resx">
+      <DependentUpon>View.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Source\MVC\View\Components\ProfileCard.resx">
       <DependentUpon>ProfileCard.cs</DependentUpon>

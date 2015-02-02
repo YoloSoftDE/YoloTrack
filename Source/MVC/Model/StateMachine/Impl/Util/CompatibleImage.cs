@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Text;
-using Microsoft.Kinect;
 using System.Drawing;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl.Util
 {
+    /// <summary>
+    /// Ultitily class for providing an native interface from a standard bitmap object to the 
+    /// libraries image class (adapter).
+    /// </summary>
     class CompatibleImage : Cognitec.FRsdk.Image
     {
         private System.Drawing.Bitmap color;
@@ -53,5 +53,5 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl.Util
         {
             return (uint)color.Width;
         }
-    }
-}
+    } // End class
+} // End namespace

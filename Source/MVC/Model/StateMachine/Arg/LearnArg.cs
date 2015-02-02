@@ -8,7 +8,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
     {
         public List<Sample> Samples;
         public List<Bitmap> Faces;
-        public int SkeletonId;
+        public int TrackingId;
 
         public override object Clone()
         {
@@ -16,7 +16,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
             {
                 Samples = new List<Sample>(Samples),
                 Faces = new List<Bitmap>(Faces),
-                SkeletonId = SkeletonId
+                TrackingId = TrackingId
             };
         }
     }

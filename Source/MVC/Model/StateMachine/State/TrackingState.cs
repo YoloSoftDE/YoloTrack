@@ -1,17 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace YoloTrack.MVC.Model.StateMachine.State
 {
-    class TrackingState : BaseState<Arg.TrackingArg>
+    /// <summary>
+    /// State transistion logic for 'Tracking'
+    /// </summary>
+    class TrackingState : BaseState<Impl.TrackingImpl, Arg.TrackingArg>
     {
+        /// <summary>
+        /// Generalized construcor. No way to omit the arguments paremeter here.
+        /// </summary>
+        /// <param name="arg"></param>
         public TrackingState(Arg.TrackingArg arg)
-            : base(new Impl.TrackingImpl(), arg)
-        { }
+            : base(arg)
+        {
+        }
 
-
+        /// <summary>
+        /// Transistion logic.
+        /// </summary>
+        /// <returns></returns>
         protected override StateTransistion Transist()
         {
             BaseArg result = RunImpl();
@@ -24,5 +32,5 @@ namespace YoloTrack.MVC.Model.StateMachine.State
 
             return null;
         }
-    }
-}
+    } // End class
+} // End namespace

@@ -7,13 +7,13 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
     class TrackingDecisionArg : BaseArg
     {
-        public Guid PersonId;
+        public int DatabaseRecordId;
 
         public override object Clone()
         {
             return new TrackingDecisionArg()
             {
-                PersonId = new Guid(PersonId.ToString())
+                DatabaseRecordId = DatabaseRecordId
             };
         }
     }
