@@ -14,7 +14,7 @@ namespace YoloTrack.MVC.Model.Database
     /// <summary>
     /// Record stored in the Database (permenant information)
     /// </summary>
-    public class Record
+    public class Record : ISerializable
     {
         /// <summary>
         /// Fired on each change of the object
@@ -173,6 +173,35 @@ namespace YoloTrack.MVC.Model.Database
         {
             this.IdentificationRecord = IdentificationInformation;
             this.Id = Id;
+            FirstName = "";
+            LastName = "";
+            Image = new System.Drawing.Bitmap(1, 1); // TODO
+            LearnedAt = new DateTime();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ms"></param>
+        public void Serialize(System.IO.MemoryStream ms)
+        {
+            Serializer.Serialize(ms, Id);
+            Serializer.Serialize(ms, FirstName);
+            Serializer.Serialize(ms, LastName);
+            Serializer.Serialize(ms, Image);
+            Serializer.Serialize(ms, TimesRecognized);
+            Serializer.Serialize(ms, TimesTracked);
+            Serializer.Serialize(ms, LearnedAt);
+            Serializer.Serialize(ms, IdentificationRecord);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ms"></param>
+        public void Unserialize(System.IO.MemoryStream ms)
+        {
+            throw new NotImplementedException();
         }
     } // End class
 } // End namespace

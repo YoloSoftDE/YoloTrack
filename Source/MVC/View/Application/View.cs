@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region Usings
+
+using System;
 using System.Threading;
 using System.Windows.Forms;
 using System.Drawing;
@@ -13,6 +15,8 @@ using IdentificationData = YoloTrack.MVC.Model.IdentificationData.Model;
 using RuntimeDatabase = YoloTrack.MVC.Model.RuntimeDatabase.Model;
 using Database = YoloTrack.MVC.Model.Database.Model;
 using Microsoft.Kinect;
+
+#endregion
 
 namespace YoloTrack.MVC.View.Application
 {
