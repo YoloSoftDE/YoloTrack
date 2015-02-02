@@ -26,17 +26,17 @@ namespace YoloTrack.MVC.Model.IdentificationData
     public class IdentificationFeedback : Identification.Feedback
     {
         /// <summary>
-        /// 
+        /// Holder of the list of probably matching results
         /// </summary>
         public Match[] Match { get; private set; }
 
         /// <summary>
-        /// 
+        /// Currently unused: holder of the sample quality value
         /// </summary>
         public float SampleQuality { get; private set; }
 
         /// <summary>
-        /// 
+        /// Callback on processing failure
         /// </summary>
         public void eyesNotFound()
         {
@@ -44,7 +44,7 @@ namespace YoloTrack.MVC.Model.IdentificationData
         }
 
         /// <summary>
-        /// 
+        /// Callback on processing failure
         /// </summary>
         public void sampleQualityTooLow()
         {
@@ -52,7 +52,7 @@ namespace YoloTrack.MVC.Model.IdentificationData
         }
 
         /// <summary>
-        /// 
+        /// Callback on processing failure
         /// </summary>
         public void failure()
         {
@@ -60,7 +60,7 @@ namespace YoloTrack.MVC.Model.IdentificationData
         }
 
         /// <summary>
-        /// 
+        /// Setter for the sample quality
         /// </summary>
         /// <param name="f"></param>
         public void sampleQuality(float f)
@@ -69,7 +69,7 @@ namespace YoloTrack.MVC.Model.IdentificationData
         }
 
         /// <summary>
-        /// 
+        /// Setter for the result
         /// </summary>
         /// <param name="matches"></param>
         public void matches(Match[] matches)
@@ -78,14 +78,14 @@ namespace YoloTrack.MVC.Model.IdentificationData
         }
 
         /// <summary>
-        /// 
+        /// ...
         /// </summary>
         public void end()
         {
         }
 
         /// <summary>
-        /// 
+        /// Yay
         /// </summary>
         /// <param name="eyeLoc"></param>
         public void eyesFound(Eyes.Location eyeLoc)
@@ -93,7 +93,7 @@ namespace YoloTrack.MVC.Model.IdentificationData
         }
 
         /// <summary>
-        /// 
+        /// Callback during process
         /// </summary>
         /// <param name="img"></param>
         public void processingImage(Cognitec.FRsdk.Image img)
@@ -101,7 +101,7 @@ namespace YoloTrack.MVC.Model.IdentificationData
         }
 
         /// <summary>
-        /// 
+        /// ...
         /// </summary>
         public void start()
         {

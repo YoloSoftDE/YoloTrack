@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Collections.Generic;
 using Cognitec.FRsdk;
-using Eyes = Cognitec.FRsdk.Eyes;
 using YoloTrack.MVC.Model.IdentificationData;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl

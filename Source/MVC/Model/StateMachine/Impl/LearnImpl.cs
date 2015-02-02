@@ -1,7 +1,4 @@
 ﻿using System;
-using System.IO;
-using Cognitec.FRsdk;
-using Eyes = Cognitec.FRsdk.Eyes;
 using YoloTrack.MVC.Model.IdentificationData;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl

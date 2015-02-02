@@ -27,17 +27,17 @@ namespace YoloTrack.MVC.Model.IdentificationData
     public class EnrollmentFeedback : Enrollment.Feedback
     {
         /// <summary>
-        /// 
+        /// Identification record holder
         /// </summary>
         public FIR IdentificationRecord { get; private set; }
 
         /// <summary>
-        /// 
+        /// Currently unused: holder for the sample quality
         /// </summary>
         public float SampleQuality { get; private set; }
 
         /// <summary>
-        /// 
+        /// Callback on processing failure
         /// </summary>
         public void eyesNotFound()
         {
@@ -45,7 +45,7 @@ namespace YoloTrack.MVC.Model.IdentificationData
         }
 
         /// <summary>
-        /// 
+        /// Callback on processing failure
         /// </summary>
         public void sampleQualityTooLow()
         {
@@ -53,7 +53,7 @@ namespace YoloTrack.MVC.Model.IdentificationData
         }
 
         /// <summary>
-        /// 
+        /// Callback on processing failure
         /// </summary>
         public void failure()
         {
@@ -61,7 +61,7 @@ namespace YoloTrack.MVC.Model.IdentificationData
         }
 
         /// <summary>
-        /// 
+        /// Callback for setting the sample quality
         /// </summary>
         public void sampleQuality(float f)
         {
@@ -69,14 +69,14 @@ namespace YoloTrack.MVC.Model.IdentificationData
         }
 
         /// <summary>
-        /// 
+        /// No one knows what this is for
         /// </summary>
         public void start()
         {
         }
 
         /// <summary>
-        /// 
+        /// ...
         /// </summary>
         public void processingImage(Cognitec.FRsdk.Image img)
         {
@@ -90,7 +90,7 @@ namespace YoloTrack.MVC.Model.IdentificationData
         }
 
         /// <summary>
-        /// 
+        /// Callback on processing success
         /// </summary>
         public void success(FIR nfir)
         {
@@ -100,7 +100,7 @@ namespace YoloTrack.MVC.Model.IdentificationData
         }
 
         /// <summary>
-        /// 
+        /// ...
         /// </summary>
         public void end()
         {

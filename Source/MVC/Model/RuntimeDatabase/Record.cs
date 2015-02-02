@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using Microsoft.Kinect;
-using System.Collections.Generic;
 using DatabaseRecord = YoloTrack.MVC.Model.Database.Record;
 
 namespace YoloTrack.MVC.Model.RuntimeDatabase
@@ -67,15 +66,6 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
         }
 
         /// <summary>
-        /// Binder to an instance of the sensor model
-        /// </summary>
-        /// <param name="Sensor"></param>
-        public void Bind(Sensor.Model Sensor)
-        {
-            m_sensor = Sensor;
-        }
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="Update"></param>
@@ -92,6 +82,19 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
         {
             Skeleton = ToWrap;
         }
+
+        #region Foreign model bindings 
+
+        /// <summary>
+        /// Binder to an instance of the sensor model
+        /// </summary>
+        /// <param name="Sensor"></param>
+        public void Bind(Sensor.Model Sensor)
+        {
+            m_sensor = Sensor;
+        }
+
+        #endregion
     } // End class
 
     /// <summary>
@@ -107,7 +110,7 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
     }
 
     /// <summary>
-    /// 
+    /// Provided on a change of a record
     /// </summary>
     public class RecordChangedEventArgs : EventArgs
     {
@@ -150,15 +153,6 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
         }
 
         /// <summary>
-        /// Binder to an instance of the sensor model
-        /// </summary>
-        /// <param name="Sensor"></param>
-        public void Bind(Sensor.Model Sensor)
-        {
-            KinectResource.Bind(Sensor);
-        }
-
-        /// <summary>
         /// Attach a database record to the runtime information. This is a one-time process.
         /// </summary>
         /// <param name="Record"></param>
@@ -187,5 +181,18 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
 
             return record;
         }
+
+        #region Foreign model bindings
+
+        /// <summary>
+        /// Binder to an instance of the sensor model
+        /// </summary>
+        /// <param name="Sensor"></param>
+        public void Bind(Sensor.Model Sensor)
+        {
+            KinectResource.Bind(Sensor);
+        }
+
+        #endregion
     } // End class
 } // End namespace

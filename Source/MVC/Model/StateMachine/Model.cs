@@ -4,12 +4,18 @@ using YoloTrack.MVC.Model.Configuration;
 
 namespace YoloTrack.MVC.Model.StateMachine
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class StateChangeEventArgs : EventArgs
     {
         public StateTransistion PreviousState;
         public StateTransistion NextState;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class StateMachineException : Exception
     {
         public StateMachineException(string Message)
@@ -18,6 +24,9 @@ namespace YoloTrack.MVC.Model.StateMachine
         }
     }
 
+    /// <summary>
+    /// State machine model
+    /// </summary>
     public class Model : IConfigurable
     {
         /// <summary>

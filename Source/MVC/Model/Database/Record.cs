@@ -5,7 +5,7 @@ using Cognitec.FRsdk;
 namespace YoloTrack.MVC.Model.Database
 {
     /// <summary>
-    /// 
+    /// Event args provided on change of a record
     /// </summary>
     public class RecordChangedEventArgs : EventArgs
     {
@@ -92,7 +92,7 @@ namespace YoloTrack.MVC.Model.Database
         public int TimesTracked { get; private set; }
 
         /// <summary>
-        /// 
+        /// Increments the times recognized counter
         /// </summary>
         public void IncrementTimesRecognized()
         {
@@ -104,7 +104,7 @@ namespace YoloTrack.MVC.Model.Database
         }
 
         /// <summary>
-        /// 
+        /// Increments the Times Tracked counter
         /// </summary>
         public void IncrementTimesTracked()
         {
@@ -149,6 +149,9 @@ namespace YoloTrack.MVC.Model.Database
             }
         }
 
+        /// <summary>
+        /// Gives the associated Runtime record
+        /// </summary>
         private RuntimeDatabase.Record m_runtime_record;
         public RuntimeDatabase.Record RuntimeRecord
         {

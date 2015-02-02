@@ -221,6 +221,7 @@ namespace YoloTrack.MVC.Model.Database
         public void SaveTo(string FileName)
         {
             throw new NotImplementedException();
+            // TODO
         }
 
         /// <summary>
@@ -232,6 +233,7 @@ namespace YoloTrack.MVC.Model.Database
         public static Model LoadFrom(string FileName)
         {
             //throw new NotImplementedException();
+            // TODO
             return new Model();
         }
     } // End class

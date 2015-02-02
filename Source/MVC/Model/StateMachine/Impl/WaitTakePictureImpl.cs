@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.Kinect;
 using System.Drawing;
-using System.Threading;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
