@@ -8,13 +8,13 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
     class TrackingArg : BaseArg
     {
-        public int SkeletonId;
+        public int TrackingId;
 
         public override object Clone()
         {
             return new TrackingArg()
             {
-                SkeletonId = SkeletonId
+                TrackingId = TrackingId
             };
         }
     }

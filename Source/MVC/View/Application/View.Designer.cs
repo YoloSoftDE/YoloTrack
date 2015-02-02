@@ -1,6 +1,6 @@
-﻿namespace YoloTrack.MVC.View
+﻿namespace YoloTrack.MVC.View.Application
 {
-    partial class MainView
+    partial class View
     {
         /// <summary>
         /// Required designer variable.
@@ -72,7 +72,6 @@
             this.initToolStripMenuItem.Name = "initToolStripMenuItem";
             this.initToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.initToolStripMenuItem.Text = "Init";
-            this.initToolStripMenuItem.Click += new System.EventHandler(this.initToolStripMenuItem_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -127,8 +126,6 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainView";
             this.Text = "YoloTrack";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainView_FormClosed);
-            this.Load += new System.EventHandler(this.MainView_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);

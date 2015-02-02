@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Text;
 using Microsoft.Kinect;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
+    /// <summary>
+    /// State implementatin for 'SwitchTarget'
+    /// </summary>
     class SwitchTargetImpl : BaseImpl<Arg.SwitchTargetArg>
     {
         public override void Run(Arg.SwitchTargetArg arg)
@@ -33,5 +33,5 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             // TODO: adopt to the "new" concept, that all data is obtained from the runtimedatabase
             throw new NotImplementedException();
         }
-    }
-}
+    } // End class
+} // End namespace

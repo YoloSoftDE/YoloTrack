@@ -7,13 +7,13 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
     class WaitTakePictureArg : BaseArg
     {
-        public int SkeletonId;
+        public int TrackingId;
 
         public override object Clone()
         {
             return new WaitTakePictureArg()
             {
-                SkeletonId = SkeletonId
+                TrackingId = TrackingId
             };
         }
     }

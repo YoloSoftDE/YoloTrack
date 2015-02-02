@@ -1,16 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace YoloTrack.MVC.Model.StateMachine.State
 {
-    class IdentifyState : BaseState<Arg.IdentifyArg>
+    /// <summary>
+    /// State transistion logic for 'Identify'
+    /// </summary>
+    class IdentifyState : BaseState<Impl.IdentifyImpl, Arg.IdentifyArg>
     {
+        /// <summary>
+        /// Generalized construcor. No way to omit the arguments paremeter here.
+        /// </summary>
+        /// <param name="arg"></param>
         public IdentifyState(Arg.IdentifyArg arg)
-            : base(new Impl.IdentifyImpl(), arg)
-        { }
+            : base(arg)
+        {
+        }
 
+        /// <summary>
+        /// Transistion logic.
+        /// </summary>
+        /// <returns></returns>
         protected override StateTransistion Transist()
         {
             BaseArg result = RunImpl();
@@ -26,5 +35,5 @@ namespace YoloTrack.MVC.Model.StateMachine.State
 
             return null;
         }
-    }
-}
+    } // End class
+} // End namespace

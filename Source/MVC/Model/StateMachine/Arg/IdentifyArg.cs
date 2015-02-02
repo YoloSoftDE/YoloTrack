@@ -8,23 +8,15 @@ namespace YoloTrack.MVC.Model.StateMachine.Arg
 {
     class IdentifyArg : BaseArg
     {
-        public List<Bitmap> Faces { get; set; }
-        public int SkeletonId { get; set; }
-        public Storage.RuntimeInfo RTInfo
-        {
-            get
-            {
-                IdentifyArg arg = this;
-                return Model.TrackingModel.Instance().RuntimeDatabase[arg.SkeletonId];
-            }
-        }
+        public List<Bitmap> Faces;
+        public int TrackingId;
 
         public override object Clone()
         {
             return new IdentifyArg()
             {
                 Faces = new List<Bitmap>(Faces),
-                SkeletonId = SkeletonId
+                TrackingId = TrackingId
             };
         }
     }

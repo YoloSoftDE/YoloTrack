@@ -1,109 +1,51 @@
 ﻿using System;
 using System.Drawing;
-using System.IO;
 using System.Collections.Generic;
 using Cognitec.FRsdk;
 using Eyes = Cognitec.FRsdk.Eyes;
-using Identification = Cognitec.FRsdk.Identification;
+using YoloTrack.MVC.Model.IdentificationData;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
+    /// <summary>
+    /// State implementation for 'Identify'
+    /// </summary>
     class IdentifyImpl : BaseImpl<Arg.IdentifyArg>
     {
-		protected float threshold = 1;
-
-        private class IdentificationException : System.Exception
-        {
-            public IdentificationException(string message)
-                : base(message)
-            {
-            }
-        }
-		
-        private class IdentificationFeedback : Identification.Feedback
-        {
-            public Match[] match = null;
-            public float sample_quality;
-
-            public void eyesNotFound()
-            {
-                throw new IdentificationException("eyesNotFound");
-            }
-
-            public void sampleQualityTooLow()
-            {
-                throw new IdentificationException("sampleQualityTooLow");
-            }
-
-            public void failure()
-            {
-                throw new IdentificationException("failure");
-            }
-
-            public void sampleQuality(float f)
-            {
-                this.sample_quality = f;
-            }
-
-            public void matches(Match[] matches)
-            {
-                this.match = matches;
-            }
-
-
-            public void end()
-            {
-                
-            }
-
-            public void eyesFound(Eyes.Location eyeLoc)
-            {
-                
-            }
-
-            public void processingImage(Cognitec.FRsdk.Image img)
-            {
-                
-            }
-
-            public void start()
-            {
-                
-            }
-        }
-
+        /// <summary>
+        /// Result of the identification procedure
+        /// </summary>
         protected struct IdentifyResult
         {
-            public Guid PersonId;
+            public int DatabaseRecordId;
             public float Score;
         }
 
+        /// <summary>
+        /// Actual identification procedure
+        /// </summary>
+        /// <param name="samples"></param>
+        /// <returns></returns>
 		protected IdentifyResult Identify (List<Sample> samples)
 		{
 			/* Run Identification */
-			IdentificationFeedback fb = new IdentificationFeedback();
-
-			Model.IdentificationProcessor.process (
-                samples.ToArray(),
-                Model.FARScore,
-                fb,
-                3
-			);
+            IdentificationFeedback fb = m_identification_api.Identify(samples, 3);
 
 			/* Find the highest matching person */
 			Match winner;
             IdentifyResult result = new IdentifyResult();
 
-			if (fb.match.Length == 0) {
+			if (fb.Match.Length == 0) {
                 result.Score = 0;
                 return result;
 			}
-			
-			winner = fb.match [0];
+
+            winner = fb.Match[0];
             Console.WriteLine("Match on FIR[{0}] has Score {1}", winner.name, winner.score.value);
 
-			for (int i = 1; i < fb.match.Length; i++) {
-				Match m = fb.match [i];
+            for (int i = 1; i < fb.Match.Length; i++)
+            {
+                Match m = fb.Match[i];
 
 				Console.WriteLine ("Match on FIR[{0}] has Score {1}", m.name, m.score.value);
 				if (m.score.value > winner.score.value) {
@@ -111,12 +53,16 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 				}
 			}
 
-            result.PersonId = Guid.Parse(winner.name);
+            result.DatabaseRecordId = Int16.Parse(winner.name);
             result.Score = winner.score.value;
 			// Storage.Person match = Model.MainDatabase.People.Find(p => p.Id == Guid.Parse(winner.name));
 			return result;
 		}
 		
+        /// <summary>
+        /// Execution step.
+        /// </summary>
+        /// <param name="arg"></param>
         public override void Run (Arg.IdentifyArg arg)
 		{
 			/* Prepare Samples for identification */
@@ -134,13 +80,13 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 // 0% - 20% -> Unknown -> Learn
                 if (result.Score <= 0.2)
                 {
-                    Storage.RuntimeInfo info = Model.RuntimeDatabase[arg.SkeletonId];
-                    info.State = Storage.TrackingState.UNKNOWN;
-                    Model.RuntimeDatabase[arg.SkeletonId] = info;
+                    RuntimeDatabase.Record record = m_runtime_database[arg.TrackingId];
+                    record.State = RuntimeDatabase.RecordState.Unknown;
+                    m_runtime_database[arg.TrackingId] = record;
 
                     Result = new Arg.LearnArg()
                     {
-                        SkeletonId = arg.SkeletonId,
+                        TrackingId = arg.TrackingId,
                         Samples = identificationSamples,
                         Faces = arg.Faces
                     };
@@ -148,27 +94,26 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 // >20% - 50% -> Unidentified -> WaitForBody
                 else if (result.Score <= 0.5)
                 {
-                    Storage.RuntimeInfo info = Model.RuntimeDatabase[arg.SkeletonId];
-                    info.State = Storage.TrackingState.UNIDENTIFIED;
-                    Model.RuntimeDatabase[arg.SkeletonId] = info;
+                    RuntimeDatabase.Record record = m_runtime_database[arg.TrackingId];
+                    record.State = RuntimeDatabase.RecordState.Unidentified;
+                    m_runtime_database[arg.TrackingId] = record;
 
                     Result = new Arg.WaitForBodyArg();
                 }
                 // >50% - 100% -> Identified -> Track
                 else
                 {
-                    Storage.RuntimeInfo info = Model.RuntimeDatabase[arg.SkeletonId];
-                    info.State = Storage.TrackingState.IDENTIFIED;
-                    Model.RuntimeDatabase[arg.SkeletonId] = info;
+                    RuntimeDatabase.Record record = m_runtime_database[arg.TrackingId];
+                    record.State = RuntimeDatabase.RecordState.Identified;
+                    m_runtime_database[arg.TrackingId] = record;
 
-                    Storage.Person p = Model.MainDatabase.People.Find(pers => pers.Id == result.PersonId);
-                    p.RuntimeInfo = info;
-                    p.RecognizedCount++;
-                    Model.MainDatabase.Update(p);
+                    Database.Record p = m_database[result.DatabaseRecordId];
+                    p.RuntimeRecord = record;
+                    p.IncrementTimesRecognized();
 
                     Result = new Arg.TrackingDecisionArg()
                     {
-                        PersonId = result.PersonId
+                        DatabaseRecordId = result.DatabaseRecordId
                     };
                 }
             } // End try

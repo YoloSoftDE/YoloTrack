@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Text;
 using Microsoft.Kinect;
-using YoloTrack.MVC.Model.Storage;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
@@ -13,21 +12,20 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
         {
             while (true)
             {
-                Model.Kinect.SkeletonStream.AppChoosesSkeletons = true;
-                Model.Kinect.SkeletonStream.ChooseSkeletons();
-                Model.RuntimeDatabase.Refresh();
+                m_sensor.SkeletonStream.Track();
+                m_runtime_database.Refresh();
 
                 // Search for those RuntimeInfos that need clarification (maybe identification?)
-                foreach (KeyValuePair<int, RuntimeInfo> entry in Model.RuntimeDatabase)
+                foreach (KeyValuePair<int, RuntimeDatabase.Record> entry in m_runtime_database)
                 {
-                    if (entry.Value.State == TrackingState.UNIDENTIFIED ||
-                        entry.Value.State == TrackingState.UNKNOWN)
+                    if (entry.Value.State == RuntimeDatabase.RecordState.Unidentified ||
+                        entry.Value.State == RuntimeDatabase.RecordState.Unknown)
                     {
                         // Enable tracking for joint-orientations
-                        entry.Value.Watch();
+                        m_sensor.SkeletonStream.Track(entry.Key);
                         Result = new Arg.WaitTakePictureArg()
                         {
-                            SkeletonId = entry.Key
+                            TrackingId = entry.Key
                         };
                         return;
                     }
