@@ -94,6 +94,75 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
         }
 
         /// <summary>
+        /// Synchronized Add implementation.
+        /// This is a synchronized method.
+        /// </summary>
+        /// <param name="Key"></param>
+        /// <param name="Value"></param>
+        public new void Add(int Key, Record Value)
+        {
+            // Lock the container for changes
+            m_container_modification_mutex.WaitOne();
+
+            base.Add(Key, Value);
+
+            if (RecordAdded != null)
+            {
+                RecordAdded(this, new RecordAddedEventArgs()
+                {
+                    Record = Value
+                });
+            }
+
+            // Release lock
+            m_container_modification_mutex.ReleaseMutex();
+        }
+
+        /// <summary>
+        /// Synchronized Clear implementation.
+        /// This is a synchronized method.
+        /// </summary>
+        public new void Clear()
+        {
+            // Lock the container for changes
+            m_container_modification_mutex.WaitOne();
+
+            base.Clear();
+
+            // Release lock
+            m_container_modification_mutex.ReleaseMutex();
+        }
+
+        /// <summary>
+        /// Synchronized Remove implementation.
+        /// This is a synchronized method.
+        /// </summary>
+        /// <param name="Key"></param>
+        public new void Remove(int Key)
+        {
+            // Precheck if key exists
+            if (!ContainsKey(Key))
+                return;
+
+            // Lock the container for changes
+            m_container_modification_mutex.WaitOne();
+
+            Record record = this[Key];
+            base.Remove(Key);
+
+            if (RecordRemoved != null)
+            {
+                RecordRemoved(this, new RecordRemovedEventArgs()
+                {
+                    Record = record
+                });
+            }
+
+            // Release lock
+            m_container_modification_mutex.ReleaseMutex();
+        }
+
+        /// <summary>
         /// Refreshs the runtime database to a synchronized state with the kinect sensor.
         /// This is a synchronized method.
         /// </summary>

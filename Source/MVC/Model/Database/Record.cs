@@ -24,7 +24,19 @@ namespace YoloTrack.MVC.Model.Database
         /// <summary>
         /// Database unique id
         /// </summary>
-        public int Id { get; private set; }
+        private int m_id;
+        public int Id
+        {
+            get { return m_id; }
+            set
+            {
+                m_id = value;
+                if (RecordChanged != null)
+                {
+                    RecordChanged(this, new RecordChangedEventArgs());
+                }
+            }
+        }
 
         /// <summary>
         /// 
@@ -67,8 +79,8 @@ namespace YoloTrack.MVC.Model.Database
         /// <summary>
         /// MetaInfo, Image
         /// </summary>
-        private System.Drawing.Image m_image;
-        public System.Drawing.Image Image
+        private System.Drawing.Bitmap m_image;
+        public System.Drawing.Bitmap Image
         {
             get { return m_image; }
             set
@@ -171,7 +183,7 @@ namespace YoloTrack.MVC.Model.Database
         /// </summary>
         public Record(int Id, IdentificationRecord IdentificationInformation)
         {
-            this.IdentificationRecord = IdentificationInformation;
+            IdentificationRecord = IdentificationInformation;
             this.Id = Id;
             FirstName = "";
             LastName = "";
@@ -185,14 +197,12 @@ namespace YoloTrack.MVC.Model.Database
         /// <param name="ms"></param>
         public void Serialize(System.IO.MemoryStream ms)
         {
-            Serializer.Serialize(ms, Id);
             Serializer.Serialize(ms, FirstName);
             Serializer.Serialize(ms, LastName);
             Serializer.Serialize(ms, Image);
             Serializer.Serialize(ms, TimesRecognized);
             Serializer.Serialize(ms, TimesTracked);
             Serializer.Serialize(ms, LearnedAt);
-            Serializer.Serialize(ms, IdentificationRecord);
         }
 
         /// <summary>
@@ -201,7 +211,12 @@ namespace YoloTrack.MVC.Model.Database
         /// <param name="ms"></param>
         public void Unserialize(System.IO.MemoryStream ms)
         {
-            throw new NotImplementedException();
+            FirstName = Serializer.UnserializeString(ms);
+            LastName = Serializer.UnserializeString(ms);
+            Image = Serializer.UnserializeImage(ms);
+            TimesRecognized = Serializer.UnserializeInt(ms);
+            TimesTracked = Serializer.UnserializeInt(ms);
+            LearnedAt = Serializer.UnserializeDateTime(ms);            
         }
     } // End class
 } // End namespace

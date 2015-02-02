@@ -111,8 +111,8 @@ namespace YoloTrack.MVC.View.Debug
         {
             _log("State machine",
                 String.Format("{0} -> {1}",
-                e.PreviousState.ToString(),
-                e.NextState.ToString()),
+                e.PreviousState.GetType().Name,
+                e.NextState.GetType().Name),
                 DebugLevel.Notice);
         }
 

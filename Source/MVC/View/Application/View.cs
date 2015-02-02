@@ -36,6 +36,11 @@ namespace YoloTrack.MVC.View.Application
         protected RuntimeDatabase m_runtime_database;
 
         /// <summary>
+        /// 
+        /// </summary>
+        protected Database m_database;
+
+        /// <summary>
         /// Sensor to be used
         /// </summary>
         protected Sensor m_sensor;
@@ -57,6 +62,14 @@ namespace YoloTrack.MVC.View.Application
         #region Database GUI methods
 
         /// <summary>
+        /// 
+        /// </summary>
+        private void _update_database_records_counter()
+        {
+            toolStripStatusLabel2.Text = m_database.Count + " Records in Database "; 
+        }
+
+        /// <summary>
         /// Adds a new item to the flow panel
         /// </summary>
         /// <param name="p"></param>
@@ -65,7 +78,8 @@ namespace YoloTrack.MVC.View.Application
             YoloTrack.MVC.View.Components.ProfileCard card = new YoloTrack.MVC.View.Components.ProfileCard()
             {
                 Id = p.Id,
-                FullName = string.Format("{0} {1}", p.FirstName, p.LastName),
+                FirstName = p.FirstName,
+                LastName = p.LastName,
                 Picture = p.Image,
                 TrackedCount = p.TimesTracked,
                 RecognizedCount = p.TimesRecognized,
@@ -73,6 +87,7 @@ namespace YoloTrack.MVC.View.Application
             };
 
             flowLayoutPanel1.Controls.Add(card);
+            _update_database_records_counter();
         }
 
         /// <summary>
@@ -85,7 +100,8 @@ namespace YoloTrack.MVC.View.Application
             {
                 if (profile_card.Id == record.Id)
                 {
-                    profile_card.FullName = string.Format("{0} {1}", record.FirstName, record.LastName);
+                    profile_card.FirstName = record.FirstName;
+                    profile_card.LastName = record.LastName;
                     profile_card.Picture = record.Image;
                     profile_card.TrackedCount = record.TimesTracked;
                     profile_card.RecognizedCount = record.TimesRecognized;
@@ -113,6 +129,38 @@ namespace YoloTrack.MVC.View.Application
 
             if (to_remove != null)
                 flowLayoutPanel1.Controls.Remove(to_remove);
+
+            _update_database_records_counter();
+        }
+
+        #endregion
+
+        #region RuntimeDatabase GUI methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void _update_runtime_records_counter()
+        {
+            toolStripStatusLabel3.Text = m_runtime_database.Count + " Records in Runtime Database ";
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="record"></param>
+        private void _add_runtime_record(Model.RuntimeDatabase.Record record)
+        {
+            _update_runtime_records_counter();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="record"></param>
+        private void _remove_runtime_record(Model.RuntimeDatabase.Record record)
+        {
+            _update_runtime_records_counter();
         }
 
         #endregion
@@ -168,7 +216,7 @@ namespace YoloTrack.MVC.View.Application
         /// <param name="Sensor"></param>
         public void Observe(StateMachine StateMachine)
         {
-            
+            StateMachine.StateChange += new EventHandler<Model.StateMachine.StateChangeEventArgs>(_on_state_machine_state_change);
         }
 
         /// <summary>
@@ -177,7 +225,8 @@ namespace YoloTrack.MVC.View.Application
         /// <param name="RuntimeDatabase"></param>
         public void Observe(RuntimeDatabase RuntimeDatabase)
         {
-            
+            RuntimeDatabase.RecordAdded += new EventHandler<Model.RuntimeDatabase.RecordAddedEventArgs>(_on_runtime_database_record_added);
+            RuntimeDatabase.RecordRemoved += new EventHandler<Model.RuntimeDatabase.RecordRemovedEventArgs>(_on_runtime_database_record_removed);
         }
 
         /// <summary>
@@ -188,6 +237,12 @@ namespace YoloTrack.MVC.View.Application
         {
             Database.RecordAdded += new EventHandler<Model.Database.RecordAddedEventArgs>(_on_database_record_added);
             Database.RecordRemoved += new EventHandler<Model.Database.RecordRemovedEventArgs>(_on_database_record_removed);
+
+            foreach (KeyValuePair<int, Model.Database.Record> p in (Dictionary<int, Model.Database.Record>)Database.ContainerCopy)
+            {
+                _add_profile_card(p.Value);
+                p.Value.RecordChanged += new EventHandler<Model.Database.RecordChangedEventArgs>(_on_database_record_changed);
+            }
         }
 
         /// <summary>
@@ -203,6 +258,11 @@ namespace YoloTrack.MVC.View.Application
 
         #region Model event handlers
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void _on_database_record_added(object sender, Model.Database.RecordAddedEventArgs e)
         {
             if (InvokeRequired)
@@ -217,6 +277,11 @@ namespace YoloTrack.MVC.View.Application
             e.Record.RecordChanged += new EventHandler<Model.Database.RecordChangedEventArgs>(_on_database_record_changed);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void _on_database_record_changed(object sender, Model.Database.RecordChangedEventArgs e)
         {
             if (InvokeRequired)
@@ -229,6 +294,11 @@ namespace YoloTrack.MVC.View.Application
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void _on_database_record_removed(object sender, Model.Database.RecordRemovedEventArgs e)
         {
             if (InvokeRequired)
@@ -249,6 +319,16 @@ namespace YoloTrack.MVC.View.Application
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        void _on_state_machine_state_change(object sender, Model.StateMachine.StateChangeEventArgs e)
+        {
+            toolStripStatusLabel1.Text = e.NextState.GetType().Name;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void _sensor_colorframe_available(object sender, Model.Sensor.ColorImageFrameEventArgs e)
         {
             if (InvokeRequired)
@@ -258,6 +338,41 @@ namespace YoloTrack.MVC.View.Application
             else
             {
                 _show_liveframe(e.Frame);
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _on_runtime_database_record_added(object sender, Model.RuntimeDatabase.RecordAddedEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke((MethodInvoker)delegate { _add_runtime_record(e.Record); });
+            }
+            else
+            {
+                _add_runtime_record(e.Record);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _on_runtime_database_record_removed(object sender, Model.RuntimeDatabase.RecordRemovedEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke((MethodInvoker)delegate { _remove_runtime_record(e.Record); });
+            }
+            else
+            {
+                _remove_runtime_record(e.Record);
             }
         }
 
@@ -272,6 +387,15 @@ namespace YoloTrack.MVC.View.Application
         public void Bind(RuntimeDatabase RuntimeDatabase)
         {
             m_runtime_database = RuntimeDatabase;
+        }
+
+        /// <summary>
+        /// Binder to the database
+        /// </summary>
+        /// <param name="IdentificationAPI"></param>
+        public void Bind(Database Database)
+        {
+            m_database = Database;
         }
 
         /// <summary>
