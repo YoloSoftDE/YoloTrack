@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.IO;
 
 namespace YoloTrack.MVC.Model.Database
 {
@@ -220,8 +221,12 @@ namespace YoloTrack.MVC.Model.Database
         /// <param name="FileName"></param>
         public void SaveTo(string FileName)
         {
-            throw new NotImplementedException();
-            // TODO
+            MemoryStream ms = new MemoryStream();
+            _serialize_to(ms);
+            FileStream fs = new FileStream(FileName, FileMode.Create, FileAccess.ReadWrite);
+            ms.WriteTo(fs);
+            ms.Close();
+            fs.Close();
         }
 
         /// <summary>
@@ -232,9 +237,18 @@ namespace YoloTrack.MVC.Model.Database
         /// <returns></returns>
         public static Model LoadFrom(string FileName)
         {
-            //throw new NotImplementedException();
-            // TODO
-            return new Model();
+            Model model = new Model();
+            //Serializer.Unserialize(
+            return model;
+        }
+
+        /// <summary>
+        /// Serializes the instance to a memory stream
+        /// </summary>
+        /// <param name="ms"></param>
+        private void _serialize_to(MemoryStream ms)
+        {
+            Serializer.Serialize(ms, this);
         }
     } // End class
 } // End namespace

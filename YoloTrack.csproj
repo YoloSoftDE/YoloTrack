@@ -59,8 +59,10 @@
     <Compile Include="Source\MVC\Model\Configuration\Model.cs" />
     <Compile Include="Source\MVC\Model\Configuration\Options.cs" />
     <Compile Include="Source\MVC\Model\Database\IdentificationRecord.cs" />
+    <Compile Include="Source\MVC\Model\Database\ISerializable.cs" />
     <Compile Include="Source\MVC\Model\Database\Model.cs" />
     <Compile Include="Source\MVC\Model\Database\Record.cs" />
+    <Compile Include="Source\MVC\Model\Database\Serializer.cs" />
     <Compile Include="Source\MVC\Model\IdentificationData\EnrollmentFeedback.cs" />
     <Compile Include="Source\MVC\Model\IdentificationData\IdentificationFeedback.cs" />
     <Compile Include="Source\MVC\Model\IdentificationData\Model.cs" />

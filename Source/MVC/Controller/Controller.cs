@@ -86,6 +86,8 @@ namespace YoloTrack.MVC.Controller
 
             // Initialize the Database
             m_database = Database.LoadFrom(m_configuration.Options.Database.FileName);
+            m_database.RecordAdded += new EventHandler<Model.Database.RecordAddedEventArgs>(OnDatabaseRecordAdded);
+            m_database.RecordRemoved += new EventHandler<Model.Database.RecordRemovedEventArgs>(OnDatabaseRecordRemoved);
             
             // Initialize the runtime database
             m_runtime_database = new RuntimeDatabase();
@@ -129,5 +131,19 @@ namespace YoloTrack.MVC.Controller
             m_state_machine.Start();
             Application.Run(m_app_view);
         }
+
+        #region Model Event handlers
+
+        void OnDatabaseRecordAdded(object sender, Model.Database.RecordAddedEventArgs e)
+        {
+            m_database.SaveTo("test.ydb");
+        }
+
+        void OnDatabaseRecordRemoved(object sender, Model.Database.RecordRemovedEventArgs e)
+        {
+            m_database.SaveTo("test.ydb");
+        }
+
+        #endregion
     }
 }
