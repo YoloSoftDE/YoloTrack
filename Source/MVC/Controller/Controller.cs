@@ -105,6 +105,7 @@ namespace YoloTrack.MVC.Controller
             // Init Debug view
             m_debug_view = new DebugView();
             m_debug_view.Bind(m_configuration);
+            m_debug_view.Observe(m_state_machine);
             m_debug_view.Observe(m_sensor);
             m_debug_view.Observe(m_runtime_database);
             m_debug_view.Observe(m_identification_data);
