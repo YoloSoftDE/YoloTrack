@@ -60,6 +60,7 @@ namespace YoloTrack.MVC.View.Application
         {
             YoloTrack.MVC.View.Components.ProfileCard card = new YoloTrack.MVC.View.Components.ProfileCard()
             {
+                Id = p.Id,
                 FullName = string.Format("{0} {1}", p.FirstName, p.LastName),
                 Picture = p.Image,
                 TrackedCount = p.TimesTracked,
