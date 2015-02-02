@@ -41,7 +41,7 @@ namespace YoloTrack.MVC.View.Debug
             if (Level < m_app_config.Options.Logging.LogLevel)
                 return;
 
-            Console.WriteLine("[{0}] ({1}}: {2}", Level, Section, Message);
+            Console.WriteLine("[{0}] ({1}): {2}", Level, Section, Message);
         }
 
         /// <summary>
