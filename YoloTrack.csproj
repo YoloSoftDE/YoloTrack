@@ -108,6 +108,12 @@
     <Compile Include="Source\MVC\View\Components\DatabaseView.Designer.cs">
       <DependentUpon>DatabaseView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Source\MVC\View\Components\DatabaseViewItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\DatabaseViewItem.Designer.cs">
+      <DependentUpon>DatabaseViewItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Source\MVC\View\Debug\View.cs" />
     <Compile Include="Source\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -125,6 +131,9 @@
     </Compile>
     <EmbeddedResource Include="Source\MVC\View\Components\DatabaseView.resx">
       <DependentUpon>DatabaseView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Source\MVC\View\Components\DatabaseViewItem.resx">
+      <DependentUpon>DatabaseViewItem.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
