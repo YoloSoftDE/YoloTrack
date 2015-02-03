@@ -30,6 +30,8 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			/* Run Identification */
             IdentificationFeedback fb = m_identification_api.Identify(samples, 3);
 
+            Console.WriteLine("Sample Quality is {0}", fb.SampleQuality);
+
 			/* Find the highest matching person */
 			Match winner;
             IdentifyResult result = new IdentifyResult();
@@ -52,9 +54,8 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 				}
 			}
 
-            result.DatabaseRecordId = Int16.Parse(winner.name);
+            result.DatabaseRecordId = int.Parse(winner.name);
             result.Score = winner.score.value;
-			// Storage.Person match = Model.MainDatabase.People.Find(p => p.Id == Guid.Parse(winner.name));
 			return result;
 		}
 		
@@ -108,6 +109,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
                     Database.Record p = m_database[result.DatabaseRecordId];
                     p.RuntimeRecord = record;
+                    record.Attach(p);
                     p.IncrementTimesRecognized();
 
                     Result = new Arg.TrackingDecisionArg()

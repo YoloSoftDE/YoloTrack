@@ -33,7 +33,7 @@ namespace YoloTrack.MVC.View.Components
                 /* Invalidate SUCKS!!!!
                  * PictureBox SUCKS!!!!
                  */
-                this.Refresh();
+                this.Refresh(); // FIXME: may throw InOpEx
 
                 
             }

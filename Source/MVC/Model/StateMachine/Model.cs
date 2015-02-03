@@ -88,6 +88,7 @@ namespace YoloTrack.MVC.Model.StateMachine
 
             m_terminate = false;
             m_worker = new Thread(new ThreadStart(_work));
+            m_worker.Name = "StateMachine Worker";
             m_worker.Start();
         }
 

@@ -75,7 +75,7 @@ namespace YoloTrack.MVC.View.Application
         /// <param name="p"></param>
         private void _add_profile_card(Model.Database.Record p)
         {
-            YoloTrack.MVC.View.Components.ProfileCard card = new YoloTrack.MVC.View.Components.ProfileCard()
+            Components.ProfileCard card = new Components.ProfileCard()
             {
                 Id = p.Id,
                 FirstName = p.FirstName,
@@ -86,8 +86,16 @@ namespace YoloTrack.MVC.View.Application
                 LearnedAt = p.LearnedAt
             };
 
+            card.DeleteButtonClicked += new EventHandler(_profile_card_delete_button_pressed);
+
             flowLayoutPanel1.Controls.Add(card);
             _update_database_records_counter();
+        }
+
+        void _profile_card_delete_button_pressed(object sender, EventArgs e)
+        {
+            Components.ProfileCard card = (Components.ProfileCard)sender;
+            m_database.Remove(card.Id);
         }
 
         /// <summary>
@@ -408,5 +416,10 @@ namespace YoloTrack.MVC.View.Application
         }
 
         #endregion
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     } // End class
 } // End namespace

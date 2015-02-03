@@ -16,7 +16,7 @@ namespace YoloTrack.MVC.Model.Configuration
         /// <summary>
         /// Option holder.
         /// </summary>
-        public Options Options { get; private set; }
+        public Options Options;
 
         /// <summary>
         /// Currently loaded configuration file.

@@ -11,6 +11,8 @@ namespace YoloTrack.MVC.View.Components
 {
     public partial class ProfileCard : UserControl
     {
+        public event EventHandler DeleteButtonClicked;
+
         public ProfileCard()
         {
             InitializeComponent();
@@ -18,10 +20,8 @@ namespace YoloTrack.MVC.View.Components
 
         private void ProfileCard_Paint(object sender, PaintEventArgs e)
         {
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.Gray, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, SystemColors.ControlDark, ButtonBorderStyle.Solid);
         }
-
-        public int Id { get; set; }
 
         public string FirstName
         {
@@ -43,9 +43,16 @@ namespace YoloTrack.MVC.View.Components
             set { lbl_recognized_count.Text = value.ToString(); }
         }
 
+        int m_id;
+        public int Id
+        {
+            set { m_id = value;  lv_details.Items[0].SubItems[1].Text = value.ToString(); }
+            get { return m_id;  }
+        }
+
         public DateTime LearnedAt
         {
-            set {  }
+            set { lv_details.Items[1].SubItems[1].Text = value.ToShortDateString() + " " + value.ToShortTimeString(); }
         }
 
         public Image Picture
@@ -53,27 +60,12 @@ namespace YoloTrack.MVC.View.Components
             set { pb_profile_picture.Image = value; }
         }
 
-        private void lbl_first_name_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            TextBox tb_first_name = new TextBox() 
+            if (DeleteButtonClicked != null)
             {
-                Text = lbl_first_name.Text,
-                Left = lbl_first_name.Left,
-                Top = lbl_first_name.Top
-            };
-
-            lbl_first_name.Visible = false;
-            lbl_first_name.Parent.Controls.Add(tb_first_name);
-
-            tb_first_name.Leave += new EventHandler(tb_first_name_Leave);
-        }
-
-        void tb_first_name_Leave(object sender, EventArgs e)
-        {
-            TextBox tb_first_name = (TextBox)sender;
-            lbl_first_name.Text = tb_first_name.Text;
-            lbl_first_name.Parent.Controls.Remove(tb_first_name);
-            lbl_first_name.Visible = true;
+                DeleteButtonClicked(this, new EventArgs());
+            }
         }
     }
 }

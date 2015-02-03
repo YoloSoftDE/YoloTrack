@@ -52,6 +52,6 @@ namespace YoloTrack.MVC.Model.Configuration
         /// <summary>
         /// Logging
         /// </summary>
-        public Option.Logging Logging { get; private set; }
+        public Option.Logging Logging;
     } // End struct
 } // End namespace
