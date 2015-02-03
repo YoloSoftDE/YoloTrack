@@ -1,6 +1,6 @@
 ﻿namespace YoloTrack.MVC.View.Components
 {
-    partial class LiveView
+    partial class DatabaseViewItem
     {
         /// <summary> 
         /// Erforderliche Designervariable.
@@ -28,15 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // LiveView
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "LiveView";
-            this.ResumeLayout(false);
-
         }
 
         #endregion
