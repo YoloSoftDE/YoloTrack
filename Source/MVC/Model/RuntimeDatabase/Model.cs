@@ -106,6 +106,9 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
 
             base.Add(Key, Value);
 
+            // Release lock
+            m_container_modification_mutex.ReleaseMutex();
+
             if (RecordAdded != null)
             {
                 RecordAdded(this, new RecordAddedEventArgs()
@@ -113,9 +116,6 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
                     Record = Value
                 });
             }
-
-            // Release lock
-            m_container_modification_mutex.ReleaseMutex();
         }
 
         /// <summary>
@@ -150,6 +150,9 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
             Record record = this[Key];
             base.Remove(Key);
 
+            // Release lock
+            m_container_modification_mutex.ReleaseMutex();
+
             if (RecordRemoved != null)
             {
                 RecordRemoved(this, new RecordRemovedEventArgs()
@@ -157,9 +160,6 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
                     Record = record
                 });
             }
-
-            // Release lock
-            m_container_modification_mutex.ReleaseMutex();
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
             frame.CopySkeletonDataTo(skeletons);
 
             // Lock the container for changes
-            m_container_modification_mutex.WaitOne();
+            //m_container_modification_mutex.WaitOne();
 
             // Add newly appered Persons (?) to RuntimeDB
             // Update existing skeletons
@@ -196,16 +196,22 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
                 }
                 else
                 {
-                    Record record_to_update = this[skeleton.TrackingId];
-                    record_to_update.KinectResource.UpdateTo(skeleton);
-                    this[skeleton.TrackingId] = record_to_update;
+                    //Record record_to_update = this[skeleton.TrackingId];
+                    //record_to_update.KinectResource.UpdateTo(skeleton);
+                    this[skeleton.TrackingId].KinectResource.UpdateTo(skeleton);
+                    //this[skeleton.TrackingId] = record_to_update;
                 }
             }
 
             // Remove obsolete RuntimeInfos from RuntimeDB
             List<int> ids = new List<int>();
+
+            // Lock the container for changes
+            m_container_modification_mutex.WaitOne();
             foreach (KeyValuePair<int, Record> p in this)
                 ids.Add(p.Key);
+            // Unlock
+            m_container_modification_mutex.ReleaseMutex();
 
             foreach (int id in ids)
             {
@@ -223,7 +229,7 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
             }
 
             // Release lock
-            m_container_modification_mutex.ReleaseMutex();
+            //m_container_modification_mutex.ReleaseMutex();
             return;
         }
 

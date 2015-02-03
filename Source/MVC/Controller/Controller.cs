@@ -130,6 +130,8 @@ namespace YoloTrack.MVC.Controller
 
             #endregion
 
+            m_configuration.Options.Logging.LogLevel = View.Debug.DebugLevel.Info;
+
             m_state_machine.Start();
             Application.Run(m_app_view);
         }

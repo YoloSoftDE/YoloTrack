@@ -109,6 +109,9 @@ namespace YoloTrack.MVC.Model.Database
 
             base.Add(Key, Value);
 
+            // Release lock
+            m_container_modification_mutex.ReleaseMutex();
+
             if (RecordAdded != null)
             {
                 RecordAdded(this, new RecordAddedEventArgs()
@@ -116,9 +119,6 @@ namespace YoloTrack.MVC.Model.Database
                     Record = Value
                 });
             }
-
-            // Release lock
-            m_container_modification_mutex.ReleaseMutex();
         }
 
         /// <summary>
@@ -153,6 +153,9 @@ namespace YoloTrack.MVC.Model.Database
             Record record = this[Key];
             base.Remove(Key);
 
+            // Release lock
+            m_container_modification_mutex.ReleaseMutex();
+
             if (RecordRemoved != null)
             {
                 RecordRemoved(this, new RecordRemovedEventArgs()
@@ -160,9 +163,6 @@ namespace YoloTrack.MVC.Model.Database
                     Record = record
                 });
             }
-
-            // Release lock
-            m_container_modification_mutex.ReleaseMutex();
         }
 
         /// <summary>

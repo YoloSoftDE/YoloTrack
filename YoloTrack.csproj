@@ -81,6 +81,12 @@
     <Compile Include="Source\MVC\Model\StateMachine\StateTransistion.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\LearnState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\SwitchTargetState.cs" />
+    <Compile Include="Source\MVC\View\Components\EditLabel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\EditLabel.Designer.cs">
+      <DependentUpon>EditLabel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Source\MVC\View\Components\LiveView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -131,6 +137,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Source\MVC\View\Components\EditLabel.resx">
+      <DependentUpon>EditLabel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Source\MVC\View\Components\LiveView.resx">
       <DependentUpon>LiveView.cs</DependentUpon>
     </EmbeddedResource>
