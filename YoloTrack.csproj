@@ -5,18 +5,17 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FD0E9EB9-03D3-4A98-990A-3C4C5C6EAC84}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{3559C0B6-4939-47D8-AF5E-496B0718DA6E}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YoloTrack</RootNamespace>
     <AssemblyName>YoloTrack</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -26,7 +25,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,11 +33,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="libfrsdknet-8.5.0, Version=8.5.0.0, Culture=neutral, PublicKeyToken=b9feb4b24e2565f5, processorArchitecture=AMD64">
+    <Reference Include="libfrsdknet-8.5.0, Version=8.5.0.0, Culture=neutral, PublicKeyToken=b9feb4b24e2565f5, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\libfrsdknet-8.5.0.dll</HintPath>
     </Reference>
@@ -55,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Source\MVC\Controller\Controller.cs" />
     <Compile Include="Source\MVC\Model\Configuration\IConfigurable.cs" />
     <Compile Include="Source\MVC\Model\Configuration\Model.cs" />
     <Compile Include="Source\MVC\Model\Configuration\Options.cs" />
@@ -72,30 +69,9 @@
     <Compile Include="Source\MVC\Model\Sensor\CoordinateMapper.cs" />
     <Compile Include="Source\MVC\Model\Sensor\Model.cs" />
     <Compile Include="Source\MVC\Model\Sensor\SkeletonStream.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Arg\IdentifyArg.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Arg\LearnArg.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Arg\SwitchTargetArg.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Impl\LearnImpl.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Impl\SwitchTargetImpl.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Impl\Util\CompatibleImage.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Model.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\StateTransistion.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\State\LearnState.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\State\SwitchTargetState.cs" />
-    <Compile Include="Source\MVC\View\Components\EditLabel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Source\MVC\View\Components\EditLabel.Designer.cs">
-      <DependentUpon>EditLabel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Source\MVC\View\Components\LiveView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Source\MVC\View\Components\LiveView.Designer.cs">
-      <DependentUpon>LiveView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Source\MVC\Controller\Controller.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Arg\IdentifyArg.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Arg\TrackingArg.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Arg\TrackingDecisionArg.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Arg\WaitForBodyArg.cs" />
@@ -104,29 +80,40 @@
     <Compile Include="Source\MVC\Model\StateMachine\BaseImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\BaseState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\IdentifyImpl.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Impl\LearnImpl.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Impl\SwitchTargetImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\TrackingDecisionImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\TrackingImpl.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Impl\Util\CompatibleImage.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\WaitForBodyImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\WaitTakePictureImpl.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Model.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\StateTransistion.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\IdentifyState.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\State\LearnState.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\State\SwitchTargetState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\TrackingDecisionState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\TrackingState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\WaitForBodyState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\WaitTakePictureState.cs" />
-    <Compile Include="Source\MVC\View\Debug\View.cs" />
     <Compile Include="Source\MVC\View\Application\View.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Source\MVC\View\Application\View.Designer.cs">
       <DependentUpon>View.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\MVC\View\Components\ProfileCard.cs">
+    <Compile Include="Source\MVC\View\Components\DatabaseView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Source\MVC\View\Components\ProfileCard.Designer.cs">
-      <DependentUpon>ProfileCard.cs</DependentUpon>
+    <Compile Include="Source\MVC\View\Components\DatabaseView.Designer.cs">
+      <DependentUpon>DatabaseView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Source\MVC\View\Debug\View.cs" />
     <Compile Include="Source\Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Source\MVC\View\Application\View.resx">
+      <DependentUpon>View.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -135,23 +122,10 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Source\MVC\View\Components\EditLabel.resx">
-      <DependentUpon>EditLabel.cs</DependentUpon>
+    <EmbeddedResource Include="Source\MVC\View\Components\DatabaseView.resx">
+      <DependentUpon>DatabaseView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\MVC\View\Components\LiveView.resx">
-      <DependentUpon>LiveView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Source\MVC\View\Application\View.resx">
-      <DependentUpon>View.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Source\MVC\View\Components\ProfileCard.resx">
-      <DependentUpon>ProfileCard.cs</DependentUpon>
-    </EmbeddedResource>
-    <None Include="frsdk.cfg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -161,18 +135,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="libbiospi-8.5.0.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libfrsdk-8.5.0.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libfrsdknet-8.5.0.dll" />
-    <Content Include="libiomp5md.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Include="Source\MVC\Model\StateMachine\Impl\LearnImpl.cs.orig" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

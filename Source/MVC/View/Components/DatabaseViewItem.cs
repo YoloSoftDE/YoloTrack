@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace YoloTrack.MVC.View.Application
+namespace YoloTrack.MVC.View.Components
 {
-    public partial class View : Form
+    public partial class DatabaseViewItem : UserControl
     {
-        public View()
+        public DatabaseViewItem()
         {
             InitializeComponent();
         }
