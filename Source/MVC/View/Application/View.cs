@@ -18,82 +18,72 @@ namespace YoloTrack.MVC.View.Application
 
             databaseView1.Items.Add(new DatabaseViewItem()
             {
-                Id = 1337,
+                Id = 1,
                 FirstName = "Hans",
                 LastName = "Yolo",
-                LearnedAt = DateTime.Now
+                LearnedAt = DateTime.Now,
+                TimesRecognized = 0,
+                TimesTracked = 0
             });
 
             databaseView1.Items.Add(new DatabaseViewItem()
             {
-                Id = 42,
+                Id = 2,
                 FirstName = "Captain",
                 LastName = "Obvious",
-                LearnedAt = DateTime.Now
+                LearnedAt = DateTime.Now,
+                TimesRecognized = 5,
+                TimesTracked = 0
             });
 
             databaseView1.Items.Add(new DatabaseViewItem()
             {
-                Id = 42,
-                FirstName = "Captain",
-                LastName = "Obvious",
-                LearnedAt = DateTime.Now
+                Id = 3,
+                FirstName = "Vincent",
+                LastName = "Stech",
+                LearnedAt = DateTime.Now,
+                TimesRecognized = 0,
+                TimesTracked = 0
             });
 
             databaseView1.Items.Add(new DatabaseViewItem()
             {
-                Id = 42,
-                FirstName = "Captain",
-                LastName = "Obvious",
-                LearnedAt = DateTime.Now
+                Id = 4,
+                FirstName = "Fabian",
+                LastName = "Möbus",
+                LearnedAt = DateTime.Now,
+                TimesRecognized = 1,
+                TimesTracked = 0
             });
 
             databaseView1.Items.Add(new DatabaseViewItem()
             {
-                Id = 42,
-                FirstName = "Captain",
-                LastName = "Obvious",
-                LearnedAt = DateTime.Now
+                Id = 5,
+                FirstName = "Florian",
+                LastName = "Zorbach",
+                LearnedAt = DateTime.Now,
+                TimesRecognized = 1,
+                TimesTracked = 1
             });
 
             databaseView1.Items.Add(new DatabaseViewItem()
             {
-                Id = 1337,
-                FirstName = "Hans",
-                LastName = "Yolo",
-                LearnedAt = DateTime.Now
+                Id = 6,
+                FirstName = "Sebastian",
+                LastName = "Büttner",
+                LearnedAt = DateTime.Now,
+                TimesRecognized = 5,
+                TimesTracked = 3
             });
 
             databaseView1.Items.Add(new DatabaseViewItem()
             {
-                Id = 42,
-                FirstName = "Captain",
-                LastName = "Obvious",
-                LearnedAt = DateTime.Now
-            });
-
-            databaseView1.Items.Add(new DatabaseViewItem()
-            {
-                Id = 42,
-                FirstName = "Captain",
-                LastName = "Obvious",
-                LearnedAt = DateTime.Now
-            });
-
-            databaseView1.Items.Add(new DatabaseViewItem()
-            {
-                Id = 42,
-                FirstName = "Captain",
-                LastName = "Obvious",
-                LearnedAt = DateTime.Now
-            });
-
-            databaseView1.Items.Add(new DatabaseViewItem()
-            {
-                Id = 42,
-                FirstName = "Captain",
-                LastName = "Obvious",
-                LearnedAt = DateTime.Now
+                Id = 7,
+                FirstName = "Prof. Dr. Hartmut",
+                LastName = "Weber",
+                LearnedAt = DateTime.Now,
+                TimesRecognized = 17,
+                TimesTracked = 17
             });
         }
     }
