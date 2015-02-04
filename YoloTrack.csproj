@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3559C0B6-4939-47D8-AF5E-496B0718DA6E}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YoloTrack</RootNamespace>
     <AssemblyName>YoloTrack</AssemblyName>
@@ -32,6 +32,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="libfrsdknet-8.5.0, Version=8.5.0.0, Culture=neutral, PublicKeyToken=b9feb4b24e2565f5, processorArchitecture=x86">
@@ -108,11 +111,29 @@
     <Compile Include="Source\MVC\View\Components\DatabaseView.Designer.cs">
       <DependentUpon>DatabaseView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Source\MVC\View\Components\DatabaseViewHeader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\DatabaseViewHeader.Designer.cs">
+      <DependentUpon>DatabaseViewHeader.cs</DependentUpon>
+    </Compile>
     <Compile Include="Source\MVC\View\Components\DatabaseViewItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Source\MVC\View\Components\DatabaseViewItem.Designer.cs">
       <DependentUpon>DatabaseViewItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\DetailEditView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\DetailEditView.Designer.cs">
+      <DependentUpon>DetailEditView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\VisualTimer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\VisualTimer.Designer.cs">
+      <DependentUpon>VisualTimer.cs</DependentUpon>
     </Compile>
     <Compile Include="Source\MVC\View\Debug\View.cs" />
     <Compile Include="Source\Program.cs" />
@@ -132,8 +153,17 @@
     <EmbeddedResource Include="Source\MVC\View\Components\DatabaseView.resx">
       <DependentUpon>DatabaseView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Source\MVC\View\Components\DatabaseViewHeader.resx">
+      <DependentUpon>DatabaseViewHeader.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Source\MVC\View\Components\DatabaseViewItem.resx">
       <DependentUpon>DatabaseViewItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Source\MVC\View\Components\DetailEditView.resx">
+      <DependentUpon>DetailEditView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Source\MVC\View\Components\VisualTimer.resx">
+      <DependentUpon>VisualTimer.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="frsdk.cfg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
