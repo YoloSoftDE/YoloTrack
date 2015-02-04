@@ -41,10 +41,13 @@
             this.control_container.Padding = new System.Windows.Forms.Padding(3);
             this.control_container.Size = new System.Drawing.Size(312, 212);
             this.control_container.TabIndex = 4;
+            this.control_container.Click += new System.EventHandler(this.control_container_Click);
+            this.control_container.Paint += new System.Windows.Forms.PaintEventHandler(this.control_container_Paint);
             // 
             // databaseViewHeader1
             // 
             this.databaseViewHeader1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.databaseViewHeader1.HasBottomLine = false;
             this.databaseViewHeader1.Location = new System.Drawing.Point(0, 0);
             this.databaseViewHeader1.Margin = new System.Windows.Forms.Padding(0);
             this.databaseViewHeader1.Name = "databaseViewHeader1";

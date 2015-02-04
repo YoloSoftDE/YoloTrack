@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Windows.Forms;
-using ApplicationView = YoloTrack.MVC.View.Application.View;
-
 namespace YoloTrack
 {
     static class Program
     {
         /// <summary>
-        /// Der Haupteinstiegspunkt für die Anwendung.
+        /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ApplicationView());
+            MVC.Controller.Controller controller = new MVC.Controller.Controller();
         }
     }
 }

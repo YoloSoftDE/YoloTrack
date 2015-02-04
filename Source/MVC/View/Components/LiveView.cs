@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace YoloTrack.MVC.View.Components
@@ -14,13 +9,13 @@ namespace YoloTrack.MVC.View.Components
         protected Image m_image = null;
         protected int m_count = 0;
 
-        public LiveView ()
-		{
-			InitializeComponent ();
-			this.DoubleBuffered = true;
-			this.ImageAlign = ContentAlignment.TopLeft;
+        public LiveView()
+        {
+            InitializeComponent();
+            this.DoubleBuffered = true;
+            this.ImageAlign = ContentAlignment.TopLeft;
         }
-		
+
         public ContentAlignment ImageAlign
         {
             get;
@@ -42,7 +37,7 @@ namespace YoloTrack.MVC.View.Components
                  */
                 this.Refresh(); // FIXME: may throw InOpEx
 
-                
+
             }
         }
 
@@ -52,13 +47,13 @@ namespace YoloTrack.MVC.View.Components
             {
                 return;
             }
- 
- 
+
+
             float ar = (float)this.Image.Width / (float)this.Image.Height;
             float nheight, nwidth;
             int xpos = 0;
             int ypos = 0;
- 
+
             if ((float)this.ClientRectangle.Height * ar < (float)ClientRectangle.Width)
             {
                 nheight = (float)this.ClientRectangle.Height;
@@ -66,24 +61,24 @@ namespace YoloTrack.MVC.View.Components
             }
             else
             {
-                nheight = (float)this.ClientRectangle.Width * 1/ar;
+                nheight = (float)this.ClientRectangle.Width * 1 / ar;
                 nwidth = (float)this.ClientRectangle.Width;
             }
- 
+
             switch (this.ImageAlign)
             {
                 #region Alignment Top
                 case ContentAlignment.TopLeft:
                     break;
-               
- 
+
+
                 case ContentAlignment.TopRight:
                     if (nwidth < this.ClientRectangle.Width)
                     {
                         xpos = this.ClientRectangle.Width - (int)nwidth;
                     }
                     break;
- 
+
                 case ContentAlignment.TopCenter:
                     if (nwidth < this.ClientRectangle.Width)
                     {
@@ -98,26 +93,26 @@ namespace YoloTrack.MVC.View.Components
                         ypos = (int)((float)(this.ClientRectangle.Height - (int)nheight) / 2);
                     }
                     break;
- 
+
                 case ContentAlignment.MiddleCenter:
                     if (nwidth < this.ClientRectangle.Width)
                     {
                         xpos = (int)((float)(this.ClientRectangle.Width - (int)nwidth) / 2);
                     }
- 
+
                     if (nheight < this.ClientRectangle.Height)
                     {
                         ypos = (int)((float)(this.ClientRectangle.Height - (int)nheight) / 2);
                     }
                     break;
- 
+
                 case ContentAlignment.MiddleRight:
- 
+
                     if (nwidth < this.ClientRectangle.Width)
                     {
                         xpos = this.ClientRectangle.Width - (int)nwidth;
                     }
- 
+
                     if (nheight < this.ClientRectangle.Height)
                     {
                         ypos = (int)((float)(this.ClientRectangle.Height - (int)nheight) / 2);
@@ -131,7 +126,7 @@ namespace YoloTrack.MVC.View.Components
                         ypos = this.ClientRectangle.Height - (int)nheight;
                     }
                     break;
- 
+
                 case ContentAlignment.BottomCenter:
                     if (nheight < this.ClientRectangle.Height)
                     {
@@ -142,7 +137,7 @@ namespace YoloTrack.MVC.View.Components
                         xpos = (int)((float)(this.ClientRectangle.Width - (int)nwidth) / 2);
                     }
                     break;
- 
+
                 case ContentAlignment.BottomRight:
                     if (nheight < this.ClientRectangle.Height)
                     {
@@ -153,15 +148,15 @@ namespace YoloTrack.MVC.View.Components
                         xpos = this.ClientRectangle.Width - (int)nwidth;
                     }
                     break;
- 
+
                 #endregion
- 
+
                 default:
                     throw new NotImplementedException("FAILERRORFAIL");
             }
- 
-            e.Graphics.Clear(Color.Purple);
- 
+
+            e.Graphics.Clear(BackColor);
+
             e.Graphics.DrawImage(
                 this.Image, /* Image instance */
                 xpos, /* Target X */

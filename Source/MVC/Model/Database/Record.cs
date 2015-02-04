@@ -185,8 +185,8 @@ namespace YoloTrack.MVC.Model.Database
         {
             IdentificationRecord = IdentificationInformation;
             this.Id = Id;
-            FirstName = "<Vorname>";
-            LastName = "<Nachname>";
+            FirstName = "";
+            LastName = "";
             Image = new System.Drawing.Bitmap(1, 1); // TODO
             LearnedAt = new DateTime();
         }

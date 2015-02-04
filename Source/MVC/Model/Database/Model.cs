@@ -75,7 +75,7 @@ namespace YoloTrack.MVC.Model.Database
         /// This is a synchronized method.
         /// </summary>
         /// <returns></returns>
-        public object ContainerCopy
+        public Dictionary<int, Record> ContainerCopy
         {
             get
             {
