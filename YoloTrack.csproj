@@ -135,6 +135,9 @@
     <EmbeddedResource Include="Source\MVC\View\Components\DatabaseViewItem.resx">
       <DependentUpon>DatabaseViewItem.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="frsdk.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -146,7 +149,20 @@
     </Compile>
     <None Include="Source\MVC\Model\StateMachine\Impl\LearnImpl.cs.orig" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="libbiospi-8.5.0.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libfrsdk-8.5.0.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libfrsdknet-8.5.0.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libiomp5md.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

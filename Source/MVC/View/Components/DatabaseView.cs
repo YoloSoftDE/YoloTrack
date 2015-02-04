@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace YoloTrack.MVC.View.Components
@@ -14,6 +9,29 @@ namespace YoloTrack.MVC.View.Components
     /// </summary>
     public partial class DatabaseView : UserControl
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        public event EventHandler BeginMerge;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event EventHandler<MergeEventArgs> EndMerge;
+
+        public bool Merging { get; private set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                return Items.Count;
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -72,12 +90,25 @@ namespace YoloTrack.MVC.View.Components
 
         void OnItemAdded(object sender, DatabaseViewItemCollection.ListChangedEventArgs e)
         {
+            _set_count();
             control_container.Controls.Add(e.Item);
             e.Item.Width = Width - 24;
+
+            e.Item.Click += new EventHandler(Item_Click);
+        }
+
+        void Item_Click(object sender, EventArgs e)
+        {
+            if (Merging)
+            {
+                DatabaseViewItem item = (DatabaseViewItem)sender;
+                item.Selected = !item.Selected;
+            }
         }
 
         void OnItemRemoved(object sender, DatabaseViewItemCollection.ListChangedEventArgs e)
         {
+            _set_count();
             control_container.Controls.Remove(e.Item);
         }
 
@@ -88,5 +119,39 @@ namespace YoloTrack.MVC.View.Components
                 item.Width = Width - 24;
             }
         }
+
+        private void _set_count()
+        {
+            label_count.Text = Count.ToString();
+            if (Count == 1)
+            {
+                label1.Text = "record.";
+            }
+            else
+            {
+                label1.Text = "records.";
+            }
+        }
+
+        private void button_merge_Click(object sender, EventArgs e)
+        {
+            Merging = !Merging;
+            if (Merging)
+            {
+                button_merge.Text = "Select items...";
+            }
+            else
+            {
+                button_merge.Text = "Merge";
+            }
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class MergeEventArgs : EventArgs
+    {
+        DatabaseViewItem[] Items;
     }
 }
