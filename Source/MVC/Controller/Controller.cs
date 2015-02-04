@@ -119,7 +119,6 @@ namespace YoloTrack.MVC.Controller
 
             // Init Application view
             m_app_view = new ApplicationView();
-            /*
             m_app_view.Bind(m_sensor);
             m_app_view.Bind(m_runtime_database);
             m_app_view.Bind(m_database);
@@ -128,7 +127,6 @@ namespace YoloTrack.MVC.Controller
             m_app_view.Observe(m_runtime_database);
             m_app_view.Observe(m_identification_data);
             m_app_view.Observe(m_database);
-            */
 
             #endregion
 
@@ -136,6 +134,8 @@ namespace YoloTrack.MVC.Controller
 
             m_state_machine.Start();
             Application.Run(m_app_view);
+
+            m_state_machine.Terminate();
         }
 
         #region Model Event handlers

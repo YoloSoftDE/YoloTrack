@@ -48,18 +48,14 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label_error = new System.Windows.Forms.Label();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.databaseView1 = new YoloTrack.MVC.View.Components.DatabaseView();
             this.detailEditView1 = new YoloTrack.MVC.View.Components.DetailEditView();
-            this.visualTimer1 = new YoloTrack.Source.MVC.View.Components.VisualTimer();
+            this.liveView1 = new YoloTrack.MVC.View.Components.LiveView();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -163,7 +159,6 @@
             this.openExistingDatabasefileToolStripMenuItem.Name = "openExistingDatabasefileToolStripMenuItem";
             this.openExistingDatabasefileToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.openExistingDatabasefileToolStripMenuItem.Text = "&Open existing Database";
-            this.openExistingDatabasefileToolStripMenuItem.Click += new System.EventHandler(this.openExistingDatabasefileToolStripMenuItem_Click);
             // 
             // saveDatabaseToolStripMenuItem
             // 
@@ -236,51 +231,13 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.visualTimer1);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.label_error);
-            this.panel1.Controls.Add(this.pictureBox2);
+            this.panel1.Controls.Add(this.liveView1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(811, 648);
             this.panel1.TabIndex = 1;
-            // 
-            // label1
-            // 
-            this.label1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.label1.Location = new System.Drawing.Point(0, 275);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(810, 21);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Please verify the connectivity and press the Button below";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            // 
-            // label_error
-            // 
-            this.label_error.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label_error.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_error.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.label_error.Location = new System.Drawing.Point(1, 245);
-            this.label_error.Name = "label_error";
-            this.label_error.Size = new System.Drawing.Size(808, 30);
-            this.label_error.TabIndex = 3;
-            this.label_error.Text = "No Kinect sensor found";
-            this.label_error.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox2.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(0);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(811, 648);
-            this.pictureBox2.TabIndex = 2;
-            this.pictureBox2.TabStop = false;
             // 
             // databaseView1
             // 
@@ -301,18 +258,16 @@
             this.detailEditView1.Size = new System.Drawing.Size(318, 300);
             this.detailEditView1.TabIndex = 3;
             // 
-            // visualTimer1
+            // liveView1
             // 
-            this.visualTimer1.ArcWidth = 9;
-            this.visualTimer1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.visualTimer1.Font = new System.Drawing.Font("Microsoft Sans Serif", 26F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.visualTimer1.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.visualTimer1.Location = new System.Drawing.Point(355, 326);
-            this.visualTimer1.Name = "visualTimer1";
-            this.visualTimer1.Size = new System.Drawing.Size(100, 100);
-            this.visualTimer1.Step = 0D;
-            this.visualTimer1.TabIndex = 5;
-            this.visualTimer1.TimeoutValue = 30;
+            this.liveView1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.liveView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.liveView1.Image = null;
+            this.liveView1.ImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.liveView1.Location = new System.Drawing.Point(0, 0);
+            this.liveView1.Name = "liveView1";
+            this.liveView1.Size = new System.Drawing.Size(811, 648);
+            this.liveView1.TabIndex = 0;
             // 
             // View
             // 
@@ -326,6 +281,7 @@
             this.MinimumSize = new System.Drawing.Size(900, 600);
             this.Name = "View";
             this.Text = "YoloTrack";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.View_FormClosed);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -333,7 +289,6 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -363,10 +318,7 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel5;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel6;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.Label label_error;
-        private System.Windows.Forms.Label label1;
-        private Source.MVC.View.Components.VisualTimer visualTimer1;
+        private Components.LiveView liveView1;
 
 
 

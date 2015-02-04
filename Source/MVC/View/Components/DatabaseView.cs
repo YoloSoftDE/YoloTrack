@@ -194,6 +194,19 @@ namespace YoloTrack.MVC.View.Components
             }
             databaseViewHeader1.SelectedItems = 0;
         }
+
+        private void control_container_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void control_container_Click(object sender, EventArgs e)
+        {
+            foreach (DatabaseViewItem item in Items)
+            {
+                item.Selected = false;
+            }
+        }
     }
 
     /// <summary>

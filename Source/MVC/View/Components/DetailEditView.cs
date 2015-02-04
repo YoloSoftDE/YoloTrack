@@ -12,6 +12,9 @@ namespace YoloTrack.MVC.View.Components
         {
             InitializeComponent();
             DoubleBuffered = true;
+
+            editLabel1.Text = "Sebastian";
+            editLabel2.Text = "Büttner";
         }
 
         private void DetailEditView_Load(object sender, EventArgs e)

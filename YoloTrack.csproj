@@ -129,6 +129,18 @@
     <Compile Include="Source\MVC\View\Components\DetailEditView.Designer.cs">
       <DependentUpon>DetailEditView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Source\MVC\View\Components\EditLabel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\EditLabel.Designer.cs">
+      <DependentUpon>EditLabel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\LiveView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\LiveView.Designer.cs">
+      <DependentUpon>LiveView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Source\MVC\View\Components\VisualTimer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -161,6 +173,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Source\MVC\View\Components\DetailEditView.resx">
       <DependentUpon>DetailEditView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Source\MVC\View\Components\EditLabel.resx">
+      <DependentUpon>EditLabel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Source\MVC\View\Components\LiveView.resx">
+      <DependentUpon>LiveView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Source\MVC\View\Components\VisualTimer.resx">
       <DependentUpon>VisualTimer.cs</DependentUpon>
