@@ -18,22 +18,8 @@ namespace YoloTrack.MVC.View.Components
             }
             set
             {
-                if (m_selected = value)
-                {
-                    BackColor = SystemColors.MenuHighlight;
-                    label_name.ForeColor = SystemColors.HighlightText;
-                    label_learned_at.ForeColor = SystemColors.HighlightText;
-                    label_text_counters.ForeColor = SystemColors.HighlightText;
-                    label_id.BackColor = SystemColors.HotTrack;
-                }
-                else
-                {
-                    BackColor = SystemColors.Control;
-                    label_name.ForeColor = SystemColors.ControlText;
-                    label_learned_at.ForeColor = SystemColors.GrayText;
-                    label_text_counters.ForeColor = SystemColors.GrayText;
-                    label_id.BackColor = SystemColors.Highlight;
-                }
+                m_selected = value;
+                _draw();
             }
         }
 
@@ -57,7 +43,7 @@ namespace YoloTrack.MVC.View.Components
         /// <summary>
         /// Property for the first name to get or set.
         /// </summary>
-        private string m_first_name;
+        private string m_first_name = "";
         public string FirstName
         {
             get
@@ -74,7 +60,7 @@ namespace YoloTrack.MVC.View.Components
         /// <summary>
         /// Property for the last name to get or set.
         /// </summary>
-        private string m_last_name;
+        private string m_last_name = "";
         public string LastName
         {
             get
@@ -91,7 +77,7 @@ namespace YoloTrack.MVC.View.Components
         /// <summary>
         /// Property for the datetime the record was learned.
         /// </summary>
-        private DateTime m_learned_at;
+        private DateTime m_learned_at = new DateTime();
         public DateTime LearnedAt
         {
             get
@@ -147,6 +133,10 @@ namespace YoloTrack.MVC.View.Components
             InitializeComponent();
 
             _register_event(Controls);
+            _set_name();
+            _set_id();
+            _set_counters();
+            _set_learned_at();
         }
 
         /// <summary>
@@ -180,14 +170,7 @@ namespace YoloTrack.MVC.View.Components
         /// <param name="e"></param>
         private void DatabaseViewItem_MouseEnter(object sender, EventArgs e)
         {
-            if (!Selected)
-            {
-                BackColor = SystemColors.MenuHighlight;
-                label_name.ForeColor = SystemColors.HighlightText;
-                label_learned_at.ForeColor = SystemColors.HighlightText;
-                label_text_counters.ForeColor = SystemColors.HighlightText;
-                label_id.BackColor = SystemColors.HotTrack;
-            }
+            _draw(true);
         }
 
         /// <summary>
@@ -197,13 +180,30 @@ namespace YoloTrack.MVC.View.Components
         /// <param name="e"></param>
         private void DatabaseViewItem_MouseLeave(object sender, EventArgs e)
         {
-            if (!Selected)
+            _draw();
+        }
+
+        private void _draw(bool Hover = false)
+        {
+            if (Hover || Selected)
+            {
+                BackColor = SystemColors.MenuHighlight;
+                label_name.ForeColor = SystemColors.HighlightText;
+                label_learned_at.ForeColor = SystemColors.HighlightText;
+                label_text_counters.ForeColor = SystemColors.HighlightText;
+                label_id.BackColor = SystemColors.HotTrack;
+            }
+            else
             {
                 BackColor = SystemColors.Control;
                 label_name.ForeColor = SystemColors.ControlText;
                 label_learned_at.ForeColor = SystemColors.GrayText;
                 label_text_counters.ForeColor = SystemColors.GrayText;
                 label_id.BackColor = SystemColors.Highlight;
+                if (FirstName.Length == 0 && LastName.Length == 0)
+                {
+                    label_name.ForeColor = SystemColors.GrayText;
+                }
             }
         }
 
@@ -214,7 +214,7 @@ namespace YoloTrack.MVC.View.Components
         /// <param name="e"></param>
         private void DatabaseViewItem_Click(object sender, EventArgs e)
         {
-            OnClick(new EventArgs());
+            OnClick(e);
         }
 
         private void _set_id()
@@ -224,7 +224,28 @@ namespace YoloTrack.MVC.View.Components
 
         private void _set_name()
         {
-            label_name.Text = FirstName + " " + LastName;
+            SuspendLayout();
+            label_name.ForeColor = SystemColors.ControlText;
+
+            if (FirstName.Length > 0)
+            {
+                label_name.Text = FirstName;
+            }
+            if (LastName.Length > 0)
+            {
+                if (FirstName.Length > 0)
+                {
+                    label_name.Text += " ";
+                }
+                label_name.Text += LastName;
+            }
+            else if (FirstName.Length == 0)
+            {
+                label_name.Text = "Unnamed";
+                label_name.ForeColor = SystemColors.GrayText;
+            }
+
+            ResumeLayout();
         }
 
         private void _set_learned_at()

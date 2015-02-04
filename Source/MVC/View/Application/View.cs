@@ -79,12 +79,23 @@ namespace YoloTrack.MVC.View.Application
             databaseView1.Items.Add(new DatabaseViewItem()
             {
                 Id = 7,
-                FirstName = "Prof. Dr. Hartmut",
-                LastName = "Weber",
                 LearnedAt = DateTime.Now,
                 TimesRecognized = 17,
                 TimesTracked = 17
             });
+
+            visualTimer1.Start(20);
+
+        }
+
+        private void programToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void openExistingDatabasefileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
