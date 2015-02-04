@@ -83,7 +83,7 @@
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 312F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 318F));
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.pictureBox2, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -102,13 +102,13 @@
             this.tableLayoutPanel2.Controls.Add(this.panel1, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.databaseView1, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(817, 0);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(811, 0);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 300F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(312, 648);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(318, 648);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // panel1
@@ -119,7 +119,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 351);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(306, 294);
+            this.panel1.Size = new System.Drawing.Size(312, 294);
             this.panel1.TabIndex = 1;
             // 
             // label2
@@ -158,16 +158,16 @@
             this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox2.Location = new System.Drawing.Point(3, 3);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(811, 642);
+            this.pictureBox2.Size = new System.Drawing.Size(805, 642);
             this.pictureBox2.TabIndex = 1;
             this.pictureBox2.TabStop = false;
             // 
-            // databaseView2
+            // databaseView1
             // 
             this.databaseView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.databaseView1.Location = new System.Drawing.Point(3, 3);
-            this.databaseView1.Name = "databaseView2";
-            this.databaseView1.Size = new System.Drawing.Size(306, 342);
+            this.databaseView1.Name = "databaseView1";
+            this.databaseView1.Size = new System.Drawing.Size(312, 342);
             this.databaseView1.TabIndex = 2;
             // 
             // View

@@ -9,6 +9,34 @@ namespace YoloTrack.MVC.View.Components
     /// </summary>
     public partial class DatabaseViewItem : UserControl
     {
+        private bool m_selected = false;
+        public bool Selected 
+        { 
+            get
+            {
+                return m_selected;
+            }
+            set
+            {
+                if (m_selected = value)
+                {
+                    BackColor = SystemColors.MenuHighlight;
+                    label_name.ForeColor = SystemColors.HighlightText;
+                    label_learned_at.ForeColor = SystemColors.HighlightText;
+                    label_text_counters.ForeColor = SystemColors.HighlightText;
+                    label_id.BackColor = SystemColors.HotTrack;
+                }
+                else
+                {
+                    BackColor = SystemColors.Control;
+                    label_name.ForeColor = SystemColors.ControlText;
+                    label_learned_at.ForeColor = SystemColors.GrayText;
+                    label_text_counters.ForeColor = SystemColors.GrayText;
+                    label_id.BackColor = SystemColors.Highlight;
+                }
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -152,11 +180,14 @@ namespace YoloTrack.MVC.View.Components
         /// <param name="e"></param>
         private void DatabaseViewItem_MouseEnter(object sender, EventArgs e)
         {
-            BackColor = SystemColors.MenuHighlight;
-            label_name.ForeColor = SystemColors.HighlightText;
-            label_learned_at.ForeColor = SystemColors.HighlightText;
-            label_text_counters.ForeColor = SystemColors.HighlightText;
-            label_id.BackColor = SystemColors.HotTrack;
+            if (!Selected)
+            {
+                BackColor = SystemColors.MenuHighlight;
+                label_name.ForeColor = SystemColors.HighlightText;
+                label_learned_at.ForeColor = SystemColors.HighlightText;
+                label_text_counters.ForeColor = SystemColors.HighlightText;
+                label_id.BackColor = SystemColors.HotTrack;
+            }
         }
 
         /// <summary>
@@ -166,11 +197,14 @@ namespace YoloTrack.MVC.View.Components
         /// <param name="e"></param>
         private void DatabaseViewItem_MouseLeave(object sender, EventArgs e)
         {
-            BackColor = SystemColors.Control;
-            label_name.ForeColor = SystemColors.ControlText;
-            label_learned_at.ForeColor = SystemColors.GrayText;
-            label_text_counters.ForeColor = SystemColors.GrayText;
-            label_id.BackColor = SystemColors.Highlight;
+            if (!Selected)
+            {
+                BackColor = SystemColors.Control;
+                label_name.ForeColor = SystemColors.ControlText;
+                label_learned_at.ForeColor = SystemColors.GrayText;
+                label_text_counters.ForeColor = SystemColors.GrayText;
+                label_id.BackColor = SystemColors.Highlight;
+            }
         }
 
         /// <summary>
