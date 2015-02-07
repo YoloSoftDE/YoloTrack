@@ -189,7 +189,6 @@ namespace YoloTrack.MVC.Controller
             m_dependency_manager.FixAll();
 
             m_app_view.RepeatInitTimeout += m_app_view_RepeatInitTimeout;
-
             if (m_sensor == null)
             {
                 m_app_view.ShowSensorFailure(m_error_message);
@@ -198,7 +197,35 @@ namespace YoloTrack.MVC.Controller
             m_configuration.Options.Logging.LogLevel = View.Debug.DebugLevel.Info;
 
 
+            m_app_view.DatabaseItemSelected += m_app_view_DatabaseItemSelected;
+            m_app_view.DatabaseItemFirstNameChanged += m_app_view_DatabaseItemFirstNameChanged;
+            m_app_view.DatabaseItemLastNameChanged += m_app_view_DatabaseItemLastNameChanged;
+            m_app_view.DatabaseItemImageChanged += m_app_view_DatabaseItemImageChanged;
+
             Application.Run(m_app_view);
+        }
+
+        void m_app_view_DatabaseItemImageChanged(object sender, View.Application.DatabaseItemImageChangedEventArgs e)
+        {
+            m_database[e.DatabaseId].Image = (System.Drawing.Bitmap)e.Image;
+            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
+        }
+
+        void m_app_view_DatabaseItemLastNameChanged(object sender, View.Application.DatabaseItemLastNameChangedEventArgs e)
+        {
+            m_database[e.DatabaseId].LastName = e.LastName;
+            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
+        }
+
+        void m_app_view_DatabaseItemFirstNameChanged(object sender, View.Application.DatabaseItemFirstNameChangedEventArgs e)
+        {
+            m_database[e.DatabaseId].FirstName = e.FirstName;
+            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
+        }
+
+        void m_app_view_DatabaseItemSelected(object sender, View.Application.DatabaseItemSelectedEventArgs e)
+        {
+            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
         }
 
         #region Initializations

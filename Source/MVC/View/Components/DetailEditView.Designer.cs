@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.button_track = new System.Windows.Forms.Button();
             this.button_delete = new System.Windows.Forms.Button();
             this.pb_image = new System.Windows.Forms.PictureBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -38,21 +37,11 @@
             this.label_learned_at = new System.Windows.Forms.Label();
             this.label_rt_info = new System.Windows.Forms.Label();
             this.label_id = new System.Windows.Forms.Label();
+            this.button_track = new System.Windows.Forms.CheckBox();
             this.label_last_name = new YoloTrack.Source.MVC.View.Components.EditLabel();
             this.label_first_name = new YoloTrack.Source.MVC.View.Components.EditLabel();
             ((System.ComponentModel.ISupportInitialize)(this.pb_image)).BeginInit();
             this.SuspendLayout();
-            // 
-            // button_track
-            // 
-            this.button_track.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_track.Location = new System.Drawing.Point(164, 75);
-            this.button_track.Name = "button_track";
-            this.button_track.Size = new System.Drawing.Size(85, 30);
-            this.button_track.TabIndex = 9;
-            this.button_track.Text = "Track";
-            this.button_track.UseVisualStyleBackColor = true;
-            this.button_track.Click += new System.EventHandler(this.button_track_Click);
             // 
             // button_delete
             // 
@@ -120,6 +109,18 @@
             this.label_id.TabIndex = 16;
             this.label_id.Text = "42";
             // 
+            // button_track
+            // 
+            this.button_track.Appearance = System.Windows.Forms.Appearance.Button;
+            this.button_track.Location = new System.Drawing.Point(164, 73);
+            this.button_track.Name = "button_track";
+            this.button_track.Size = new System.Drawing.Size(85, 32);
+            this.button_track.TabIndex = 17;
+            this.button_track.Text = "Track";
+            this.button_track.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.button_track.UseVisualStyleBackColor = true;
+            this.button_track.CheckedChanged += new System.EventHandler(this.button_track_CheckedChanged);
+            // 
             // label_last_name
             // 
             this.label_last_name.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -131,6 +132,7 @@
             this.label_last_name.Name = "label_last_name";
             this.label_last_name.Size = new System.Drawing.Size(123, 33);
             this.label_last_name.TabIndex = 11;
+            this.label_last_name.TextChanged += new System.EventHandler(this.label_last_name_TextChanged);
             // 
             // label_first_name
             // 
@@ -143,18 +145,19 @@
             this.label_first_name.Name = "label_first_name";
             this.label_first_name.Size = new System.Drawing.Size(123, 32);
             this.label_first_name.TabIndex = 10;
+            this.label_first_name.TextChanged += new System.EventHandler(this.label_first_name_TextChanged);
             // 
             // DetailEditView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button_track);
             this.Controls.Add(this.label_id);
             this.Controls.Add(this.label_rt_info);
             this.Controls.Add(this.label_learned_at);
             this.Controls.Add(this.label_counters);
             this.Controls.Add(this.label_last_name);
             this.Controls.Add(this.label_first_name);
-            this.Controls.Add(this.button_track);
             this.Controls.Add(this.button_delete);
             this.Controls.Add(this.pb_image);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -170,7 +173,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button_track;
         private System.Windows.Forms.Button button_delete;
         private System.Windows.Forms.PictureBox pb_image;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
@@ -181,5 +183,6 @@
         private System.Windows.Forms.Label label_learned_at;
         private System.Windows.Forms.Label label_rt_info;
         private System.Windows.Forms.Label label_id;
+        private System.Windows.Forms.CheckBox button_track;
     }
 }

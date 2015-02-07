@@ -15,6 +15,8 @@ namespace YoloTrack.MVC.View.Components
         /// </summary>
         public event EventHandler<MergeEventArgs> MergeRequest;
 
+        public event EventHandler<ItemSelectedEventArgs> ItemSelected;
+
         /// <summary>
         /// 
         /// </summary>
@@ -72,6 +74,14 @@ namespace YoloTrack.MVC.View.Components
                     i.Selected = false;
                 }
                 item.Selected = true;
+
+                if (ItemSelected != null)
+                {
+                    ItemSelected(this, new ItemSelectedEventArgs()
+                    {
+                        DatabaseId = item.Id
+                    });
+                }
             }
 
             int selected_count = Items.FindAll(i => i.Selected == true).Count;
@@ -215,5 +225,10 @@ namespace YoloTrack.MVC.View.Components
     public class MergeEventArgs : EventArgs
     {
         public DatabaseViewItem[] Items;
+    }
+
+    public class ItemSelectedEventArgs : EventArgs
+    {
+        public int DatabaseId;
     }
 }
