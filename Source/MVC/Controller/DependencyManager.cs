@@ -1,11 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace YoloTrack.MVC.Controller
 {
+    interface IBindable<T>
+    {
+        void Bind(T instance);
+    }
+    interface IObserver<T>
+    {
+        void Observe(T instance);
+    }
+
     struct DependencyAction
     {
-        public Action<object, object> Action { get; set; }
+        //public Action<object, object> Action { get; set; }
+        public MethodInfo Method { get; set; }
         public bool Satisfied { get; set; }
     }
 
@@ -18,7 +29,7 @@ namespace YoloTrack.MVC.Controller
             m_dependencies = new Dictionary<object, Dictionary<object, List<DependencyAction>>>();
         }
 
-        public void AddDependency(object Dependent, object Dependency, Action<object, object> Action)
+        public void AddDependency<TDpet, TDpcy>(TDpet Dependent, TDpcy Dependency, Action<TDpet, TDpcy> Action)
         {
             if (!m_dependencies.ContainsKey(Dependent))
             {
@@ -30,9 +41,35 @@ namespace YoloTrack.MVC.Controller
             }
             m_dependencies[Dependent][Dependency].Add(new DependencyAction()
             {
-               Action = Action,
-               Satisfied = false
+                Method = Action.Method,
+                Satisfied = false
             });
+        }
+
+        public void AddDependencyStaticBind<TDept, TDpcy>(TDept Dependent, TDpcy Dependency)
+            where TDept : IBindable<TDpcy>
+        {
+            AddDependency<TDept, TDpcy>(
+                Dependent,
+                Dependency,
+                new Action<TDept, TDpcy>(delegate(TDept dependent, TDpcy dependency)
+                {
+                    dependent.Bind(dependency);
+                })
+            );
+        }
+
+        public void AddDependencyObserve<TDept, TDpcy>(TDept Dependent, TDpcy Dependency)
+            where TDept : IObserver<TDpcy>
+        {
+            AddDependency<TDept, TDpcy>(
+                Dependent,
+                Dependency,
+                new Action<TDept, TDpcy>(delegate(TDept dependent, TDpcy dependency)
+                {
+                    dependent.Observe(dependency);
+                })
+            );
         }
 
         public bool TryHandle(object Dependent)
@@ -50,9 +87,9 @@ namespace YoloTrack.MVC.Controller
                 return false;
             }
 
-            foreach (object dependency in m_dependencies[Dependent])
+            foreach (KeyValuePair<object, List<DependencyAction>> dependency in m_dependencies[Dependent])
             {
-                _fix_list(Dependent, dependency, m_dependencies[Dependent][dependency]);
+                _fix_list(Dependent, dependency.Key, dependency.Value);
             }
 
             return true;
@@ -79,7 +116,7 @@ namespace YoloTrack.MVC.Controller
 
                 if (!actual_dependency.Satisfied)
                 {
-                    actual_dependency.Action(Dependent, Dependency);
+                    actual_dependency.Method.Invoke(this, new object[2] {Dependent, Dependency});
                     actual_dependency.Satisfied = true;
                 }
             }

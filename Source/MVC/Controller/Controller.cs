@@ -31,6 +31,8 @@ namespace YoloTrack.MVC.Controller
     {
         ModelState m_model_state;
 
+        DependencyManager m_dependeny_manager;
+
         #region Models
 
         /// <summary>
@@ -87,6 +89,7 @@ namespace YoloTrack.MVC.Controller
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             m_model_state = new ModelState();
+            m_dependeny_manager = new DependencyManager();
 
             #region Instanciate views
 
@@ -118,6 +121,20 @@ namespace YoloTrack.MVC.Controller
             m_model_state.state_machine_ok = _initialize_state_machine();
 
             #endregion
+
+            m_dependeny_manager.AddDependencyStaticBind(m_state_machine, m_sensor);
+
+            m_dependeny_manager.TryHandle(m_state_machine);
+
+
+            /*
+            m_dependeny_manager.AddDependent(m_state_machine, dependent =>
+            {
+                dependent.Bind(m_sensor);
+                dependent.Finalize();
+            });
+            */
+
 
             #region Dependency terror
 
