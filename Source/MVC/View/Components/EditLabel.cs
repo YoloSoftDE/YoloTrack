@@ -110,7 +110,10 @@ namespace YoloTrack.Source.MVC.View.Components
 
         protected override void OnTextChanged(EventArgs e)
         {
-            this.TextChanged(this, e);
+            if (TextChanged != null)
+            {
+                this.TextChanged(this, e);
+            }
         }
 
         #endregion

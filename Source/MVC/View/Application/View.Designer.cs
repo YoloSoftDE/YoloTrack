@@ -50,10 +50,10 @@
             this.databaseView1 = new YoloTrack.MVC.View.Components.DatabaseView();
             this.detailEditView1 = new YoloTrack.MVC.View.Components.DetailEditView();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.liveView1 = new YoloTrack.MVC.View.Components.LiveView();
-            this.visualTimer1 = new YoloTrack.Source.MVC.View.Components.VisualTimer();
-            this.failure_message = new System.Windows.Forms.Label();
             this.failure_header = new System.Windows.Forms.Label();
+            this.failure_message = new System.Windows.Forms.Label();
+            this.visualTimer1 = new YoloTrack.Source.MVC.View.Components.VisualTimer();
+            this.liveView1 = new YoloTrack.MVC.View.Components.LiveView();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -264,6 +264,46 @@
             this.panel1.Size = new System.Drawing.Size(811, 648);
             this.panel1.TabIndex = 1;
             // 
+            // failure_header
+            // 
+            this.failure_header.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.failure_header.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.failure_header.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.failure_header.Location = new System.Drawing.Point(3, 186);
+            this.failure_header.Name = "failure_header";
+            this.failure_header.Size = new System.Drawing.Size(805, 32);
+            this.failure_header.TabIndex = 3;
+            this.failure_header.Text = "label2";
+            this.failure_header.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.failure_header.Visible = false;
+            // 
+            // failure_message
+            // 
+            this.failure_message.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.failure_message.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.failure_message.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.failure_message.Location = new System.Drawing.Point(3, 218);
+            this.failure_message.Name = "failure_message";
+            this.failure_message.Size = new System.Drawing.Size(805, 32);
+            this.failure_message.TabIndex = 2;
+            this.failure_message.Text = "label1";
+            this.failure_message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.failure_message.Visible = false;
+            // 
+            // visualTimer1
+            // 
+            this.visualTimer1.ArcWidth = 11;
+            this.visualTimer1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.visualTimer1.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.visualTimer1.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.visualTimer1.Location = new System.Drawing.Point(367, 293);
+            this.visualTimer1.Name = "visualTimer1";
+            this.visualTimer1.Size = new System.Drawing.Size(80, 80);
+            this.visualTimer1.Step = 50000D;
+            this.visualTimer1.TabIndex = 1;
+            this.visualTimer1.TimeoutValue = 100;
+            this.visualTimer1.Visible = false;
+            // 
             // liveView1
             // 
             this.liveView1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -275,46 +315,6 @@
             this.liveView1.Size = new System.Drawing.Size(811, 648);
             this.liveView1.TabIndex = 0;
             // 
-            // visualTimer1
-            // 
-            this.visualTimer1.ArcWidth = 11;
-            this.visualTimer1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.visualTimer1.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.visualTimer1.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.visualTimer1.Location = new System.Drawing.Point(367, 293);
-            this.visualTimer1.Name = "visualTimer1";
-            this.visualTimer1.Size = new System.Drawing.Size(80, 80);
-            this.visualTimer1.Step = 0D;
-            this.visualTimer1.TabIndex = 1;
-            this.visualTimer1.TimeoutValue = 0;
-            this.visualTimer1.Visible = false;
-            // 
-            // failure_message
-            // 
-            this.failure_message.BackColor = System.Drawing.Color.Transparent;
-            this.failure_message.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.failure_message.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.failure_message.Location = new System.Drawing.Point(3, 218);
-            this.failure_message.Name = "failure_message";
-            this.failure_message.Size = new System.Drawing.Size(805, 32);
-            this.failure_message.TabIndex = 2;
-            this.failure_message.Text = "label1";
-            this.failure_message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.failure_message.Visible = false;
-            // 
-            // failure_header
-            // 
-            this.failure_header.BackColor = System.Drawing.Color.Transparent;
-            this.failure_header.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.failure_header.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.failure_header.Location = new System.Drawing.Point(3, 186);
-            this.failure_header.Name = "failure_header";
-            this.failure_header.Size = new System.Drawing.Size(805, 32);
-            this.failure_header.TabIndex = 3;
-            this.failure_header.Text = "label2";
-            this.failure_header.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.failure_header.Visible = false;
-            // 
             // View
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -323,6 +323,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(900, 600);
             this.Name = "View";

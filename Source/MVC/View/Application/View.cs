@@ -16,11 +16,22 @@ using System.Runtime.InteropServices;
 using Microsoft.Kinect;
 using System.Collections.Generic;
 using YoloTrack.MVC.View.Components;
+using YoloTrack.MVC.Controller;
 
 namespace YoloTrack.MVC.View.Application
 {
-    public partial class View : Form
+    public partial class View : Form,
+        IBindable<Sensor>,
+        IBindable<RuntimeDatabase>,
+        IBindable<Database>,
+        YoloTrack.MVC.Controller.IObserver<Sensor>,
+        YoloTrack.MVC.Controller.IObserver<RuntimeDatabase>,
+        YoloTrack.MVC.Controller.IObserver<StateMachine>,
+        YoloTrack.MVC.Controller.IObserver<IdentificationData>,
+        YoloTrack.MVC.Controller.IObserver<Database>
     {
+        public event EventHandler RepeatInitTimeout;
+
         Sensor m_sensor;
 
         RuntimeDatabase m_runtime_database;
@@ -35,17 +46,17 @@ namespace YoloTrack.MVC.View.Application
             //visualTimer1.Start(30);
         }
 
-        internal void Bind(Sensor Sensor)
+        public void Bind(Sensor Sensor)
         {
             m_sensor = Sensor;
         }
 
-        internal void Bind(RuntimeDatabase RuntimeDatabase)
+        public void Bind(RuntimeDatabase RuntimeDatabase)
         {
             m_runtime_database = RuntimeDatabase;
         }
 
-        internal void Bind(Database Database)
+        public void Bind(Database Database)
         {
             m_database = Database;
 
@@ -57,28 +68,29 @@ namespace YoloTrack.MVC.View.Application
 
         #region Observer registration
 
-        internal void Observe(StateMachine StateMachine)
+        public void Observe(StateMachine StateMachine)
         {
             StateMachine.StateChange += new EventHandler<Model.StateMachine.StateChangeEventArgs>(StateMachine_StateChange);
         }
 
-        internal void Observe(Sensor Sensor)
+        public void Observe(Sensor Sensor)
         {
             Sensor.ColorFrameAvailable += new EventHandler<Model.Sensor.ColorImageFrameEventArgs>(Sensor_ColorFrameAvailable);
+            liveView1.BackColor = Color.Black;
         }
 
-        internal void Observe(RuntimeDatabase RuntimeDatabase)
+        public void Observe(RuntimeDatabase RuntimeDatabase)
         {
             RuntimeDatabase.RecordAdded += new EventHandler<Model.RuntimeDatabase.RecordAddedEventArgs>(RuntimeDatabase_RecordAdded);
             RuntimeDatabase.RecordRemoved += new EventHandler<Model.RuntimeDatabase.RecordRemovedEventArgs>(RuntimeDatabase_RecordRemoved);
         }
 
-        internal void Observe(IdentificationData IdentificationData)
+        public void Observe(IdentificationData IdentificationData)
         {
             //throw new NotImplementedException();
         }
 
-        internal void Observe(Database Database)
+        public void Observe(Database Database)
         {
             Database.RecordAdded += new EventHandler<Model.Database.RecordAddedEventArgs>(Database_RecordAdded);
             Database.RecordRemoved += new EventHandler<Model.Database.RecordRemovedEventArgs>(Database_RecordRemoved);
@@ -277,13 +289,24 @@ namespace YoloTrack.MVC.View.Application
             failure_header.Visible = true;
             failure_message.Visible = true;
             visualTimer1.Visible = true;
+            liveView1.BackColor = SystemColors.ControlDarkDark;
 
             visualTimer1.Timeout += visualTimer1_Timeout;
         }
 
+        public void HideFailureMessage()
+        {
+            failure_header.Visible = false;
+            failure_message.Visible = false;
+            visualTimer1.Visible = false;
+        }
+
         void visualTimer1_Timeout(object sender, EventArgs e)
         {
-            MessageBox.Show("TA");
+            if (RepeatInitTimeout != null)
+            {
+                RepeatInitTimeout(this, null);
+            }
         }
     }
 }
