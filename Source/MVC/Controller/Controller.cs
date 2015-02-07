@@ -184,8 +184,31 @@ namespace YoloTrack.MVC.Controller
 
             m_configuration.Options.Logging.LogLevel = View.Debug.DebugLevel.Info;
 
+            m_app_view.FormClosing += new FormClosingEventHandler(m_app_view_FormClosing);
+
+
             m_state_machine.Start(); // !!!!!!!!!!!
             Application.Run(m_app_view);
+        }
+
+        void m_app_view_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            /* Main Form Requested Closing*/
+
+            /* Shutdown State Machine */
+            m_state_machine.Terminate();
+
+            /* Shutdown Kinect Sensor */
+            // #ichkannohneapinichtarbeiten!
+            
+            /* Shutdown Cognitec API */
+            /* Nothing to do here */
+
+            /* Shutdown Database */
+
+            /* > Store Database as file */
+            m_database.SaveTo("test.ydb");
+
         }
 
         #region Late init dependents
