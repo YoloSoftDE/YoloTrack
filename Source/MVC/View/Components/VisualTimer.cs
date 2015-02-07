@@ -75,6 +75,10 @@ namespace YoloTrack.Source.MVC.View.Components
             if (TimeoutValue - (DateTime.Now - m_start).TotalSeconds <= 0)
             {
                 timer1.Stop();
+                if (Timeout != null)
+                {
+                    Timeout(this, null);
+                }
                 return;
             }
 

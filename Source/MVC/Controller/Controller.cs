@@ -17,21 +17,9 @@ using ApplicationView = YoloTrack.MVC.View.Application.View;
 
 namespace YoloTrack.MVC.Controller
 {
-    struct ModelState
-    {
-        public bool sensor_ok;
-        public bool identification_api_ok;
-        public bool database_ok;
-        public bool runtime_database_ok;
-        public bool state_machine_ok;
-        public bool configuration_ok;
-    }
-
     class Controller
     {
-        ModelState m_model_state;
-
-        DependencyManager m_dependeny_manager;
+        DependencyManager m_dependency_manager;
 
         #region Models
 
@@ -88,265 +76,130 @@ namespace YoloTrack.MVC.Controller
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            m_model_state = new ModelState();
-            m_dependeny_manager = new DependencyManager();
+            m_dependency_manager = new DependencyManager();
 
-            #region Instanciate views
+            // Dependencies for the State Machine
+            m_dependency_manager.AddDependent(
+                () => m_state_machine,
+                d =>
+                {
+                    d.Initialize(() => _initialize_state_machine());
 
-            // Init Debug view
-            m_debug_view = new DebugView();
-            // Init Application view
-            m_app_view = new ApplicationView();
+                    d.Bind(() => m_sensor);
+                    d.Bind(() => m_configuration);
+                    d.Bind(() => m_identification_data);
+                    d.Bind(() => m_runtime_database);
+                    d.Bind(() => m_database);
 
-            #endregion
+                    d.Finalize(() =>
+                    {
+                        m_state_machine.Start();
+                    });
+                }
+            );
 
-            #region Init models
+            // Dependencies for the Sensor
+            m_dependency_manager.AddDependent(
+                () => m_sensor,
+                d =>
+                {
+                    d.Initialize(() => _initialize_sensor());
+                }
+            );
 
-            // Load the configuration from default config file
-            m_model_state.configuration_ok = _initialize_configuration();
-            
-            // Grab the sensor & init
-            m_model_state.sensor_ok = _initialize_sensor();
-            
-            // Instanciate the identification data model
-            m_model_state.identification_api_ok = _initialize_identification_api();
+            // Dependencies for the Indentification API
+            m_dependency_manager.AddDependent(
+                () => m_identification_data,
+                d =>
+                {
+                    d.Initialize(() => _initialize_identification_api());
+                }
+            );
 
-            // Initialize the Database
-            m_model_state.database_ok = _initialize_database();
-            
-            // Initialize the runtime database
-            m_model_state.runtime_database_ok = _initialize_runtime_database();
+            // Dependencies for the Runtime Database
+            m_dependency_manager.AddDependent(
+                () => m_runtime_database,
+                d =>
+                {
+                    d.Initialize(() => _initialize_runtime_database());
 
-            // Start the state machine
-            m_model_state.state_machine_ok = _initialize_state_machine();
+                    d.Bind(() => m_sensor);
+                }
+            );
 
-            #endregion
+            // Dependencies for the Database
+            m_dependency_manager.AddDependent(
+                () => m_database,
+                d =>
+                {
+                    d.Initialize(() => _initialize_database());
 
-            m_dependeny_manager.AddDependencyStaticBind(m_state_machine, m_sensor);
+                    d.Finalize(() =>
+                    {
+                        m_database.RecordAdded += new EventHandler<Model.Database.RecordAddedEventArgs>(OnDatabaseRecordAdded);
+                        m_database.RecordRemoved += new EventHandler<Model.Database.RecordRemovedEventArgs>(OnDatabaseRecordRemoved);
+                    });
+                }
+            );
 
-            m_dependeny_manager.TryHandle(m_state_machine);
+            // Dependencies for the Configuration
+            m_dependency_manager.AddDependent(
+                () => m_configuration,
+                d =>
+                {
+                    d.Initialize(() => _initialize_configuration());
+                }
+            );
+
+            // Dependencies for the Debug View
+            m_dependency_manager.AddDependent(
+                () => m_debug_view,
+                d =>
+                {
+                    d.Initialize(() => _initialize_debug_view());
+
+                    d.Bind(() => m_configuration);
+                    d.Observe(() => m_state_machine);
+                    d.Observe(() => m_sensor);
+                    d.Observe(() => m_runtime_database);
+                    d.Observe(() => m_identification_data);
+                    d.Observe(() => m_database);
+                }
+            );
+
+            // Dependencies for the Application View
+            m_dependency_manager.AddDependent(
+                () => m_app_view,
+                d =>
+                {
+                    d.Initialize(() => _initialize_application_view());
+
+                    d.Bind(() => m_sensor);
+                    d.Bind(() => m_runtime_database);
+                    d.Bind(() => m_database);
+                    d.Observe(() => m_state_machine);
+                    d.Observe(() => m_sensor);
+                    d.Observe(() => m_runtime_database);
+                    d.Observe(() => m_identification_data);
+                    d.Observe(() => m_database);
+                }
+            );
 
 
-            /*
-            m_dependeny_manager.AddDependent(m_state_machine, dependent =>
+            m_dependency_manager.FixAll();
+
+            m_app_view.RepeatInitTimeout += m_app_view_RepeatInitTimeout;
+
+            if (m_sensor == null)
             {
-                dependent.Bind(m_sensor);
-                dependent.Finalize();
-            });
-            */
-
-
-            #region Dependency terror
-
-            // Handle reserse-dependencies
-            if (m_model_state.configuration_ok)
-            {
-                _late_init_configuration_dependents();
-                //_late_init_configuration_dependencies();
+                m_app_view.ShowSensorFailure(m_error_message);
             }
-
-            // Handle reserse-dependencies
-            if (m_model_state.sensor_ok)
-            {
-                _late_init_sensor_dependents();
-                //_late_init_sensor_dependencies();
-            }
-
-            // Handle reserse-dependencies
-            if (m_model_state.identification_api_ok)
-            {
-                _late_init_identification_api_dependents();
-                //_late_init_identification_api_dependencies();
-            }
-
-            // Handle reserse-dependencies
-            if (m_model_state.database_ok)
-            {
-                _late_init_database_dependents();
-                //_late_init_database_dependencies();
-            }
-
-            // Handle reserse-dependencies
-            if (m_model_state.runtime_database_ok)
-            {
-                _late_init_runtime_database_dependents();
-                //_late_init_runtime_database_dependencies();
-            }
-
-            // Handle reserse-dependencies
-            if (m_model_state.state_machine_ok)
-            {
-                _late_init_state_machine_dependents();
-                //_late_init_state_machine_dependencies();
-            }
-
-            #endregion
 
             m_configuration.Options.Logging.LogLevel = View.Debug.DebugLevel.Info;
 
-            m_state_machine.Start(); // !!!!!!!!!!!
+
             Application.Run(m_app_view);
         }
-
-        #region Late init dependents
-
-        /// <summary>
-        /// Satisfies the dependents of the State Machine
-        /// </summary>
-        /// <returns></returns>
-        private void _late_init_state_machine_dependents()
-        {
-            m_debug_view.Observe(m_state_machine);
-            m_app_view.Observe(m_state_machine);
-        }
-
-        /// <summary>
-        /// Satisfies the dependents of the Runtime Database
-        /// </summary>
-        /// <returns></returns>
-        private void _late_init_runtime_database_dependents()
-        {
-            if (m_model_state.state_machine_ok)
-            {
-                m_state_machine.Bind(m_runtime_database);
-            }
-
-            m_debug_view.Observe(m_runtime_database);
-            m_app_view.Bind(m_runtime_database);
-            m_app_view.Observe(m_runtime_database);
-        }
-
-        /// <summary>
-        /// Satisfies the dependents of the Database
-        /// </summary>
-        /// <returns></returns>
-        private void _late_init_database_dependents()
-        {
-            m_database.RecordAdded += new EventHandler<Model.Database.RecordAddedEventArgs>(OnDatabaseRecordAdded);
-            m_database.RecordRemoved += new EventHandler<Model.Database.RecordRemovedEventArgs>(OnDatabaseRecordRemoved);
-
-            m_debug_view.Observe(m_database);
-            m_app_view.Bind(m_database);
-            m_app_view.Observe(m_database);
-        }
-
-        /// <summary>
-        /// Satisfies the dependents of the Identification API
-        /// </summary>
-        /// <returns></returns>
-        private void _late_init_identification_api_dependents()
-        {
-            if (m_model_state.state_machine_ok)
-            {
-                m_state_machine.Bind(m_identification_data);
-            }
-
-            m_debug_view.Observe(m_identification_data);
-            m_app_view.Observe(m_identification_data);
-        }
-
-        /// <summary>
-        /// Satisfies the dependents of the Configuration
-        /// </summary>
-        /// <returns></returns>
-        private void _late_init_configuration_dependents()
-        {
-            m_debug_view.Bind(m_configuration);
-        }
-
-        /// <summary>
-        /// Satisfies the dependents of the Sensor
-        /// </summary>
-        /// <returns></returns>
-        private void _late_init_sensor_dependents()
-        {
-            if (m_model_state.state_machine_ok)
-            {
-                m_state_machine.Bind(m_sensor);
-            }
-
-            if (m_model_state.runtime_database_ok)
-            {
-                m_runtime_database.Bind(m_sensor);
-            }
-
-            m_app_view.Bind(m_sensor);
-            m_debug_view.Observe(m_sensor);
-            m_app_view.Observe(m_sensor);
-        }
-
-        #endregion
-
-        #region Late init dependencies
-
-        /// <summary>
-        /// Late init / assign of the dependencies for Configuration
-        /// </summary>
-        /// <returns></returns>
-        private void _late_init_configuration_dependencies()
-        {
-            // Nothing for now
-        }
-
-        /// <summary>
-        /// Late init / assign of the dependencies for Sensor
-        /// </summary>
-        /// <returns></returns>
-        private void _late_init_sensor_dependencies()
-        {
-            // Nothing for now
-        }
-
-        /// <summary>
-        /// Late init / assign of the dependencies for Database
-        /// </summary>
-        /// <returns></returns>
-        private void _late_init_database_dependencies()
-        {
-            // Nothing for now
-        }
-
-        /// <summary>
-        /// Late init / assign of the dependencies for Runtime Database
-        /// </summary>
-        /// <returns></returns>
-        private void _late_init_runtime_database_dependencies()
-        {
-            // Nothing for now
-        }
-
-        /// <summary>
-        /// Late init / assign of the dependencies for State Machine
-        /// </summary>
-        /// <returns></returns>
-        private void _late_init_state_machine_dependencies()
-        {
-            if (m_model_state.configuration_ok)
-            {
-                m_state_machine.Bind(m_configuration);
-            }
-
-            if (m_model_state.database_ok)
-            {
-                m_state_machine.Bind(m_database);
-            }
-
-            if (m_model_state.sensor_ok)
-            {
-                m_state_machine.Bind(m_sensor);
-            }
-        }
-
-        /// <summary>
-        /// Late init / assign of the dependencies for Identification API
-        /// </summary>
-        /// <returns></returns>
-        private void _late_init_identification_api_dependencies()
-        {
-            // Nothing for now
-        }
-
-        #endregion
 
         #region Initializations
 
@@ -449,12 +302,36 @@ namespace YoloTrack.MVC.Controller
             }
             catch (Model.Sensor.SensorException ex)
             {
-                m_app_view.ShowSensorFailure(ex.Message);
+                m_error_message = ex.Message;
                 return false;
             }
 
             return true;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private bool _initialize_debug_view()
+        {
+            // Init Debug view
+            m_debug_view = new DebugView();
+
+            return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private bool _initialize_application_view()
+        {
+            // Init Application view
+            m_app_view = new ApplicationView();
+
+            return true;
+        }            
 
         #endregion
 
@@ -491,6 +368,18 @@ namespace YoloTrack.MVC.Controller
         {
             m_database.SaveTo("test.ydb");
         }
+
+        #endregion
+
+        #region View Event handlers
+
+        void m_app_view_RepeatInitTimeout(object sender, EventArgs e)
+        {
+            m_app_view.HideFailureMessage();
+            m_dependency_manager.FixAll();
+        }
+
+        string m_error_message = "";
 
         #endregion
     }

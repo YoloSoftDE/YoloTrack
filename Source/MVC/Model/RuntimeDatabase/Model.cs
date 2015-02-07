@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Microsoft.Kinect;
+using YoloTrack.MVC.Controller;
 
 namespace YoloTrack.MVC.Model.RuntimeDatabase
 {
@@ -42,7 +43,8 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
     /// All information that is required directly during runtime is stored here, except of those
     /// information that belongs into the "main" database.
     /// </summary>
-    public class Model : Dictionary<int, Record>
+    public class Model : Dictionary<int, Record>, 
+        IBindable<Sensor.Model>
     {
         /// <summary>
         /// Fired on addition of a record

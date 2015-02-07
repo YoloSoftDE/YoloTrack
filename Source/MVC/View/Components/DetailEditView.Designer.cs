@@ -31,12 +31,16 @@
             this.components = new System.ComponentModel.Container();
             this.button_track = new System.Windows.Forms.Button();
             this.button_delete = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pb_image = new System.Windows.Forms.PictureBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.editLabel2 = new YoloTrack.Source.MVC.View.Components.EditLabel();
-            this.editLabel1 = new YoloTrack.Source.MVC.View.Components.EditLabel();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.label_counters = new System.Windows.Forms.Label();
+            this.label_learned_at = new System.Windows.Forms.Label();
+            this.label_rt_info = new System.Windows.Forms.Label();
+            this.label_id = new System.Windows.Forms.Label();
+            this.label_last_name = new YoloTrack.Source.MVC.View.Components.EditLabel();
+            this.label_first_name = new YoloTrack.Source.MVC.View.Components.EditLabel();
+            ((System.ComponentModel.ISupportInitialize)(this.pb_image)).BeginInit();
             this.SuspendLayout();
             // 
             // button_track
@@ -48,6 +52,7 @@
             this.button_track.TabIndex = 9;
             this.button_track.Text = "Track";
             this.button_track.UseVisualStyleBackColor = true;
+            this.button_track.Click += new System.EventHandler(this.button_track_Click);
             // 
             // button_delete
             // 
@@ -59,58 +64,107 @@
             this.button_delete.Text = "Delete";
             this.button_delete.UseVisualStyleBackColor = true;
             // 
-            // pictureBox1
+            // pb_image
             // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.pictureBox1.ErrorImage = null;
-            this.pictureBox1.Location = new System.Drawing.Point(8, 10);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(142, 133);
-            this.pictureBox1.TabIndex = 5;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
-            this.pictureBox1.MouseEnter += new System.EventHandler(this.pictureBox1_MouseEnter);
-            this.pictureBox1.MouseLeave += new System.EventHandler(this.pictureBox1_MouseLeave);
+            this.pb_image.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.pb_image.ErrorImage = null;
+            this.pb_image.Location = new System.Drawing.Point(8, 10);
+            this.pb_image.Name = "pb_image";
+            this.pb_image.Size = new System.Drawing.Size(142, 133);
+            this.pb_image.TabIndex = 5;
+            this.pb_image.TabStop = false;
+            this.pb_image.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.pb_image.MouseEnter += new System.EventHandler(this.pictureBox1_MouseEnter);
+            this.pb_image.MouseLeave += new System.EventHandler(this.pictureBox1_MouseLeave);
             // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // editLabel2
+            // label_counters
             // 
-            this.editLabel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.editLabel2.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.editLabel2.Location = new System.Drawing.Point(159, 33);
-            this.editLabel2.Margin = new System.Windows.Forms.Padding(6);
-            this.editLabel2.Name = "editLabel2";
-            this.editLabel2.Size = new System.Drawing.Size(123, 33);
-            this.editLabel2.TabIndex = 11;
+            this.label_counters.AutoSize = true;
+            this.label_counters.Location = new System.Drawing.Point(5, 189);
+            this.label_counters.Name = "label_counters";
+            this.label_counters.Size = new System.Drawing.Size(168, 13);
+            this.label_counters.TabIndex = 12;
+            this.label_counters.Text = "4 times seen, 1 time tracked????";
             // 
-            // editLabel1
+            // label_learned_at
             // 
-            this.editLabel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.editLabel1.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.editLabel1.Location = new System.Drawing.Point(159, 6);
-            this.editLabel1.Margin = new System.Windows.Forms.Padding(6);
-            this.editLabel1.Name = "editLabel1";
-            this.editLabel1.Size = new System.Drawing.Size(123, 32);
-            this.editLabel1.TabIndex = 10;
+            this.label_learned_at.AutoSize = true;
+            this.label_learned_at.Location = new System.Drawing.Point(5, 163);
+            this.label_learned_at.Name = "label_learned_at";
+            this.label_learned_at.Size = new System.Drawing.Size(153, 13);
+            this.label_learned_at.TabIndex = 13;
+            this.label_learned_at.Text = "Listed since 07.02.2015 20:39";
+            // 
+            // label_rt_info
+            // 
+            this.label_rt_info.AutoSize = true;
+            this.label_rt_info.Location = new System.Drawing.Point(5, 215);
+            this.label_rt_info.Name = "label_rt_info";
+            this.label_rt_info.Size = new System.Drawing.Size(242, 13);
+            this.label_rt_info.TabIndex = 14;
+            this.label_rt_info.Text = "17666214 Identify attempts, TrackingId is 1337";
+            // 
+            // label_id
+            // 
+            this.label_id.AutoSize = true;
+            this.label_id.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label_id.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_id.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.label_id.Location = new System.Drawing.Point(14, 108);
+            this.label_id.Name = "label_id";
+            this.label_id.Size = new System.Drawing.Size(37, 30);
+            this.label_id.TabIndex = 16;
+            this.label_id.Text = "42";
+            // 
+            // label_last_name
+            // 
+            this.label_last_name.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.label_last_name.DefaultText = null;
+            this.label_last_name.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_last_name.Location = new System.Drawing.Point(159, 33);
+            this.label_last_name.Margin = new System.Windows.Forms.Padding(6);
+            this.label_last_name.Mode = YoloTrack.Source.MVC.View.Components.EditLabel.EditLabelMode.LabelMode;
+            this.label_last_name.Name = "label_last_name";
+            this.label_last_name.Size = new System.Drawing.Size(123, 33);
+            this.label_last_name.TabIndex = 11;
+            // 
+            // label_first_name
+            // 
+            this.label_first_name.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.label_first_name.DefaultText = null;
+            this.label_first_name.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_first_name.Location = new System.Drawing.Point(159, 6);
+            this.label_first_name.Margin = new System.Windows.Forms.Padding(6);
+            this.label_first_name.Mode = YoloTrack.Source.MVC.View.Components.EditLabel.EditLabelMode.LabelMode;
+            this.label_first_name.Name = "label_first_name";
+            this.label_first_name.Size = new System.Drawing.Size(123, 32);
+            this.label_first_name.TabIndex = 10;
             // 
             // DetailEditView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.editLabel2);
-            this.Controls.Add(this.editLabel1);
+            this.Controls.Add(this.label_id);
+            this.Controls.Add(this.label_rt_info);
+            this.Controls.Add(this.label_learned_at);
+            this.Controls.Add(this.label_counters);
+            this.Controls.Add(this.label_last_name);
+            this.Controls.Add(this.label_first_name);
             this.Controls.Add(this.button_track);
             this.Controls.Add(this.button_delete);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.pb_image);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "DetailEditView";
             this.Size = new System.Drawing.Size(293, 296);
             this.Load += new System.EventHandler(this.DetailEditView_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.DetailEditView_Paint);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pb_image)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -118,10 +172,14 @@
 
         private System.Windows.Forms.Button button_track;
         private System.Windows.Forms.Button button_delete;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pb_image;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ToolTip toolTip1;
-        private Source.MVC.View.Components.EditLabel editLabel1;
-        private Source.MVC.View.Components.EditLabel editLabel2;
+        private Source.MVC.View.Components.EditLabel label_first_name;
+        private Source.MVC.View.Components.EditLabel label_last_name;
+        private System.Windows.Forms.Label label_counters;
+        private System.Windows.Forms.Label label_learned_at;
+        private System.Windows.Forms.Label label_rt_info;
+        private System.Windows.Forms.Label label_id;
     }
 }

@@ -4,11 +4,11 @@ using System.Reflection;
 
 namespace YoloTrack.MVC.Controller
 {
-    interface IBindable<T>
+    public interface IBindable<T>
     {
         void Bind(T instance);
     }
-    interface IObserver<T>
+    public interface IObserver<T>
     {
         void Observe(T instance);
     }
@@ -20,59 +20,187 @@ namespace YoloTrack.MVC.Controller
         public bool Satisfied { get; set; }
     }
 
-    class DependencyManager
+    public class Dependent
     {
-        Dictionary<object, Dictionary<object, List<DependencyAction>>> m_dependencies;
+        private Func<bool> m_initializer;
+        private Dictionary<object, List<DependencyAction>> m_dependencies;
+        private List<Action> m_finalizers;
+        private Func<object> m_accessor;
 
-        public DependencyManager()
+        public Dependent(Func<object> Accessor)
         {
-            m_dependencies = new Dictionary<object, Dictionary<object, List<DependencyAction>>>();
+            m_accessor = Accessor;
+            m_dependencies = new Dictionary<object, List<DependencyAction>>();
+            m_finalizers = new List<Action>();
         }
 
-        public void AddDependency<TDpet, TDpcy>(TDpet Dependent, TDpcy Dependency, Action<TDpet, TDpcy> Action)
+        public void Method<TDependency>(Func<TDependency> DependencyAccessor, Action<object, TDependency> Action)
         {
-            if (!m_dependencies.ContainsKey(Dependent))
+            if (!m_dependencies.ContainsKey(DependencyAccessor))
             {
-                m_dependencies.Add(Dependent, new Dictionary<object, List<DependencyAction>>());
+                m_dependencies.Add(DependencyAccessor, new List<DependencyAction>());
             }
-            if (!m_dependencies[Dependent].ContainsKey(Dependency))
-            {
-                m_dependencies[Dependent].Add(Dependency, new List<DependencyAction>());
-            }
-            m_dependencies[Dependent][Dependency].Add(new DependencyAction()
+            m_dependencies[DependencyAccessor].Add(new DependencyAction()
             {
                 Method = Action.Method,
                 Satisfied = false
             });
         }
 
-        public void AddDependencyStaticBind<TDept, TDpcy>(TDept Dependent, TDpcy Dependency)
-            where TDept : IBindable<TDpcy>
+        public void Bind<TDependency>(Func<TDependency> DependencyAccessor)
         {
-            AddDependency<TDept, TDpcy>(
-                Dependent,
-                Dependency,
-                new Action<TDept, TDpcy>(delegate(TDept dependent, TDpcy dependency)
-                {
-                    dependent.Bind(dependency);
-                })
-            );
+            Method(DependencyAccessor, delegate(object DependentInstance, TDependency DependencyInstance)
+            {
+                ((IBindable<TDependency>)DependentInstance).Bind(DependencyInstance);
+            });
         }
 
-        public void AddDependencyObserve<TDept, TDpcy>(TDept Dependent, TDpcy Dependency)
-            where TDept : IObserver<TDpcy>
+        public void Observe<TDependency>(Func<TDependency> DependencyAccessor)
         {
-            AddDependency<TDept, TDpcy>(
-                Dependent,
-                Dependency,
-                new Action<TDept, TDpcy>(delegate(TDept dependent, TDpcy dependency)
-                {
-                    dependent.Observe(dependency);
-                })
-            );
+            Method(DependencyAccessor, delegate(object DependentInstance, TDependency DependencyInstance)
+            {
+                ((IObserver<TDependency>)DependentInstance).Observe(DependencyInstance);
+            });
         }
 
-        public bool TryHandle(object Dependent)
+        public void Initialize(Func<bool> InitializeAction)
+        {
+            m_initializer = InitializeAction;
+        }
+
+        public void Finalize(Action FinalAction)
+        {
+            m_finalizers.Add(FinalAction);
+        }
+
+        public bool Wraps(object Compare)
+        {
+            return Compare == m_accessor();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>true if an instance could be </returns>
+        public bool Fix()
+        {
+            if (m_accessor() == null && m_initializer != null)
+            {
+                if (!m_initializer())
+                {
+                    return false;
+                }
+            }
+
+            foreach (KeyValuePair<object, List<DependencyAction>> dependency in m_dependencies)
+            {
+                Func<object> depdency_accessor = (Func<object>)dependency.Key;
+                if (depdency_accessor() != null)
+                {
+                    _fix_list(m_accessor(), depdency_accessor(), dependency.Value);
+                }
+            }
+
+            return true;
+        }
+
+        public void RunFinalizers()
+        {
+            foreach (Action action in m_finalizers)
+            {
+                action();
+            }
+        }
+
+        [Obsolete]
+        public bool FixFor(object Dependency)
+        {
+            foreach (KeyValuePair<object, List<DependencyAction>> dependency in m_dependencies)
+            {
+                Func<object> depdency_accessor = (Func<object>)dependency.Key;
+                if (depdency_accessor() == Dependency)
+                {
+                    _fix_list(m_accessor(), depdency_accessor(), dependency.Value);
+                }
+            }
+
+            return true;
+        }
+
+        public bool Completed()
+        {
+            foreach (KeyValuePair<object, List<DependencyAction>> dependency in m_dependencies)
+            {
+                foreach (DependencyAction action in dependency.Value)
+                {
+                    if (!action.Satisfied)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private void _fix_list(object Dependent, object Dependency, List<DependencyAction> DependencyActions)
+        {
+            for (int i = 0; i < DependencyActions.Count; i++)
+            {
+                DependencyAction actual_dependency = DependencyActions[i];
+
+                if (!actual_dependency.Satisfied)
+                {
+                    actual_dependency.Method.Invoke(this, new object[2] { Dependent, Dependency });
+                    actual_dependency.Satisfied = true;
+                    DependencyActions[i] = actual_dependency;
+                }
+            }
+        }
+    }
+
+    class DependencyManager
+    {
+        private List<Dependent> m_dependents;
+
+        public DependencyManager()
+        {
+            m_dependents = new List<Dependent>();
+        }
+
+        public void AddDependent(Func<object> Accessor, Action<Dependent> SetupRoutine)
+        {
+            Dependent dependent = new Dependent(Accessor);
+            SetupRoutine(dependent);
+            m_dependents.Add(dependent);
+        }
+
+        public void FixAll()
+        {
+            bool completed = true;
+            for (int i = 0; i < 2; i++)
+            {
+                foreach (Dependent dependent in m_dependents)
+                {
+                    dependent.Fix();
+                    if (dependent.Completed())
+                    {
+                        dependent.RunFinalizers();
+                    }
+                    else
+                    {
+                        completed = false;
+                    }
+                }
+
+                if (completed)
+                {
+                    break;
+                }
+            }
+        }
+
+        public bool FixOne(object Dependent)
         {
             _fix_dependencies(Dependent);
             _fix_dependents(Dependent);
@@ -82,21 +210,19 @@ namespace YoloTrack.MVC.Controller
 
         private bool _fix_dependencies(object Dependent)
         {
-            if (!m_dependencies.ContainsKey(Dependent))
+            Dependent depedent = m_dependents.Find(d => d.Wraps(Dependent));
+            if (depedent == null)
             {
                 return false;
             }
 
-            foreach (KeyValuePair<object, List<DependencyAction>> dependency in m_dependencies[Dependent])
-            {
-                _fix_list(Dependent, dependency.Key, dependency.Value);
-            }
-
+            depedent.Fix();
             return true;
         }
 
         private bool _fix_dependents(object Dependency)
         {
+            /*
             foreach (KeyValuePair<object, Dictionary<object, List<DependencyAction>>> dependent in m_dependencies)
             {
                 if (dependent.Value.ContainsKey(Dependency))
@@ -104,6 +230,7 @@ namespace YoloTrack.MVC.Controller
                     _fix_list(dependent, Dependency, dependent.Value[Dependency]);
                 }
             }
+             */
 
             return true;
         }
