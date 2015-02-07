@@ -47,19 +47,12 @@ namespace YoloTrack.Source.MVC.View.Components
         {
             InitializeComponent();
 
+            textBox1.GotFocus += new EventHandler(textBox1_GotFocus);
             textBox1.LostFocus += new EventHandler(textBox1_LostFocus);
-
-            textBox1.ModifiedChanged += new EventHandler(textBox1_ModifiedChanged);
         }
 
-        void textBox1_ModifiedChanged(object sender, EventArgs e)
+        void textBox1_GotFocus(object sender, EventArgs e)
         {
-            textBox1_LostFocus(sender, e);
-        }
-
-        void textBox1_ParentChanged(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         void textBox1_LostFocus(object sender, EventArgs e)
@@ -80,7 +73,9 @@ namespace YoloTrack.Source.MVC.View.Components
                 textBox1.Text = master.Text;
                 Mode = EditLabelMode.EditMode;
                 textBox1.Visible = true;
+                //textBox1.Focus();
                 label1.Visible = false;
+                textBox1.Size = label1.Size;
             }
         }
 
@@ -88,18 +83,6 @@ namespace YoloTrack.Source.MVC.View.Components
         {
             LabelMode,
             EditMode
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void textBox1_Enter(object sender, EventArgs e)
-        {
-        }
-
-        private void textBox1_Leave(object sender, EventArgs e)
-        {
         }
     }
 }

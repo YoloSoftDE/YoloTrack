@@ -4,14 +4,31 @@ using Microsoft.Kinect;
 
 namespace YoloTrack.MVC.Model.Sensor
 {
+    /// <summary>
+    /// Provided on new color frame available
+    /// </summary>
     public class ColorImageFrameEventArgs : EventArgs
     {
         public ColorImageFrame Frame;
     }
 
+    /// <summary>
+    /// Provided on new skeleton frame available
+    /// </summary>
     public class SkeletonFrameEventArgs : EventArgs
     {
         public SkeletonFrame Frame;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class SensorException : Exception
+    {
+        public SensorException(string Message)
+            : base(Message)
+        {
+        }
     }
 
     /// <summary>
@@ -70,7 +87,7 @@ namespace YoloTrack.MVC.Model.Sensor
             KinectSensor[] sensors = _get_available_sensors();
             if (sensors.Length < 1)
             {
-                throw new IndexOutOfRangeException();
+                throw new SensorException("No Sensor available.");
             }
 
             return new Model(sensors[0]);
@@ -86,7 +103,7 @@ namespace YoloTrack.MVC.Model.Sensor
             KinectSensor[] sensors = _get_available_sensors();
             if (Number >= sensors.Length)
             {
-                throw new IndexOutOfRangeException();
+                throw new SensorException("No Sensor available.");
             }
 
             return new Model(sensors[Number]);
@@ -125,6 +142,12 @@ namespace YoloTrack.MVC.Model.Sensor
         /// </summary>
         public void Initialize()
         {
+            if (Status != KinectStatus.Connected)
+            {
+                throw new SensorException("Initialization of Kinect Sensor failed. Please check the connection to the power supply (" + 
+                                          Status.ToString() + ")");
+            }
+
             // Subscribe to the skeleton frames for firther processing
             Sensor.SkeletonFrameReady += new EventHandler<SkeletonFrameReadyEventArgs>(_process_skeleton_frame);
 

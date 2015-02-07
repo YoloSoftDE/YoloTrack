@@ -170,8 +170,8 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
         {
             SkeletonFrame frame = m_sensor.SkeletonStream.SkeletonFrame;
             if (frame == null)
-                return;
-
+                return;            
+            
             Skeleton[] skeletons = new Skeleton[frame.SkeletonArrayLength];
             frame.CopySkeletonDataTo(skeletons);
 
@@ -196,10 +196,7 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
                 }
                 else
                 {
-                    //Record record_to_update = this[skeleton.TrackingId];
-                    //record_to_update.KinectResource.UpdateTo(skeleton);
                     this[skeleton.TrackingId].KinectResource.UpdateTo(skeleton);
-                    //this[skeleton.TrackingId] = record_to_update;
                 }
             }
 
@@ -229,8 +226,33 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
             }
 
             // Release lock
-            //m_container_modification_mutex.ReleaseMutex();
             return;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Record SelectLeastIdentifyAttempts()
+        {
+            Record least = null;
+            foreach (KeyValuePair<int, RuntimeDatabase.Record> entry in this)
+            {
+                if (entry.Value.State == RuntimeDatabase.RecordState.Unidentified ||
+                    entry.Value.State == RuntimeDatabase.RecordState.Unknown)
+                {
+                    if (least == null || least.IdentifyAttempts > entry.Value.IdentifyAttempts)
+                    {
+                        least = entry.Value;
+                    }
+                }
+            }
+
+            if (least != null)
+            {
+                least.IdentifyAttempts++;
+            }
+            return least;
         }
 
         #region Foreign model bindings
