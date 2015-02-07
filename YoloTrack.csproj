@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Source\MVC\Controller\Controller.cs" />
+    <Compile Include="Source\MVC\Controller\DependencyManager.cs" />
     <Compile Include="Source\MVC\Model\Configuration\IConfigurable.cs" />
     <Compile Include="Source\MVC\Model\Configuration\Model.cs" />
     <Compile Include="Source\MVC\Model\Configuration\Options.cs" />
