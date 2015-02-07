@@ -84,7 +84,7 @@ namespace YoloTrack.Source.MVC.View.Components
                 m_label.Text = m_string;
                 m_textbox.Text = m_string;
 
-                this.OnTextChanged(new EventArgs());
+                //this.OnTextChanged(new EventArgs());
             }
         }
 
@@ -162,7 +162,7 @@ namespace YoloTrack.Source.MVC.View.Components
         {
             Mode = EditLabelMode.LabelMode;
             this.Text = m_textbox.Text;
-
+            this.OnTextChanged(new EventArgs());
         }
 
 

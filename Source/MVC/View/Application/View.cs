@@ -32,6 +32,14 @@ namespace YoloTrack.MVC.View.Application
     {
         public event EventHandler RepeatInitTimeout;
 
+        public event EventHandler<DatabaseItemSelectedEventArgs> DatabaseItemSelected;
+
+        public event EventHandler<DatabaseItemFirstNameChangedEventArgs> DatabaseItemFirstNameChanged;
+
+        public event EventHandler<DatabaseItemLastNameChangedEventArgs> DatabaseItemLastNameChanged;
+
+        public event EventHandler<DatabaseItemImageChangedEventArgs> DatabaseItemImageChanged;
+
         Sensor m_sensor;
 
         RuntimeDatabase m_runtime_database;
@@ -308,5 +316,99 @@ namespace YoloTrack.MVC.View.Application
                 RepeatInitTimeout(this, null);
             }
         }
+
+        private void databaseView1_ItemSelected(object sender, ItemSelectedEventArgs e)
+        {
+            if (DatabaseItemSelected != null)
+            {
+                DatabaseItemSelected(this, new DatabaseItemSelectedEventArgs()
+                {
+                    DatabaseId = e.DatabaseId
+                });
+            }
+        }
+
+        public void ShowRecordDetail(Model.Database.Record Record)
+        {
+            detailEditView1.Id = Record.Id;
+            detailEditView1.FirstName = Record.FirstName;
+            detailEditView1.LastName = Record.LastName;
+            detailEditView1.IsTracked = Record.IsTarget;
+            detailEditView1.LearnedAt = Record.LearnedAt;
+            detailEditView1.TimesRecognized = Record.TimesRecognized;
+            detailEditView1.TimesTracked = Record.TimesTracked;
+            detailEditView1.Image = Record.Image;
+            if (Record.RuntimeRecord != null)
+            {
+                detailEditView1.TrackingId = Record.RuntimeRecord.KinectResource.Skeleton.TrackingId;
+                detailEditView1.IdentifyAttempts = Record.RuntimeRecord.IdentifyAttempts;
+            }else
+            {
+                detailEditView1.TrackingId = 0;
+            }
+        }
+
+        private void detailEditView1_LastNameChanged(object sender, LastNameChangedEventArgs e)
+        {
+            m_database[detailEditView1.Id].LastName = e.LastName;
+            /*
+            if (DatabaseItemLastNameChanged != null)
+            {
+                DatabaseItemLastNameChanged(this, new DatabaseItemLastNameChangedEventArgs()
+                {
+                    DatabaseId = detailEditView1.Id,
+                    LastName = e.LastName
+                });
+            }
+            */
+        }
+
+        private void detailEditView1_FirstNameChanged(object sender, FirstNameChangedEventArgs e)
+        {
+            if (DatabaseItemFirstNameChanged != null)
+            {
+                DatabaseItemFirstNameChanged(this, new DatabaseItemFirstNameChangedEventArgs()
+                {
+                    DatabaseId = detailEditView1.Id,
+                    FirstName = e.FirstName
+                });
+            }
+        }
+
+        private void detailEditView1_ImageChanged(object sender, ImageChangedEventArgs e)
+        {
+            if (DatabaseItemImageChanged != null)
+            {
+                DatabaseItemImageChanged(this, new DatabaseItemImageChangedEventArgs()
+                {
+                    DatabaseId = detailEditView1.Id,
+                    Image = e.Image
+                });
+            }
+        }
+    }
+
+    public class DatabaseItemSelectedEventArgs : EventArgs
+    {
+        public int DatabaseId;
+    }
+    
+    public class DatabaseItemFirstNameChangedEventArgs : EventArgs
+    {
+        public int DatabaseId;
+        public string FirstName;
+    }
+
+    public class DatabaseItemLastNameChangedEventArgs : EventArgs
+    {
+        public int DatabaseId;
+        public string LastName;
+
+    }
+
+    public class DatabaseItemImageChangedEventArgs : EventArgs
+    {
+        public int DatabaseId;
+        public Image Image;
     }
 }

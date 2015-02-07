@@ -240,16 +240,30 @@
             this.databaseView1.Name = "databaseView1";
             this.databaseView1.Size = new System.Drawing.Size(318, 348);
             this.databaseView1.TabIndex = 2;
+            this.databaseView1.ItemSelected += new System.EventHandler<YoloTrack.MVC.View.Components.ItemSelectedEventArgs>(this.databaseView1_ItemSelected);
             // 
             // detailEditView1
             // 
             this.detailEditView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.detailEditView1.FirstName = null;
+            this.detailEditView1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.detailEditView1.Id = 0;
+            this.detailEditView1.IdentifyAttempts = 0;
             this.detailEditView1.Image = null;
+            this.detailEditView1.IsTracked = false;
+            this.detailEditView1.LastName = null;
+            this.detailEditView1.LearnedAt = new System.DateTime(((long)(0)));
             this.detailEditView1.Location = new System.Drawing.Point(0, 348);
             this.detailEditView1.Margin = new System.Windows.Forms.Padding(0);
             this.detailEditView1.Name = "detailEditView1";
             this.detailEditView1.Size = new System.Drawing.Size(318, 300);
             this.detailEditView1.TabIndex = 3;
+            this.detailEditView1.TimesRecognized = 0;
+            this.detailEditView1.TimesTracked = 0;
+            this.detailEditView1.TrackingId = 0;
+            this.detailEditView1.FirstNameChanged += new System.EventHandler<YoloTrack.MVC.View.Components.FirstNameChangedEventArgs>(this.detailEditView1_FirstNameChanged);
+            this.detailEditView1.LastNameChanged += new System.EventHandler<YoloTrack.MVC.View.Components.LastNameChangedEventArgs>(this.detailEditView1_LastNameChanged);
+            this.detailEditView1.ImageChanged += new System.EventHandler<YoloTrack.MVC.View.Components.ImageChangedEventArgs>(this.detailEditView1_ImageChanged);
             // 
             // panel1
             // 

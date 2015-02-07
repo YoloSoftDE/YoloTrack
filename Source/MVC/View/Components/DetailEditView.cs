@@ -135,6 +135,19 @@ namespace YoloTrack.MVC.View.Components
             }
         }
 
+        public bool IsTracked
+        {
+            get
+            {
+                return m_is_tracked;
+            }
+            set
+            {
+                m_is_tracked = value;
+                _show_is_tracked();
+            }
+        }
+
         private int m_id;
         private string m_first_name;
         private string m_last_name;
@@ -144,6 +157,7 @@ namespace YoloTrack.MVC.View.Components
         private int m_identify_attemps;
         private DateTime m_learned_at;
         private Image m_image;
+        private bool m_is_tracked;
 
         public DetailEditView()
         {
@@ -201,9 +215,15 @@ namespace YoloTrack.MVC.View.Components
 
         private void _show_rt_info()
         {
-            label_rt_info.Text = "Current assigned TrackingId is " +
-                TrackingId.ToString() + ", " +
-                IdentifyAttempts.ToString() + " attempts required for identification.";
+            if (TrackingId > 0)
+            {
+                label_rt_info.Text = "Current assigned TrackingId is " +
+                    TrackingId.ToString() + ", " +
+                    IdentifyAttempts.ToString() + " attempts required for identification.";
+            } else
+            {
+                label_rt_info.Text = "Currently not in view range.";
+            }
         }
 
         private void _show_first_name()
@@ -276,9 +296,62 @@ namespace YoloTrack.MVC.View.Components
             label_learned_at.Text = "Listed since " + LearnedAt.ToShortDateString() + ", " + LearnedAt.ToShortTimeString();
         }
 
-        private void button_track_Click(object sender, EventArgs e)
+        private void _show_is_tracked()
         {
+            button_track.Checked = IsTracked;
+            if (IsTracked)
+            {
+                button_track.Text = "Unset Target";
+            }
+            else
+            {
+                button_track.Text = "Set as Target";
+            }
+        }
 
+        private void button_track_CheckedChanged(object sender, EventArgs e)
+        {
+            if (button_track.Checked)
+            {
+                if (TrackingRequest != null)
+                {
+                    TrackingRequest(this, new TrackingRequestEventArgs()
+                    {
+                        DatabaseId = Id
+                    });
+                }
+            } else
+            {
+                if (HaltTrackingRequest != null)
+                {
+                    HaltTrackingRequest(this, new HaltTrackingRequestEventArgs()
+                    {
+                        DatabaseId = Id
+                    });
+                }
+            }
+        }
+
+        private void label_first_name_TextChanged(object sender, EventArgs e)
+        {
+            if (FirstNameChanged != null)
+            {
+                FirstNameChanged(this, new FirstNameChangedEventArgs()
+                {
+                    FirstName = label_first_name.Text
+                });
+            }
+        }
+
+        private void label_last_name_TextChanged(object sender, EventArgs e)
+        {
+            if (LastNameChanged != null)
+            {
+                LastNameChanged(this, new LastNameChangedEventArgs()
+                {
+                    LastName = label_last_name.Text
+                });
+            }
         }
     }
 
