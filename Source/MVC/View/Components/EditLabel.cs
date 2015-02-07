@@ -11,11 +11,60 @@ namespace YoloTrack.Source.MVC.View.Components
 {
     public partial class EditLabel : UserControl
     {
-        [DefaultValue(EditLabelMode.LabelMode)]
-        public EditLabelMode Mode { get; set; }
+        public enum EditLabelMode
+        {
+            LabelMode,
+            EditMode
+        }
+
+        public class ModeChangedEventArgs : EventArgs
+        {
+            public ModeChangedEventArgs(EditLabelMode mode)
+            {
+                this.Mode = mode;
+            }
+
+            public EditLabelMode Mode { get; protected set; }
+        }
+
+        public event EventHandler<ModeChangedEventArgs> ModeChanged;
+
+        [Browsable(true)]
+        public new event EventHandler TextChanged;
 
         private string m_string = "";
-        public new string Text
+        private EditLabelMode m_mode = EditLabelMode.LabelMode;
+
+        public EditLabelMode Mode
+        {
+            get
+            {
+                return m_mode;
+            }
+            set
+            {
+                m_mode = value;
+
+                switch (value)
+                {
+                    case EditLabelMode.EditMode:
+                        m_textbox.Visible = true;
+                        m_textbox.Focus();
+                        m_label.Visible = false;
+                        m_textbox.Size = m_label.Size;
+                        break;
+
+                    case EditLabelMode.LabelMode:
+                        m_textbox.Visible = false;
+                        m_label.Visible = true;
+                        break;
+
+                }
+                OnModeChanged(new ModeChangedEventArgs(value));
+            }
+        }
+
+        public override string Text
         {
             get
             {
@@ -23,66 +72,96 @@ namespace YoloTrack.Source.MVC.View.Components
             }
             set
             {
-                master.Text = value;
-            }
-        }
-
-        private Control master
-        {
-            get
-            {
-                switch (Mode)
+                if (value == "")
                 {
-                    case EditLabelMode.EditMode:
-                        return textBox1;
-
-                    case EditLabelMode.LabelMode:
-                    default:
-                        return label1;
+                    m_string = DefaultText;
                 }
+                else
+                {
+                    m_string = value;
+                }
+
+                m_label.Text = m_string;
+                m_textbox.Text = m_string;
+
+                this.OnTextChanged(new EventArgs());
             }
         }
+
+        [DefaultValue("<Empty>")]
+        public string DefaultText { get; set; }
 
         public EditLabel()
         {
             InitializeComponent();
 
-            textBox1.GotFocus += new EventHandler(textBox1_GotFocus);
-            textBox1.LostFocus += new EventHandler(textBox1_LostFocus);
+            m_textbox.LostFocus += new EventHandler(m_textbox_LostFocus);
         }
 
-        void textBox1_GotFocus(object sender, EventArgs e)
+        #region Event Callers
+
+        protected void OnModeChanged(ModeChangedEventArgs e)
         {
+            if (this.ModeChanged != null)
+            {
+                this.ModeChanged(this, e);
+            }
         }
 
-        void textBox1_LostFocus(object sender, EventArgs e)
+        protected override void OnTextChanged(EventArgs e)
+        {
+            this.TextChanged(this, e);
+        }
+
+        #endregion
+
+
+        #region Event Handlers
+        private void m_textbox_LostFocus(object sender, EventArgs e)
         {
             if (Mode == EditLabelMode.EditMode)
             {
-                label1.Text = master.Text;
-                Mode = EditLabelMode.LabelMode;
-                textBox1.Visible = false;
-                label1.Visible = true;
+                this._leave_edit_mode();
             }
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void m_label_Click(object sender, EventArgs e)
         {
             if (Mode == EditLabelMode.LabelMode)
             {
-                textBox1.Text = master.Text;
-                Mode = EditLabelMode.EditMode;
-                textBox1.Visible = true;
-                //textBox1.Focus();
-                label1.Visible = false;
-                textBox1.Size = label1.Size;
+                this._enter_edit_mode();
             }
         }
 
-        public enum EditLabelMode
+        private void m_textbox_KeyDown(object sender, KeyEventArgs e)
         {
-            LabelMode,
-            EditMode
+            if (Mode != EditLabelMode.EditMode)
+            {
+                e.SuppressKeyPress = true;
+                return;
+            }
+
+            /* Check for enter key to end input mode */
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                this._leave_edit_mode();
+            }
         }
+        #endregion
+
+        private void _enter_edit_mode()
+        {
+            Mode = EditLabelMode.EditMode;
+        }
+
+        private void _leave_edit_mode()
+        {
+            Mode = EditLabelMode.LabelMode;
+            this.Text = m_textbox.Text;
+
+        }
+
+
     }
 }
