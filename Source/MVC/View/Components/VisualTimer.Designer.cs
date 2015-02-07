@@ -47,6 +47,7 @@
             this.label_time.Name = "label_time";
             this.label_time.Size = new System.Drawing.Size(150, 150);
             this.label_time.TabIndex = 0;
+            this.label_time.Text = "0";
             this.label_time.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // VisualTimer

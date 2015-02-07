@@ -30,6 +30,8 @@ namespace YoloTrack.MVC.View.Components
             }
             set
             {
+                if (m_image != null)
+                    m_image.Dispose();
                 m_image = value;
 
                 /* Invalidate SUCKS!!!!

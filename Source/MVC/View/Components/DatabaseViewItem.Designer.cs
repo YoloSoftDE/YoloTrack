@@ -46,6 +46,7 @@
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 66F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -73,6 +74,7 @@
             // 
             // tableLayoutPanel2
             // 
+            this.tableLayoutPanel2.BackColor = System.Drawing.Color.Transparent;
             this.tableLayoutPanel2.ColumnCount = 1;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.Controls.Add(this.panel1, 0, 0);
@@ -89,6 +91,7 @@
             // 
             // panel1
             // 
+            this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.Controls.Add(this.label_name);
             this.panel1.Controls.Add(this.label_id);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -121,6 +124,7 @@
             // 
             // panel2
             // 
+            this.panel2.BackColor = System.Drawing.Color.Transparent;
             this.panel2.Controls.Add(this.label_text_counters);
             this.panel2.Controls.Add(this.label_learned_at);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -132,6 +136,7 @@
             // label_text_counters
             // 
             this.label_text_counters.AutoSize = true;
+            this.label_text_counters.BackColor = System.Drawing.Color.Transparent;
             this.label_text_counters.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_text_counters.ForeColor = System.Drawing.SystemColors.GrayText;
             this.label_text_counters.Location = new System.Drawing.Point(0, 15);
@@ -143,6 +148,7 @@
             // label_learned_at
             // 
             this.label_learned_at.AutoSize = true;
+            this.label_learned_at.BackColor = System.Drawing.Color.Transparent;
             this.label_learned_at.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_learned_at.ForeColor = System.Drawing.SystemColors.GrayText;
             this.label_learned_at.Location = new System.Drawing.Point(0, 0);

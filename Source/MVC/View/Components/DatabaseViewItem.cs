@@ -214,6 +214,7 @@ namespace YoloTrack.MVC.View.Components
         /// <param name="e"></param>
         private void DatabaseViewItem_Click(object sender, EventArgs e)
         {
+            Focus();
             OnClick(e);
         }
 

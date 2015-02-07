@@ -34,17 +34,17 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.editLabel1 = new YoloTrack.Source.MVC.View.Components.EditLabel();
             this.editLabel2 = new YoloTrack.Source.MVC.View.Components.EditLabel();
+            this.editLabel1 = new YoloTrack.Source.MVC.View.Components.EditLabel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // button_track
             // 
             this.button_track.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_track.Location = new System.Drawing.Point(164, 73);
+            this.button_track.Location = new System.Drawing.Point(164, 75);
             this.button_track.Name = "button_track";
-            this.button_track.Size = new System.Drawing.Size(85, 32);
+            this.button_track.Size = new System.Drawing.Size(85, 30);
             this.button_track.TabIndex = 9;
             this.button_track.Text = "Track";
             this.button_track.UseVisualStyleBackColor = true;
@@ -76,23 +76,25 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // editLabel1
-            // 
-            this.editLabel1.Font = new System.Drawing.Font("Segoe UI", 15.75F);
-            this.editLabel1.Location = new System.Drawing.Point(164, 10);
-            this.editLabel1.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
-            this.editLabel1.Name = "editLabel1";
-            this.editLabel1.Size = new System.Drawing.Size(123, 33);
-            this.editLabel1.TabIndex = 10;
-            // 
             // editLabel2
             // 
-            this.editLabel2.Font = new System.Drawing.Font("Segoe UI", 15.75F);
-            this.editLabel2.Location = new System.Drawing.Point(164, 39);
-            this.editLabel2.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
+            this.editLabel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.editLabel2.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.editLabel2.Location = new System.Drawing.Point(159, 33);
+            this.editLabel2.Margin = new System.Windows.Forms.Padding(6);
             this.editLabel2.Name = "editLabel2";
             this.editLabel2.Size = new System.Drawing.Size(123, 33);
             this.editLabel2.TabIndex = 11;
+            // 
+            // editLabel1
+            // 
+            this.editLabel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.editLabel1.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.editLabel1.Location = new System.Drawing.Point(159, 6);
+            this.editLabel1.Margin = new System.Windows.Forms.Padding(6);
+            this.editLabel1.Name = "editLabel1";
+            this.editLabel1.Size = new System.Drawing.Size(123, 32);
+            this.editLabel1.TabIndex = 10;
             // 
             // DetailEditView
             // 

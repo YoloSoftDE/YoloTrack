@@ -32,6 +32,7 @@ namespace YoloTrack.MVC.View.Application
             InitializeComponent();
 
             liveView1.BackColor = Color.Black;
+            //visualTimer1.Start(30);
         }
 
         internal void Bind(Sensor Sensor)
@@ -112,10 +113,16 @@ namespace YoloTrack.MVC.View.Application
         {
             byte[] buffer = new byte[Frame.PixelDataLength];
             Frame.CopyPixelDataTo(buffer);
+
+            //buffer = Frame.GetRawPixelData();
+
+            GCHandle pinned = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+            IntPtr arrayPtr = pinned.AddrOfPinnedObject();
+
             Bitmap bmp = new Bitmap(
                 Frame.Width, Frame.Height,
                 Frame.Width * Frame.BytesPerPixel, System.Drawing.Imaging.PixelFormat.Format32bppRgb,
-                Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0));
+                pinned.AddrOfPinnedObject());
 
             Graphics g = Graphics.FromImage(bmp);
             Pen pen = new Pen(Color.Blue);
@@ -124,10 +131,19 @@ namespace YoloTrack.MVC.View.Application
             {
                 g.DrawRectangle(pen, p.Value.KinectResource.HeadRectangle);
                 ColorImagePoint begin, end;
-                begin = m_sensor.CoordinateMapper.MapSkeletonPointToColorPoint(p.Value.KinectResource.Skeleton.Joints[JointType.Head].Position);
-                end = m_sensor.CoordinateMapper.MapSkeletonPointToColorPoint(p.Value.KinectResource.Skeleton.Joints[JointType.ShoulderCenter].Position);
-                g.DrawLine(pen_red, new Point(begin.X, begin.Y), new Point(end.X, end.Y));
+                if (p.Value.KinectResource.Skeleton.TrackingState == SkeletonTrackingState.Tracked)
+                {
+                    begin = m_sensor.CoordinateMapper.MapSkeletonPointToColorPoint(p.Value.KinectResource.Skeleton.Joints[JointType.Head].Position);
+                    end = m_sensor.CoordinateMapper.MapSkeletonPointToColorPoint(p.Value.KinectResource.Skeleton.Joints[JointType.ShoulderCenter].Position);
+                    g.DrawLine(pen_red, new Point(begin.X, begin.Y), new Point(end.X, end.Y));
+                    g.DrawString("Id=" + p.Value.KinectResource.Skeleton.TrackingId.ToString() + " Attempts=" + p.Value.IdentifyAttempts.ToString(),
+                                Font, Brushes.Black,
+                                (float)begin.X, (float)begin.Y);
+                }
             }
+
+            pinned.Free();
+            
             liveView1.Image = bmp;
         }
 
@@ -251,6 +267,23 @@ namespace YoloTrack.MVC.View.Application
 
         private void View_FormClosed(object sender, FormClosedEventArgs e)
         {
+        }
+
+        public void ShowSensorFailure(string Message)
+        {
+            failure_header.Text = "Sensor Failure";
+            failure_message.Text = Message;
+            visualTimer1.Start(30);
+            failure_header.Visible = true;
+            failure_message.Visible = true;
+            visualTimer1.Visible = true;
+
+            visualTimer1.Timeout += visualTimer1_Timeout;
+        }
+
+        void visualTimer1_Timeout(object sender, EventArgs e)
+        {
+            MessageBox.Show("TA");
         }
     }
 }

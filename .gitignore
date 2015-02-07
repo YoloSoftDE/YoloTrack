@@ -6,3 +6,5 @@
 /frsdk.cfg
 /*.dll
 /*.userprefs
+/*.psess
+/*.vsp

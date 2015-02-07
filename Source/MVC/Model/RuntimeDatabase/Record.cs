@@ -52,9 +52,41 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
                         radius = (int)System.Math.Round(180.0 / head_joint.Position.Z);
                     }
 
-                    return new Rectangle(
-                        new Point(center_point.X - radius, center_point.Y - radius), 
-                        new Size(2 * radius, 2 * radius));
+                    Rectangle rect = new Rectangle(
+                                        new Point(center_point.X - radius, center_point.Y - radius), 
+                                        new Size(2 * radius, 2 * radius));
+
+                    if (rect.X < 0)
+                    {
+                        rect.X = 0;
+                    }
+
+                    if (rect.Y < 0)
+                    {
+                        rect.Y = 0;
+                    }
+
+                    if (rect.X >= m_sensor.ColorStream.Width)
+                    {
+                        rect.X = m_sensor.ColorStream.Width - 1;
+                    }
+
+                    if (rect.Y >= m_sensor.ColorStream.Height)
+                    {
+                        rect.Y = m_sensor.ColorStream.Height - 1;
+                    }
+
+                    if (rect.Width + rect.X >= m_sensor.ColorStream.Width)
+                    {
+                        rect.Width = m_sensor.ColorStream.Width - rect.X - 1;
+                    }
+
+                    if (rect.Height + rect.Y >= m_sensor.ColorStream.Height)
+                    {
+                        rect.Height = m_sensor.ColorStream.Height - rect.Y - 1;
+                    }
+
+                    return rect;
                 }
                 catch (System.InvalidCastException)
                 {
@@ -134,6 +166,11 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
         /// Record that is stored within the permenant database
         /// </summary>
         public DatabaseRecord DatabaseRecord { get; private set; }
+
+        /// <summary>
+        /// Number of attempts the record was taken for identification
+        /// </summary>
+        public int IdentifyAttempts { get; set; }
 
         /// <summary>
         /// State.

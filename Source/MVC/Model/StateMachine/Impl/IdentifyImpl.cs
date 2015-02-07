@@ -30,7 +30,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			/* Run Identification */
             IdentificationFeedback fb = m_identification_api.Identify(samples, 3);
 
-            Console.WriteLine("Sample Quality is {0}", fb.SampleQuality);
+            //Console.WriteLine("Sample Quality is {0}", fb.SampleQuality);
 
 			/* Find the highest matching person */
 			Match winner;
@@ -42,13 +42,13 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			}
 
             winner = fb.Match[0];
-            Console.WriteLine("Match on FIR[{0}] has Score {1}", winner.name, winner.score.value);
+            //Console.WriteLine("Match on FIR[{0}] has Score {1}", winner.name, winner.score.value);
 
             for (int i = 1; i < fb.Match.Length; i++)
             {
                 Match m = fb.Match[i];
 
-				Console.WriteLine ("Match on FIR[{0}] has Score {1}", m.name, m.score.value);
+				//Console.WriteLine ("Match on FIR[{0}] has Score {1}", m.name, m.score.value);
 				if (m.score.value > winner.score.value) {
 					winner = m;
 				}
