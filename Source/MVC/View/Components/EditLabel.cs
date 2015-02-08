@@ -72,16 +72,19 @@ namespace YoloTrack.Source.MVC.View.Components
             }
             set
             {
-                if (value == "")
+                m_string = value;
+                if (m_string == "")
                 {
-                    m_string = DefaultText;
+                    m_label.Text = DefaultText;
+                    m_label.Font = new Font(m_label.Font, FontStyle.Italic);
+                    m_label.ForeColor = SystemColors.GrayText;
                 }
                 else
                 {
-                    m_string = value;
+                    m_label.Text = m_string;
+                    m_label.Font = new Font(m_label.Font, FontStyle.Regular);
+                    m_label.ForeColor = SystemColors.ControlText;
                 }
-
-                m_label.Text = m_string;
                 m_textbox.Text = m_string;
 
                 //this.OnTextChanged(new EventArgs());

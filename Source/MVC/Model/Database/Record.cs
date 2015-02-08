@@ -41,7 +41,7 @@ namespace YoloTrack.MVC.Model.Database
         /// <summary>
         /// 
         /// </summary>
-        public IdentificationRecord IdentificationRecord { get; private set; }
+        public IdentificationRecord IdentificationRecord { get; set; }
 
         /// <summary>
         /// MetaInfo, FirstName

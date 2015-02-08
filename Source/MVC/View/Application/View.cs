@@ -40,6 +40,10 @@ namespace YoloTrack.MVC.View.Application
 
         public event EventHandler<DatabaseItemImageChangedEventArgs> DatabaseItemImageChanged;
 
+        public event EventHandler<DatabaseMergeEventArgs> DatabaseMergeRequested;
+
+        public event EventHandler<DatabaseItemDeleteRequestEventArgs> DatabaseItemDeleteRequested;
+
         Sensor m_sensor;
 
         RuntimeDatabase m_runtime_database;
@@ -71,6 +75,7 @@ namespace YoloTrack.MVC.View.Application
             foreach (KeyValuePair<int, Model.Database.Record> record in m_database.ContainerCopy)
             {
                 _add_database_record(record.Value);
+                record.Value.RecordChanged += Database_RecordChanged;
             }
         }
 
@@ -157,7 +162,7 @@ namespace YoloTrack.MVC.View.Application
                     end = m_sensor.CoordinateMapper.MapSkeletonPointToColorPoint(p.Value.KinectResource.Skeleton.Joints[JointType.ShoulderCenter].Position);
                     g.DrawLine(pen_red, new Point(begin.X, begin.Y), new Point(end.X, end.Y));
                     g.DrawString("Id=" + p.Value.KinectResource.Skeleton.TrackingId.ToString() + " Attempts=" + p.Value.IdentifyAttempts.ToString(),
-                                Font, Brushes.Black,
+                                SystemFonts.DefaultFont, Brushes.Black,
                                 (float)begin.X, (float)begin.Y);
                 }
             }
@@ -289,14 +294,22 @@ namespace YoloTrack.MVC.View.Application
         {
         }
 
-        public void ShowSensorFailure(string Message)
+        public void ShowFailure(string Message, Controller.FailureType Type)
         {
-            failure_header.Text = "Sensor Failure";
+            switch (Type)
+            {
+                case FailureType.Sensor:
+                    failure_header.Text = "Sensor Failure";
+                    break;
+
+                case FailureType.IdentificationAPI:
+                    failure_header.Text = "Identification API Failure";
+                    break;
+            }
+
             failure_message.Text = Message;
             visualTimer1.Start(30);
-            failure_header.Visible = true;
-            failure_message.Visible = true;
-            visualTimer1.Visible = true;
+            panel_failure_message.Visible = true;
             liveView1.BackColor = SystemColors.ControlDarkDark;
 
             visualTimer1.Timeout += visualTimer1_Timeout;
@@ -304,9 +317,7 @@ namespace YoloTrack.MVC.View.Application
 
         public void HideFailureMessage()
         {
-            failure_header.Visible = false;
-            failure_message.Visible = false;
-            visualTimer1.Visible = false;
+            panel_failure_message.Visible = false;
         }
 
         void visualTimer1_Timeout(object sender, EventArgs e)
@@ -350,8 +361,6 @@ namespace YoloTrack.MVC.View.Application
 
         private void detailEditView1_LastNameChanged(object sender, LastNameChangedEventArgs e)
         {
-            m_database[detailEditView1.Id].LastName = e.LastName;
-            /*
             if (DatabaseItemLastNameChanged != null)
             {
                 DatabaseItemLastNameChanged(this, new DatabaseItemLastNameChangedEventArgs()
@@ -360,7 +369,6 @@ namespace YoloTrack.MVC.View.Application
                     LastName = e.LastName
                 });
             }
-            */
         }
 
         private void detailEditView1_FirstNameChanged(object sender, FirstNameChangedEventArgs e)
@@ -386,6 +394,43 @@ namespace YoloTrack.MVC.View.Application
                 });
             }
         }
+
+        private void databaseView1_MergeRequest(object sender, MergeEventArgs e)
+        {
+            if (DatabaseMergeRequested != null)
+            {
+                int[] id_list = new int[e.Items.Length];
+                for (int i = 0; i < e.Items.Length; i++)
+                {
+                    id_list[i] = e.Items[i].Id;
+                }
+                DatabaseMergeRequested(this, new DatabaseMergeEventArgs()
+                {
+                    DatabaseIdList = id_list
+                });
+            }
+        }
+
+        private void detailEditView1_DeleteRequest(object sender, DeleteRequestEventArgs e)
+        {
+            if (DatabaseItemDeleteRequested != null)
+            {
+                DatabaseItemDeleteRequested(this, new DatabaseItemDeleteRequestEventArgs()
+                {
+                    DatabaseId = e.DatabaseId
+                });
+            }
+        }
+    }
+
+    public class DatabaseMergeEventArgs : EventArgs
+    {
+        public int[] DatabaseIdList;
+    }
+
+    public class DatabaseItemDeleteRequestEventArgs : EventArgs
+    {
+        public int DatabaseId;
     }
 
     public class DatabaseItemSelectedEventArgs : EventArgs

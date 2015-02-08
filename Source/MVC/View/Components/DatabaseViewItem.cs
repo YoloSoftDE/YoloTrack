@@ -228,6 +228,7 @@ namespace YoloTrack.MVC.View.Components
             SuspendLayout();
             label_name.ForeColor = SystemColors.ControlText;
 
+            label_name.Text = "";
             if (FirstName.Length > 0)
             {
                 label_name.Text = FirstName;

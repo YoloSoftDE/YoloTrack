@@ -84,13 +84,13 @@ namespace YoloTrack.MVC.Model.StateMachine
                 throw new StateMachineException("State machine already running");
 
             if (m_app_conf == null)
-                throw new StackOverflowException("Appconfig not bound");
+                throw new StateMachineException("Appconfig not bound");
 
             if (m_identification_api == null)
-                throw new StackOverflowException("No identification API bound");
+                throw new StateMachineException("No identification API bound");
 
             if (m_sensor == null)
-                throw new StackOverflowException("No sensor bound");
+                throw new StateMachineException("No sensor bound");
 
             m_terminate = false;
             m_worker = new Thread(new ThreadStart(_work));

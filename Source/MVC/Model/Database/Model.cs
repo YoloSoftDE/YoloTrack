@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.IO;
+using YoloTrack.MVC.Controller;
 
 namespace YoloTrack.MVC.Model.Database
 {
@@ -24,7 +25,8 @@ namespace YoloTrack.MVC.Model.Database
     /// <summary>
     /// 
     /// </summary>
-    public class Model : Dictionary<int, Record>
+    public class Model : Dictionary<int, Record>,
+        IBindable<IdentificationData.Model>
     {
         /// <summary>
         /// Fired on addition of a record
@@ -155,6 +157,9 @@ namespace YoloTrack.MVC.Model.Database
 
             // Release lock
             m_container_modification_mutex.ReleaseMutex();
+            
+            // Remove the FIR from the population
+            m_identification_api.Population.remove(Key.ToString());
 
             if (RecordRemoved != null)
             {
@@ -226,6 +231,7 @@ namespace YoloTrack.MVC.Model.Database
         /// <param name="FileName"></param>
         public void SaveTo(string FileName)
         {
+            // Serialize to memory stream and write out to file
             MemoryStream ms = new MemoryStream();
             _serialize_to(ms);
             FileStream fs = new FileStream(FileName, FileMode.Create, FileAccess.ReadWrite);
@@ -240,7 +246,7 @@ namespace YoloTrack.MVC.Model.Database
         /// </summary>
         /// <param name="FileName"></param>
         /// <returns></returns>
-        public static Model LoadFrom(string FileName, IdentificationData.Model IdentificationAPI)
+        public void LoadFrom(string FileName)
         {
             FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
             MemoryStream ms = new MemoryStream();
@@ -260,14 +266,9 @@ namespace YoloTrack.MVC.Model.Database
             }
             fs.Close();
             ms.Seek(0, SeekOrigin.Begin);
-
-            Model model = new Model();
-            model.Bind(IdentificationAPI);
-            model._unserialize_from(ms);
+            _unserialize_from(ms);
 
             ms.Close();
-
-            return model;
         }
 
         /// <summary>
@@ -276,16 +277,44 @@ namespace YoloTrack.MVC.Model.Database
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        public static Model LoadFromOrEmpty(string FileName, IdentificationData.Model IdentificationAPI)
+        public void LoadFromOrEmpty(string FileName)
         {
             if (System.IO.File.Exists(FileName))
             {
-                return LoadFrom(FileName, IdentificationAPI);
+                LoadFrom(FileName);
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Binder for the identification API
+        /// </summary>
+        /// <param name="IdentificationAPI"></param>
+        public void Bind(IdentificationData.Model IdentificationAPI)
+        {
+            m_identification_api = IdentificationAPI;
+        }
+
+        /// <summary>
+        /// Merge two or more DatabaseIds into one (master)
+        /// </summary>
+        /// <param name="Master">The master element, which will be the merge result</param>
+        /// <param name="RecordIds"></param>
+        public void Merge(int Master, int[] SlaveIds)
+        {
+            Cognitec.FRsdk.FIR[] merge_list = new Cognitec.FRsdk.FIR[1+SlaveIds.Length];
+            merge_list[0] = base[Master].IdentificationRecord.Value;
+            for (int i = 0; i < SlaveIds.Length; i++)
+            {
+                int obsolete_record_id = SlaveIds[i];
+                merge_list[i+1] = base[obsolete_record_id].IdentificationRecord.Value;
+                Remove(obsolete_record_id);
             }
 
-            Model model = new Model();
-            model.Bind(IdentificationAPI);
-            return model;
+            base[Master].IdentificationRecord = new IdentificationRecord(m_identification_api.Merge(merge_list));
+            // Update population accordingly
+            m_identification_api.Population.remove(Master.ToString());
+            m_identification_api.Population.append(base[Master].IdentificationRecord.Value, Master.ToString());
         }
 
         /// <summary>
@@ -331,15 +360,6 @@ namespace YoloTrack.MVC.Model.Database
                 Add(key, value);
                 m_identification_api.Population.append(ir.Value, key.ToString());
             }
-        }
-
-        /// <summary>
-        /// Binder for the identification API
-        /// </summary>
-        /// <param name="IdentificationAPI"></param>
-        public void Bind(IdentificationData.Model IdentificationAPI)
-        {
-            m_identification_api = IdentificationAPI;
         }
     } // End class
 } // End namespace
