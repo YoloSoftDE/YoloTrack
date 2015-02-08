@@ -6,46 +6,46 @@ using System.Drawing;
 namespace YoloTrack.MVC.View.Components
 {
     /// <summary>
-    /// 
+    /// Database-View
     /// </summary>
     public partial class DatabaseView : UserControl
     {
         /// <summary>
-        /// 
+        /// Event for the Merge-Button
         /// </summary>
         public event EventHandler<MergeEventArgs> MergeRequest;
 
         public event EventHandler<ItemSelectedEventArgs> ItemSelected;
 
         /// <summary>
-        /// 
+        /// Get the number of items in the control
         /// </summary>
-        public int Count { get{ return Items.Count; } }
+        public int Count { get { return this.Items.Count; } }
 
         /// <summary>
-        /// 
+        /// Get or set the items in the control
         /// </summary>
         public DatabaseViewItemCollection Items { get; set; }
 
         /// <summary>
-        /// Constructor
+        /// Default Constructor
         /// </summary>
         public DatabaseView()
         {
             InitializeComponent();
 
-            Items = new DatabaseViewItemCollection();
+            this.Items = new DatabaseViewItemCollection();
 
-            Items.Added += new EventHandler<DatabaseViewItemCollection.ListChangedEventArgs>(OnItemAdded);
-            Items.Removed += new EventHandler<DatabaseViewItemCollection.ListChangedEventArgs>(OnItemRemoved);
+            this.Items.Added += new EventHandler<DatabaseViewItemCollection.ListChangedEventArgs>(this.OnItemAdded);
+            this.Items.Removed += new EventHandler<DatabaseViewItemCollection.ListChangedEventArgs>(this.OnItemRemoved);
         }
 
         /// <summary>
-        /// 
+        /// OnItemAdded event handler
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void OnItemAdded(object sender, DatabaseViewItemCollection.ListChangedEventArgs e)
+        private void OnItemAdded(object sender, DatabaseViewItemCollection.ListChangedEventArgs e)
         {
             _set_count();
             control_container.Controls.Add(e.Item);
@@ -56,11 +56,11 @@ namespace YoloTrack.MVC.View.Components
         }
 
         /// <summary>
-        /// 
+        /// Select the item on click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void Item_Click(object sender, EventArgs e)
+        private void Item_Click(object sender, EventArgs e)
         {
             DatabaseViewItem item = (DatabaseViewItem)sender;
             if (ModifierKeys == Keys.Shift)
@@ -93,14 +93,14 @@ namespace YoloTrack.MVC.View.Components
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void OnItemRemoved(object sender, DatabaseViewItemCollection.ListChangedEventArgs e)
+        private void OnItemRemoved(object sender, DatabaseViewItemCollection.ListChangedEventArgs e)
         {
             _set_count();
             control_container.Controls.Remove(e.Item);
         }
 
         /// <summary>
-        /// 
+        /// Calculate Correct Item size on resize (subtract scrollbarwidth from itemwidth)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -113,7 +113,7 @@ namespace YoloTrack.MVC.View.Components
         }
 
         /// <summary>
-        /// 
+        /// Update the visible count
         /// </summary>
         private void _set_count()
         {
@@ -130,7 +130,7 @@ namespace YoloTrack.MVC.View.Components
         }
 
         /// <summary>
-        /// 
+        /// ItemCollection Class
         /// </summary>
         public class DatabaseViewItemCollection : List<DatabaseViewItem>
         {
@@ -139,15 +139,26 @@ namespace YoloTrack.MVC.View.Components
                 public DatabaseViewItem Item;
             }
 
+            /// <summary>
+            /// Fired, when a new item is added
+            /// </summary>
             public event EventHandler<ListChangedEventArgs> Added;
+
+            /// <summary>
+            /// Fired, when an item is removed
+            /// </summary>
             public event EventHandler<ListChangedEventArgs> Removed;
 
+            /// <summary>
+            /// Add a new item to the collection
+            /// </summary>
+            /// <param name="item"></param>
             public new void Add(DatabaseViewItem item)
             {
                 base.Add(item);
-                if (Added != null)
+                if (this.Added != null)
                 {
-                    Added(this, new ListChangedEventArgs()
+                    this.Added(this, new ListChangedEventArgs()
                     {
                         Item = item
                     });
@@ -155,15 +166,15 @@ namespace YoloTrack.MVC.View.Components
             }
 
             /// <summary>
-            /// 
+            /// Remove an item from the collection
             /// </summary>
             /// <param name="item"></param>
             public new void Remove(DatabaseViewItem item)
             {
                 base.Remove(item);
-                if (Removed != null)
+                if (this.Removed != null)
                 {
-                    Removed(this, new ListChangedEventArgs()
+                    this.Removed(this, new ListChangedEventArgs()
                     {
                         Item = item
                     });
@@ -171,6 +182,11 @@ namespace YoloTrack.MVC.View.Components
             }
         }
 
+        /// <summary>
+        /// Hook repaint to refresh the header-control
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
             databaseViewHeader1.HasBottomLine = control_container.VerticalScroll.Value > 0;
@@ -181,6 +197,11 @@ namespace YoloTrack.MVC.View.Components
         {
         }
 
+        /// <summary>
+        /// Click-Handler to merge the selected items
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void databaseViewHeader1_MergeClick(object sender, EventArgs e)
         {
             if (Items.FindAll(item => item.Selected == true).Count >= 2)
@@ -210,6 +231,11 @@ namespace YoloTrack.MVC.View.Components
 
         }
 
+        /// <summary>
+        /// Deselect all items on click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void control_container_Click(object sender, EventArgs e)
         {
             foreach (DatabaseViewItem item in Items)
@@ -220,7 +246,7 @@ namespace YoloTrack.MVC.View.Components
     }
 
     /// <summary>
-    /// 
+    /// Event-Args for merging a set of items
     /// </summary>
     public class MergeEventArgs : EventArgs
     {
