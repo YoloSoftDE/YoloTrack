@@ -126,7 +126,7 @@ namespace YoloTrack.Source.MVC.View.Components
 
             /* Fill the Path */
             e.Graphics.FillPath(new SolidBrush(this.ForeColor), path);
-            
+
             e.Dispose();
         }
 
