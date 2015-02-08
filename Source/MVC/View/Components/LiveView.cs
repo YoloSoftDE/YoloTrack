@@ -11,17 +11,23 @@ namespace YoloTrack.MVC.View.Components
 
         public LiveView()
         {
-            InitializeComponent();
+            InitializeComponent(); /* Great code inside here */
+
+            /* Turn on double buffering */
             this.DoubleBuffered = true;
+
+            /* Set default alignment mode */
             this.ImageAlign = ContentAlignment.TopLeft;
         }
 
-        public ContentAlignment ImageAlign
-        {
-            get;
-            set;
-        }
+        /// <summary>
+        /// Get or set the image aligment mode
+        /// </summary>
+        public ContentAlignment ImageAlign { get; set; }
 
+        /// <summary>
+        /// Get or set the image displayed
+        /// </summary>
         public Image Image
         {
             get
@@ -30,32 +36,56 @@ namespace YoloTrack.MVC.View.Components
             }
             set
             {
+                /* Dispose no longer used image
+                 * Will result in a memoryleak otherwise!
+                 */
                 if (m_image != null)
                     m_image.Dispose();
+
+                /* Store new image */
                 m_image = value;
 
-                /* Invalidate SUCKS!!!!
-                 * PictureBox SUCKS!!!!
-                 */
-                this.Refresh(); // FIXME: may throw InOpEx
+
+
+                /* We're using Refresh() since Invalidate() will
+                 * cause a random unavoidable CrossThreadAccessViolation */
+                try
+                {
+                    this.Refresh();
+                }
+                catch (InvalidOperationException)
+                {
+                    /* We're avoiding the CrossThreadAccessViolation but
+                     * keep getting an InvalidOperationException pure randomly.
+                     * At least we can catch that safely ...
+                     */
+                }
 
 
             }
         }
 
+        /// <summary>
+        /// Refreshes the LiveViews Layout
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnPaint(PaintEventArgs e)
         {
+            /* Skip first draw */
             if (this.Image == null)
             {
                 return;
             }
 
-
+            /* Calculate AspectRatio */
             float ar = (float)this.Image.Width / (float)this.Image.Height;
             float nheight, nwidth;
             int xpos = 0;
             int ypos = 0;
 
+            /* Calculate new dimensions based on the longer/shorter edge
+             * and matching the aspect-ratio.
+             */
             if ((float)this.ClientRectangle.Height * ar < (float)ClientRectangle.Width)
             {
                 nheight = (float)this.ClientRectangle.Height;
@@ -67,6 +97,7 @@ namespace YoloTrack.MVC.View.Components
                 nwidth = (float)this.ClientRectangle.Width;
             }
 
+            /* Calculate Offset-values */
             switch (this.ImageAlign)
             {
                 #region Alignment Top
@@ -154,10 +185,12 @@ namespace YoloTrack.MVC.View.Components
                 #endregion
 
                 default:
-                    throw new NotImplementedException("FAILERRORFAIL");
+                    /* This error should NEVER appear */
+                    throw new NotImplementedException("Invalid ImageAlign Mode");
             }
 
-            e.Graphics.Clear(BackColor);
+            /* Fill Background */
+            e.Graphics.Clear(this.BackColor);
 
             e.Graphics.DrawImage(
                 this.Image, /* Image instance */

@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.m_timer = new System.Windows.Forms.Timer(this.components);
             this.label_time = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // timer1
             // 
-            this.timer1.Interval = 10;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.m_timer.Interval = 10;
+            this.m_timer.Tick += new System.EventHandler(this.m_timer_Tick);
             // 
             // label_time
             // 
@@ -61,7 +61,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Timer m_timer;
         private System.Windows.Forms.Label label_time;
     }
 }

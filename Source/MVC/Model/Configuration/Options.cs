@@ -39,15 +39,25 @@ namespace YoloTrack.MVC.Model.Configuration
     /// </summary>
     public struct Options
     {
+
+        public Options(Option.Database db, Option.IdentificationData idd, Option.Logging log)
+        {
+            /* This must be first, because C# sucks */
+            this.Logging = log;
+
+            this.Database = db;
+            this.IdentificationData = idd;
+        }
+
         /// <summary>
         /// Database subtree
         /// </summary>
-        public Option.Database Database { get; private set; }
+        public Option.Database Database { get; protected set; }
 
         /// <summary>
-        /// FceVACS subtree
+        /// FaceVACS subtree
         /// </summary>
-        public Option.IdentificationData IdentificationData { get; private set; }
+        public Option.IdentificationData IdentificationData { get; protected set; }
 
         /// <summary>
         /// Logging

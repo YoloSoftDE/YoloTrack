@@ -210,11 +210,32 @@ namespace YoloTrack.MVC.Controller
 
             m_app_view.RepeatInitTimeout += m_app_view_RepeatInitTimeout;
 
+<<<<<<< HEAD
             // Checks the status of the application and shows error messages if needed
             _check_status();
 
             // Show Application view
             Application.Run(m_app_view);
+        }
+
+        void m_app_view_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            /* Main Form Requested Closing*/
+
+            /* Shutdown State Machine */
+            m_state_machine.Terminate();
+
+            /* Shutdown Kinect Sensor */
+            // #ichkannohneapinichtarbeiten!
+            
+            /* Shutdown Cognitec API */
+            /* Nothing to do here */
+
+            /* Shutdown Database */
+
+            /* > Store Database as file */
+            m_database.SaveTo("test.ydb");
+
         }
 
         private bool _check_status()
