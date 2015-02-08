@@ -4,56 +4,93 @@ using System.Windows.Forms;
 
 namespace YoloTrack.MVC.View.Components
 {
+    /// <summary>
+    /// Great summary control
+    /// </summary>
     public partial class DetailEditView : UserControl
     {
+        /// <summary>
+        /// Get or set the UserImage
+        /// </summary>
         public Image Image { get; set; }
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public DetailEditView()
         {
             InitializeComponent();
             DoubleBuffered = true;
 
-            editLabel1.Text = "Sebastian";
-            editLabel2.Text = "Büttner";
+            m_editLabel_First.Text = "";
+            m_editLabel_Last.Text = "";
         }
 
-        private void DetailEditView_Load(object sender, EventArgs e)
-        {
-
-        }
-
+        /// <summary>
+        /// Hook to the OnPaint-Method. Draw a separator-line
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DetailEditView_Paint(object sender, PaintEventArgs e)
         {
-            Pen blackpen = new Pen(SystemColors.ActiveBorder, 1);
-            Graphics g = e.Graphics;
-            g.DrawLine(blackpen, 0, 0, Width, 0);
+            /* Draw a separator line */
+            e.Graphics.DrawLine(
+                new Pen(SystemColors.ActiveBorder, 1), 
+                0, 
+                0, 
+                this.Width,
+                0
+            );
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        /// <summary>
+        /// UserImage-Clickevent opens a filebrowser for a customized image
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void m_userImage_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Multiselect = false;
-            DialogResult user_input = openFileDialog1.ShowDialog();
+            /* Open the dialog */
+            this.openFileDialog.Multiselect = false;
+            DialogResult user_input = openFileDialog.ShowDialog();
+
+            /* Check if the user pressed the correct buttons */
             if (user_input == DialogResult.OK)
             {
-                Image = Image.FromFile(openFileDialog1.FileName);
-                pictureBox1.Image = Image;
+                /* Apply Image */
+                this.Image = Image.FromFile(this.openFileDialog.FileName);
+                this.m_userImage.Image = this.Image;
             }
         }
 
-        private void pictureBox1_MouseEnter(object sender, EventArgs e)
+        /// <summary>
+        /// Add some visual feedback for the image
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void m_userImage_MouseEnter(object sender, EventArgs e)
         {
-            if (Image == null)
+            /* Change BG-Color if no image present */
+            if (this.Image == null)
             {
-                pictureBox1.BackColor = SystemColors.ControlDarkDark;
+                this.m_userImage.BackColor = SystemColors.ControlDarkDark;
             }
-            toolTip1.Show("Click to select another image for this record", pictureBox1);
+
+            /* Show tooltip */
+            this.toolTip.Show("Click to select another image for this record", this.m_userImage);
         }
 
-        private void pictureBox1_MouseLeave(object sender, EventArgs e)
+        /// <summary>
+        /// Add some visual feedback for the image
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void m_userImage_MouseLeave(object sender, EventArgs e)
         {
-            if (Image == null)
+            /* Change BG-Color if no image present */
+            if (this.Image == null)
             {
-                pictureBox1.BackColor = SystemColors.ControlDark;
+                this.m_userImage.BackColor = SystemColors.ControlDark;
             }
         }
     }

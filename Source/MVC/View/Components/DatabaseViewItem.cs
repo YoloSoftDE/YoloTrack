@@ -5,11 +5,22 @@ using System.Windows.Forms;
 namespace YoloTrack.MVC.View.Components
 {
     /// <summary>
-    /// 
+    /// A visual simple item in the database
     /// </summary>
     public partial class DatabaseViewItem : UserControl
     {
         private bool m_selected = false;
+        private string m_first_name = "";
+        private int m_id;
+        private string m_last_name = ""; 
+        private DateTime m_learned_at = new DateTime();
+        private int m_times_recognized;
+        private int m_times_tracked;
+
+
+        /// <summary>
+        /// Get or set the selected-status
+        /// </summary>
         public bool Selected 
         { 
             get
@@ -24,9 +35,8 @@ namespace YoloTrack.MVC.View.Components
         }
 
         /// <summary>
-        /// 
+        /// Get or set the id-number
         /// </summary>
-        private int m_id;
         public int Id
         {
             get
@@ -43,7 +53,6 @@ namespace YoloTrack.MVC.View.Components
         /// <summary>
         /// Property for the first name to get or set.
         /// </summary>
-        private string m_first_name = "";
         public string FirstName
         {
             get
@@ -60,7 +69,6 @@ namespace YoloTrack.MVC.View.Components
         /// <summary>
         /// Property for the last name to get or set.
         /// </summary>
-        private string m_last_name = "";
         public string LastName
         {
             get
@@ -77,7 +85,6 @@ namespace YoloTrack.MVC.View.Components
         /// <summary>
         /// Property for the datetime the record was learned.
         /// </summary>
-        private DateTime m_learned_at = new DateTime();
         public DateTime LearnedAt
         {
             get
@@ -92,9 +99,8 @@ namespace YoloTrack.MVC.View.Components
         }
 
         /// <summary>
-        /// 
+        /// Get or set the number of times this profile has been recognized by the software
         /// </summary>
-        private int m_times_recognized;
         public int TimesRecognized
         {
             get
@@ -109,9 +115,8 @@ namespace YoloTrack.MVC.View.Components
         }
 
         /// <summary>
-        /// 
+        /// Get or set the number of times this profile as been tracked by the software
         /// </summary>
-        private int m_times_tracked;
         public int TimesTracked
         {
             get
@@ -126,7 +131,7 @@ namespace YoloTrack.MVC.View.Components
         }
 
         /// <summary>
-        /// Default construcor
+        /// Default constructor
         /// </summary>
         public DatabaseViewItem()
         {
@@ -140,7 +145,7 @@ namespace YoloTrack.MVC.View.Components
         }
 
         /// <summary>
-        /// 
+        /// Register Events for all Controls on the thing
         /// </summary>
         /// <param name="Controls"></param>
         private void _register_event(ControlCollection Controls)
@@ -155,16 +160,7 @@ namespace YoloTrack.MVC.View.Components
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DatabaseViewItem_Paint(object sender, PaintEventArgs e)
-        {
-        }
-
-        /// <summary>
-        /// 
+        /// Add visual feedback for mousehover-interaction
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -174,7 +170,7 @@ namespace YoloTrack.MVC.View.Components
         }
 
         /// <summary>
-        /// 
+        /// Add visual feedback for mousehover-interaction
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -183,32 +179,36 @@ namespace YoloTrack.MVC.View.Components
             _draw();
         }
 
+        /// <summary>
+        /// Draw visual feedback for mouse-interaction
+        /// </summary>
+        /// <param name="Hover"></param>
         private void _draw(bool Hover = false)
         {
-            if (Hover || Selected)
+            if (Hover || this.Selected)
             {
-                BackColor = SystemColors.MenuHighlight;
-                label_name.ForeColor = SystemColors.HighlightText;
-                label_learned_at.ForeColor = SystemColors.HighlightText;
-                label_text_counters.ForeColor = SystemColors.HighlightText;
-                label_id.BackColor = SystemColors.HotTrack;
+                this.BackColor = SystemColors.MenuHighlight;
+                this.label_name.ForeColor = SystemColors.HighlightText;
+                this.label_learned_at.ForeColor = SystemColors.HighlightText;
+                this.label_text_counters.ForeColor = SystemColors.HighlightText;
+                this.label_id.BackColor = SystemColors.HotTrack;
             }
             else
             {
-                BackColor = SystemColors.Control;
-                label_name.ForeColor = SystemColors.ControlText;
-                label_learned_at.ForeColor = SystemColors.GrayText;
-                label_text_counters.ForeColor = SystemColors.GrayText;
-                label_id.BackColor = SystemColors.Highlight;
-                if (FirstName.Length == 0 && LastName.Length == 0)
+                this.BackColor = SystemColors.Control;
+                this.label_name.ForeColor = SystemColors.ControlText;
+                this.label_learned_at.ForeColor = SystemColors.GrayText;
+                this.label_text_counters.ForeColor = SystemColors.GrayText;
+                this.label_id.BackColor = SystemColors.Highlight;
+                if (this.FirstName.Length == 0 && this.LastName.Length == 0)
                 {
-                    label_name.ForeColor = SystemColors.GrayText;
+                    this.label_name.ForeColor = SystemColors.GrayText;
                 }
             }
         }
 
         /// <summary>
-        /// 
+        /// Add feedback for mouseclick-interaction
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -218,11 +218,17 @@ namespace YoloTrack.MVC.View.Components
             OnClick(e);
         }
 
+        /// <summary>
+        /// Update the id on the label
+        /// </summary>
         private void _set_id()
         {
             label_id.Text = Id.ToString();
         }
 
+        /// <summary>
+        /// Update the name based on availability of first and lastname
+        /// </summary>
         private void _set_name()
         {
             SuspendLayout();
@@ -249,11 +255,17 @@ namespace YoloTrack.MVC.View.Components
             ResumeLayout();
         }
 
+        /// <summary>
+        /// Update the learned-date
+        /// </summary>
         private void _set_learned_at()
         {
             label_learned_at.Text = "Listed since " + LearnedAt.ToShortDateString() + ", " + LearnedAt.ToShortTimeString();
         }
 
+        /// <summary>
+        /// Update the times-tracked counter with correct grammar
+        /// </summary>
         private void _set_counters()
         {
             if (TimesRecognized == 0)
