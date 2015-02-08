@@ -28,40 +28,40 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.m_textbox = new System.Windows.Forms.TextBox();
+            this.m_label = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // textBox1
+            // m_textbox
             // 
-            this.textBox1.Location = new System.Drawing.Point(0, 0);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(0);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(53, 39);
-            this.textBox1.TabIndex = 1;
-            this.textBox1.Text = "test";
-            this.textBox1.Visible = false;
+            this.m_textbox.Location = new System.Drawing.Point(0, 0);
+            this.m_textbox.Margin = new System.Windows.Forms.Padding(0);
+            this.m_textbox.Name = "m_textbox";
+            this.m_textbox.Size = new System.Drawing.Size(53, 20);
+            this.m_textbox.TabIndex = 1;
+            this.m_textbox.Text = "test";
+            this.m_textbox.Visible = false;
+            this.m_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.m_textbox_KeyDown);
             // 
-            // label1
+            // m_label
             // 
-            this.label1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label1.Location = new System.Drawing.Point(0, 0);
-            this.label1.Margin = new System.Windows.Forms.Padding(0);
-            this.label1.Name = "label1";
-            this.label1.Padding = new System.Windows.Forms.Padding(2, 1, 0, 0);
-            this.label1.Size = new System.Drawing.Size(217, 30);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "label1";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            this.m_label.Dock = System.Windows.Forms.DockStyle.Top;
+            this.m_label.Location = new System.Drawing.Point(0, 0);
+            this.m_label.Margin = new System.Windows.Forms.Padding(0);
+            this.m_label.Name = "m_label";
+            this.m_label.Padding = new System.Windows.Forms.Padding(2, 1, 0, 0);
+            this.m_label.Size = new System.Drawing.Size(217, 30);
+            this.m_label.TabIndex = 2;
+            this.m_label.Text = "label1";
+            this.m_label.Click += new System.EventHandler(this.m_label_Click);
             // 
             // EditLabel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.m_label);
+            this.Controls.Add(this.m_textbox);
             this.Name = "EditLabel";
             this.Size = new System.Drawing.Size(217, 110);
             this.ResumeLayout(false);
@@ -71,7 +71,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox m_textbox;
+        private System.Windows.Forms.Label m_label;
     }
 }
