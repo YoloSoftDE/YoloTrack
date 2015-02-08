@@ -52,6 +52,7 @@
             this.button_delete.TabIndex = 8;
             this.button_delete.Text = "Delete";
             this.button_delete.UseVisualStyleBackColor = true;
+            this.button_delete.Click += new System.EventHandler(this.button_delete_Click);
             // 
             // pb_image
             // 
@@ -124,7 +125,7 @@
             // label_last_name
             // 
             this.label_last_name.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.label_last_name.DefaultText = null;
+            this.label_last_name.DefaultText = "LastName";
             this.label_last_name.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_last_name.Location = new System.Drawing.Point(159, 33);
             this.label_last_name.Margin = new System.Windows.Forms.Padding(6);
@@ -137,7 +138,7 @@
             // label_first_name
             // 
             this.label_first_name.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.label_first_name.DefaultText = null;
+            this.label_first_name.DefaultText = "FirstName";
             this.label_first_name.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_first_name.Location = new System.Drawing.Point(159, 6);
             this.label_first_name.Margin = new System.Windows.Forms.Padding(6);

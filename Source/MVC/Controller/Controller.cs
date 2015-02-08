@@ -76,7 +76,9 @@ namespace YoloTrack.MVC.Controller
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
             m_dependency_manager = new DependencyManager();
+            #region Dependency management / model+view initialization
 
             // Dependencies for the State Machine
             m_dependency_manager.AddDependent(
@@ -134,8 +136,11 @@ namespace YoloTrack.MVC.Controller
                 {
                     d.Initialize(() => _initialize_database());
 
+                    d.Bind(() => m_identification_data);
+
                     d.Finalize(() =>
                     {
+                        m_database.LoadFromOrEmpty("test.ydb"); //m_configuration.Options.Database.FileName);
                         m_database.RecordAdded += new EventHandler<Model.Database.RecordAddedEventArgs>(OnDatabaseRecordAdded);
                         m_database.RecordRemoved += new EventHandler<Model.Database.RecordRemovedEventArgs>(OnDatabaseRecordRemoved);
                     });
@@ -185,47 +190,50 @@ namespace YoloTrack.MVC.Controller
                 }
             );
 
-
+            #endregion
             m_dependency_manager.FixAll();
 
-            m_app_view.RepeatInitTimeout += m_app_view_RepeatInitTimeout;
-            if (m_sensor == null)
+            // It is considered fatal, when the form could not be get avaialble
+            if (m_app_view == null)
             {
-                m_app_view.ShowSensorFailure(m_error_message);
+                Console.WriteLine("Fatal Error: Unable to launch application.");
+                return;
             }
 
-            m_configuration.Options.Logging.LogLevel = View.Debug.DebugLevel.Info;
-
-
+            // Attach to the form events
             m_app_view.DatabaseItemSelected += m_app_view_DatabaseItemSelected;
             m_app_view.DatabaseItemFirstNameChanged += m_app_view_DatabaseItemFirstNameChanged;
             m_app_view.DatabaseItemLastNameChanged += m_app_view_DatabaseItemLastNameChanged;
             m_app_view.DatabaseItemImageChanged += m_app_view_DatabaseItemImageChanged;
+            m_app_view.DatabaseMergeRequested += m_app_view_DatabaseMergeRequested;
+            m_app_view.DatabaseItemDeleteRequested += m_app_view_DatabaseItemDeleteRequested;
 
+            m_app_view.RepeatInitTimeout += m_app_view_RepeatInitTimeout;
+
+            // Checks the status of the application and shows error messages if needed
+            _check_status();
+
+            // Show Application view
             Application.Run(m_app_view);
         }
 
-        void m_app_view_DatabaseItemImageChanged(object sender, View.Application.DatabaseItemImageChangedEventArgs e)
+        private bool _check_status()
         {
-            m_database[e.DatabaseId].Image = (System.Drawing.Bitmap)e.Image;
-            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
-        }
+            // Error handling on Sensor
+            if (m_sensor == null)
+            {
+                m_app_view.ShowFailure(m_error_message, FailureType.Sensor);
+                return false;
+            }
 
-        void m_app_view_DatabaseItemLastNameChanged(object sender, View.Application.DatabaseItemLastNameChangedEventArgs e)
-        {
-            m_database[e.DatabaseId].LastName = e.LastName;
-            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
-        }
+            // Error handling on Identification API
+            if (m_identification_data == null)
+            {
+                m_app_view.ShowFailure(m_error_message, FailureType.IdentificationAPI);
+                return false;
+            }
 
-        void m_app_view_DatabaseItemFirstNameChanged(object sender, View.Application.DatabaseItemFirstNameChangedEventArgs e)
-        {
-            m_database[e.DatabaseId].FirstName = e.FirstName;
-            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
-        }
-
-        void m_app_view_DatabaseItemSelected(object sender, View.Application.DatabaseItemSelectedEventArgs e)
-        {
-            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
+            return true;
         }
 
         #region Initializations
@@ -240,8 +248,9 @@ namespace YoloTrack.MVC.Controller
             {
                 m_configuration = Configuration.LoadDefault();
             } 
-            catch (Exception)
+            catch (Exception e)
             {
+                m_error_message = e.Message;
                 return false;
             }
             return true;
@@ -289,7 +298,7 @@ namespace YoloTrack.MVC.Controller
         {
             try
             {
-                m_database = Database.LoadFromOrEmpty("test.ydb", m_identification_data); //m_configuration.Options.Database.FileName);
+                m_database = new Database();
             }
             catch (Exception)
             {
@@ -308,8 +317,9 @@ namespace YoloTrack.MVC.Controller
             {
                 m_identification_data = new IdentificationData("frsdk.cfg"); // m_configuration.Options.IdentificationData.ConfigurationFileName
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                m_error_message = e.Message;
                 return false;
             }
 
@@ -400,14 +410,101 @@ namespace YoloTrack.MVC.Controller
 
         #region View Event handlers
 
-        void m_app_view_RepeatInitTimeout(object sender, EventArgs e)
+        /// <summary>
+        /// Called when the error views timeout occured. That is when we should retry to fix some problems
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void m_app_view_RepeatInitTimeout(object sender, EventArgs e)
         {
-            m_app_view.HideFailureMessage();
+            // Try to fix the problems
             m_dependency_manager.FixAll();
+
+            // Check again and hide the failure message on success
+            if (_check_status())
+            {
+                m_app_view.HideFailureMessage();
+            }
+        }
+
+        /// <summary>
+        /// Called, when the Image Attribute was requested for change
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void m_app_view_DatabaseItemImageChanged(object sender, View.Application.DatabaseItemImageChangedEventArgs e)
+        {
+            m_database[e.DatabaseId].Image = (System.Drawing.Bitmap)e.Image;
+            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
+        }
+
+        /// <summary>
+        /// Called, when the LastName Attribute was requested for change
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void m_app_view_DatabaseItemLastNameChanged(object sender, View.Application.DatabaseItemLastNameChangedEventArgs e)
+        {
+            m_database[e.DatabaseId].LastName = e.LastName;
+            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
+        }
+
+        /// <summary>
+        /// Called, when the FirstName Attribute was requested for change
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void m_app_view_DatabaseItemFirstNameChanged(object sender, View.Application.DatabaseItemFirstNameChangedEventArgs e)
+        {
+            m_database[e.DatabaseId].FirstName = e.FirstName;
+            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
+        }
+
+        /// <summary>
+        /// Called, when the selection within the database view has changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void m_app_view_DatabaseItemSelected(object sender, View.Application.DatabaseItemSelectedEventArgs e)
+        {
+            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
+        }
+
+        /// <summary>
+        /// Called when a merge request has been occured
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void m_app_view_DatabaseMergeRequested(object sender, View.Application.DatabaseMergeEventArgs e)
+        {
+            int master = e.DatabaseIdList[0];
+            int[] slaves = new int[e.DatabaseIdList.Length-1];
+            for (int i = 1; i < e.DatabaseIdList.Length; i++)
+            {
+                slaves[i-1] = e.DatabaseIdList[i];
+            }
+
+            m_database.Merge(master, slaves);
+        }
+
+        /// <summary>
+        /// Called when the user requests an item to be deleted
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void m_app_view_DatabaseItemDeleteRequested(object sender, View.Application.DatabaseItemDeleteRequestEventArgs e)
+        {
+            m_database.Remove(e.DatabaseId);
         }
 
         string m_error_message = "";
 
         #endregion
+    }
+
+    public enum FailureType
+    {
+        Sensor,
+        IdentificationAPI
     }
 }

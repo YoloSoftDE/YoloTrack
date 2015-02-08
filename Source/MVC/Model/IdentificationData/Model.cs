@@ -122,5 +122,25 @@ namespace YoloTrack.MVC.Model.IdentificationData
             m_enrollment_processor.process(Samples.ToArray(), feedback);
             return feedback;
         }
+        
+        /// <summary>
+        /// Merges two or more FIRs into one single FIR
+        /// </summary>
+        /// <param name="IdentificationRecordList"></param>
+        /// <returns></returns>
+        public FIR Merge(FIR[] IdentificationRecordList)
+        {
+            if (IdentificationRecordList.Length < 2)
+            {
+                throw new ArgumentException("You cannot merge less than two FIRs");
+            }
+
+            FIR result = m_enrollment_processor.merge(IdentificationRecordList[0], IdentificationRecordList[1]);
+            for (int i = 2; i < IdentificationRecordList.Length; i++)
+            {
+                result = m_enrollment_processor.merge(result, IdentificationRecordList[i]);
+            }
+            return result;
+        }
     } // End class
 } // End namespace

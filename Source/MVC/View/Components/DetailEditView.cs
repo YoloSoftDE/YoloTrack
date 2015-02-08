@@ -353,6 +353,17 @@ namespace YoloTrack.MVC.View.Components
                 });
             }
         }
+
+        private void button_delete_Click(object sender, EventArgs e)
+        {
+            if (DeleteRequest != null)
+            {
+                DeleteRequest(this, new DeleteRequestEventArgs()
+                {
+                    DatabaseId = Id
+                });
+            }
+        }
     }
 
     public class FirstNameChangedEventArgs : EventArgs

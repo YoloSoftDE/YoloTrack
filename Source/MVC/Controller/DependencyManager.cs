@@ -20,18 +20,24 @@ namespace YoloTrack.MVC.Controller
         public bool Satisfied { get; set; }
     }
 
+    struct FinalizerMethod
+    {
+        public Action Method { get; set; }
+        public bool Executed { get; set; }
+    }
+
     public class Dependent
     {
         private Func<bool> m_initializer;
         private Dictionary<object, List<DependencyAction>> m_dependencies;
-        private List<Action> m_finalizers;
+        private List<FinalizerMethod> m_finalizers;
         private Func<object> m_accessor;
 
         public Dependent(Func<object> Accessor)
         {
             m_accessor = Accessor;
             m_dependencies = new Dictionary<object, List<DependencyAction>>();
-            m_finalizers = new List<Action>();
+            m_finalizers = new List<FinalizerMethod>();
         }
 
         public void Method<TDependency>(Func<TDependency> DependencyAccessor, Action<object, TDependency> Action)
@@ -70,7 +76,11 @@ namespace YoloTrack.MVC.Controller
 
         public void Finalize(Action FinalAction)
         {
-            m_finalizers.Add(FinalAction);
+            m_finalizers.Add(new FinalizerMethod()
+            {
+                Method = FinalAction,
+                Executed = false
+            });
         }
 
         public bool Wraps(object Compare)
@@ -106,9 +116,16 @@ namespace YoloTrack.MVC.Controller
 
         public void RunFinalizers()
         {
-            foreach (Action action in m_finalizers)
+            for (int i = 0; i < m_finalizers.Count; i++)
             {
-                action();
+                FinalizerMethod action = m_finalizers[i];
+
+                if (!action.Executed)
+                {
+                    action.Method();
+                    action.Executed = true;
+                    m_finalizers[i] = action;
+                }
             }
         }
 
@@ -129,6 +146,11 @@ namespace YoloTrack.MVC.Controller
 
         public bool Completed()
         {
+            if (m_accessor() == null)
+            {
+                return false;
+            }
+
             foreach (KeyValuePair<object, List<DependencyAction>> dependency in m_dependencies)
             {
                 foreach (DependencyAction action in dependency.Value)

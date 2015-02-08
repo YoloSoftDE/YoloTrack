@@ -47,11 +47,12 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.databaseView1 = new YoloTrack.MVC.View.Components.DatabaseView();
-            this.detailEditView1 = new YoloTrack.MVC.View.Components.DetailEditView();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.panel_failure_message = new System.Windows.Forms.Panel();
             this.failure_header = new System.Windows.Forms.Label();
             this.failure_message = new System.Windows.Forms.Label();
+            this.databaseView1 = new YoloTrack.MVC.View.Components.DatabaseView();
+            this.detailEditView1 = new YoloTrack.MVC.View.Components.DetailEditView();
             this.visualTimer1 = new YoloTrack.Source.MVC.View.Components.VisualTimer();
             this.liveView1 = new YoloTrack.MVC.View.Components.LiveView();
             this.statusStrip1.SuspendLayout();
@@ -59,6 +60,7 @@
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.panel_failure_message.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -232,6 +234,54 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(318, 648);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.panel_failure_message);
+            this.panel1.Controls.Add(this.liveView1);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Margin = new System.Windows.Forms.Padding(0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(811, 648);
+            this.panel1.TabIndex = 1;
+            // 
+            // panel_failure_message
+            // 
+            this.panel_failure_message.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.panel_failure_message.Controls.Add(this.failure_header);
+            this.panel_failure_message.Controls.Add(this.failure_message);
+            this.panel_failure_message.Controls.Add(this.visualTimer1);
+            this.panel_failure_message.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel_failure_message.Location = new System.Drawing.Point(0, 0);
+            this.panel_failure_message.Name = "panel_failure_message";
+            this.panel_failure_message.Size = new System.Drawing.Size(811, 648);
+            this.panel_failure_message.TabIndex = 4;
+            this.panel_failure_message.Visible = false;
+            // 
+            // failure_header
+            // 
+            this.failure_header.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.failure_header.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.failure_header.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.failure_header.Location = new System.Drawing.Point(3, 231);
+            this.failure_header.Name = "failure_header";
+            this.failure_header.Size = new System.Drawing.Size(805, 32);
+            this.failure_header.TabIndex = 6;
+            this.failure_header.Text = "label2";
+            this.failure_header.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // failure_message
+            // 
+            this.failure_message.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.failure_message.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.failure_message.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.failure_message.Location = new System.Drawing.Point(3, 263);
+            this.failure_message.Name = "failure_message";
+            this.failure_message.Size = new System.Drawing.Size(805, 32);
+            this.failure_message.TabIndex = 5;
+            this.failure_message.Text = "label1";
+            this.failure_message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // databaseView1
             // 
             this.databaseView1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -240,6 +290,7 @@
             this.databaseView1.Name = "databaseView1";
             this.databaseView1.Size = new System.Drawing.Size(318, 348);
             this.databaseView1.TabIndex = 2;
+            this.databaseView1.MergeRequest += new System.EventHandler<YoloTrack.MVC.View.Components.MergeEventArgs>(this.databaseView1_MergeRequest);
             this.databaseView1.ItemSelected += new System.EventHandler<YoloTrack.MVC.View.Components.ItemSelectedEventArgs>(this.databaseView1_ItemSelected);
             // 
             // detailEditView1
@@ -264,45 +315,7 @@
             this.detailEditView1.FirstNameChanged += new System.EventHandler<YoloTrack.MVC.View.Components.FirstNameChangedEventArgs>(this.detailEditView1_FirstNameChanged);
             this.detailEditView1.LastNameChanged += new System.EventHandler<YoloTrack.MVC.View.Components.LastNameChangedEventArgs>(this.detailEditView1_LastNameChanged);
             this.detailEditView1.ImageChanged += new System.EventHandler<YoloTrack.MVC.View.Components.ImageChangedEventArgs>(this.detailEditView1_ImageChanged);
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.failure_header);
-            this.panel1.Controls.Add(this.failure_message);
-            this.panel1.Controls.Add(this.visualTimer1);
-            this.panel1.Controls.Add(this.liveView1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(811, 648);
-            this.panel1.TabIndex = 1;
-            // 
-            // failure_header
-            // 
-            this.failure_header.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.failure_header.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.failure_header.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.failure_header.Location = new System.Drawing.Point(3, 186);
-            this.failure_header.Name = "failure_header";
-            this.failure_header.Size = new System.Drawing.Size(805, 32);
-            this.failure_header.TabIndex = 3;
-            this.failure_header.Text = "label2";
-            this.failure_header.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.failure_header.Visible = false;
-            // 
-            // failure_message
-            // 
-            this.failure_message.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.failure_message.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.failure_message.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.failure_message.Location = new System.Drawing.Point(3, 218);
-            this.failure_message.Name = "failure_message";
-            this.failure_message.Size = new System.Drawing.Size(805, 32);
-            this.failure_message.TabIndex = 2;
-            this.failure_message.Text = "label1";
-            this.failure_message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.failure_message.Visible = false;
+            this.detailEditView1.DeleteRequest += new System.EventHandler<YoloTrack.MVC.View.Components.DeleteRequestEventArgs>(this.detailEditView1_DeleteRequest);
             // 
             // visualTimer1
             // 
@@ -310,13 +323,12 @@
             this.visualTimer1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.visualTimer1.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.visualTimer1.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.visualTimer1.Location = new System.Drawing.Point(367, 293);
+            this.visualTimer1.Location = new System.Drawing.Point(367, 338);
             this.visualTimer1.Name = "visualTimer1";
             this.visualTimer1.Size = new System.Drawing.Size(80, 80);
             this.visualTimer1.Step = 50000D;
-            this.visualTimer1.TabIndex = 1;
+            this.visualTimer1.TabIndex = 4;
             this.visualTimer1.TimeoutValue = 100;
-            this.visualTimer1.Visible = false;
             // 
             // liveView1
             // 
@@ -350,6 +362,7 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.panel_failure_message.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -380,6 +393,7 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel6;
         private System.Windows.Forms.Panel panel1;
         private Components.LiveView liveView1;
+        private System.Windows.Forms.Panel panel_failure_message;
         private System.Windows.Forms.Label failure_header;
         private System.Windows.Forms.Label failure_message;
         private Source.MVC.View.Components.VisualTimer visualTimer1;

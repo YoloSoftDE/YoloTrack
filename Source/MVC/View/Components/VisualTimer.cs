@@ -114,8 +114,8 @@ namespace YoloTrack.Source.MVC.View.Components
             path.AddPath(path_back, true);
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             e.Graphics.FillPath(new SolidBrush(ForeColor), path);
-            
-            e.Dispose();
+
+            e.Graphics.Dispose();
         }
 
         /// <summary>
