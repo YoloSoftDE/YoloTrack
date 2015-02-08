@@ -30,9 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.button_delete = new System.Windows.Forms.Button();
-            this.pb_image = new System.Windows.Forms.PictureBox();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.label_counters = new System.Windows.Forms.Label();
             this.label_learned_at = new System.Windows.Forms.Label();
             this.label_rt_info = new System.Windows.Forms.Label();
@@ -40,7 +37,9 @@
             this.button_track = new System.Windows.Forms.CheckBox();
             this.label_last_name = new YoloTrack.Source.MVC.View.Components.EditLabel();
             this.label_first_name = new YoloTrack.Source.MVC.View.Components.EditLabel();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_image)).BeginInit();
+            this.m_userImage = new System.Windows.Forms.PictureBox();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // button_delete
@@ -53,23 +52,23 @@
             this.button_delete.Text = "Delete";
             this.button_delete.UseVisualStyleBackColor = true;
             this.button_delete.Click += new System.EventHandler(this.button_delete_Click);
-            // 
-            // pb_image
-            // 
-            this.pb_image.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.pb_image.ErrorImage = null;
-            this.pb_image.Location = new System.Drawing.Point(8, 10);
-            this.pb_image.Name = "pb_image";
-            this.pb_image.Size = new System.Drawing.Size(142, 133);
-            this.pb_image.TabIndex = 5;
-            this.pb_image.TabStop = false;
-            this.pb_image.Click += new System.EventHandler(this.pictureBox1_Click);
-            this.pb_image.MouseEnter += new System.EventHandler(this.pictureBox1_MouseEnter);
-            this.pb_image.MouseLeave += new System.EventHandler(this.pictureBox1_MouseLeave);
+            //
+            // m_userImage
+            //
+	    this.m_userImage.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.m_userImage.ErrorImage = null;
+            this.m_userImage.Location = new System.Drawing.Point(8, 10);
+            this.m_userImage.Name = "pictureBox1";
+            this.m_userImage.Size = new System.Drawing.Size(142, 133);
+            this.m_userImage.TabIndex = 5;
+            this.m_userImage.TabStop = false;
+            this.m_userImage.Click += new System.EventHandler(this.m_userImage_Click);
+            this.m_userImage.MouseEnter += new System.EventHandler(this.m_userImage_MouseEnter);
+            this.m_userImage.MouseLeave += new System.EventHandler(this.m_userImage_MouseLeave);
             // 
             // openFileDialog1
             // 
-            this.openFileDialog1.FileName = "openFileDialog1";
+            this.openFileDialog.FileName = "openFileDialog1";
             // 
             // label_counters
             // 
@@ -160,13 +159,12 @@
             this.Controls.Add(this.label_last_name);
             this.Controls.Add(this.label_first_name);
             this.Controls.Add(this.button_delete);
-            this.Controls.Add(this.pb_image);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Controls.Add(this.m_userImage);
             this.Name = "DetailEditView";
             this.Size = new System.Drawing.Size(293, 296);
-            this.Load += new System.EventHandler(this.DetailEditView_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.DetailEditView_Paint);
-            ((System.ComponentModel.ISupportInitialize)(this.pb_image)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_userImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -175,9 +173,6 @@
         #endregion
 
         private System.Windows.Forms.Button button_delete;
-        private System.Windows.Forms.PictureBox pb_image;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.ToolTip toolTip1;
         private Source.MVC.View.Components.EditLabel label_first_name;
         private Source.MVC.View.Components.EditLabel label_last_name;
         private System.Windows.Forms.Label label_counters;
@@ -185,5 +180,9 @@
         private System.Windows.Forms.Label label_rt_info;
         private System.Windows.Forms.Label label_id;
         private System.Windows.Forms.CheckBox button_track;
+=======
+        private System.Windows.Forms.PictureBox m_userImage;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

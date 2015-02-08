@@ -165,7 +165,6 @@
             this.Name = "DatabaseViewItem";
             this.Padding = new System.Windows.Forms.Padding(1);
             this.Size = new System.Drawing.Size(300, 66);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.DatabaseViewItem_Paint);
             this.MouseEnter += new System.EventHandler(this.DatabaseViewItem_MouseEnter);
             this.MouseLeave += new System.EventHandler(this.DatabaseViewItem_MouseLeave);
             this.tableLayoutPanel1.ResumeLayout(false);
