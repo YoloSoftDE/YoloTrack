@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace YoloTrack.Source.MVC.View.Components
@@ -137,7 +138,7 @@ namespace YoloTrack.Source.MVC.View.Components
         /// Event-Caller for ModeChanged-event
         /// </summary>
         /// <param name="e">Instance of ModeChangedEventArgs</param>
-        protected virtual OnModeChanged(ModeChangedEventArgs e)
+        protected virtual void OnModeChanged(ModeChangedEventArgs e)
         {
             if (this.ModeChanged != null)
             {

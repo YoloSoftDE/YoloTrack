@@ -148,15 +148,34 @@ namespace YoloTrack.MVC.Model.Sensor
                                           Status.ToString() + ")");
             }
 
-            // Subscribe to the skeleton frames for firther processing
-            Sensor.SkeletonFrameReady += new EventHandler<SkeletonFrameReadyEventArgs>(_process_skeleton_frame);
+            // Subscribe to the skeleton frames for further processing
+            Sensor.SkeletonFrameReady += _process_skeleton_frame;
 
-            // Subscribe to the color image frames for firther processing
-            Sensor.ColorFrameReady += new EventHandler<ColorImageFrameReadyEventArgs>(_process_color_frame);
+            // Subscribe to the color image frames for further processing
+            Sensor.ColorFrameReady += _process_color_frame;
 
             Sensor.SkeletonStream.Enable();
             Sensor.ColorStream.Enable(ColorImageFormat.RgbResolution1280x960Fps12);
             Sensor.Start();
+        }
+
+        /// <summary>
+        /// Unsubscribes from all events and stops the Kinect sensor
+        /// </summary>
+        public void Stop()
+        {
+            // Schade
+            //Sensor.SkeletonStream.Disable();
+            //Sensor.ColorStream.Disable();
+            ColorFrameAvailable = null;
+            SkeletonFrameAvailable = null;
+
+            // Unsubscribe from the skeleton frames for further processing
+            Sensor.SkeletonFrameReady -= _process_skeleton_frame;
+
+            // Unsubscribe from the color image frames for further processing
+            Sensor.ColorFrameReady -= _process_color_frame;
+            //Sensor.Stop();
         }
 
         /// <summary>
@@ -166,21 +185,29 @@ namespace YoloTrack.MVC.Model.Sensor
         /// <param name="e"></param>
         private void _process_skeleton_frame(object sender, SkeletonFrameReadyEventArgs e)
         {
-            SkeletonFrame frame = e.OpenSkeletonFrame();
-            if (frame == null)
+            using (SkeletonFrame frame = e.OpenSkeletonFrame())
             {
-                return;
-            }
-
-            // Update the frame and fire the event
-            SkeletonStream.SkeletonFrame = frame;
-
-            if (SkeletonFrameAvailable != null)
-            {
-                SkeletonFrameAvailable(this, new SkeletonFrameEventArgs()
+                if (frame == null)
                 {
-                    Frame = frame
-                });
+                    return;
+                }
+
+                /*
+                if (SkeletonStream.SkeletonFrame != null)
+                {
+                    SkeletonStream.SkeletonFrame.Dispose();
+                }*/
+
+                // Update the frame and fire the event
+                frame.CopySkeletonDataTo(SkeletonStream.Skeletons);
+
+                if (SkeletonFrameAvailable != null)
+                {
+                    SkeletonFrameAvailable(this, new SkeletonFrameEventArgs()
+                    {
+                        Frame = frame
+                    });
+                }
             }
         }
 
@@ -191,21 +218,23 @@ namespace YoloTrack.MVC.Model.Sensor
         /// <param name="e"></param>
         private void _process_color_frame(object sender, ColorImageFrameReadyEventArgs e)
         {
-            ColorImageFrame frame = e.OpenColorImageFrame();
-            if (frame == null)
+            using (Microsoft.Kinect.ColorImageFrame frame = e.OpenColorImageFrame())
             {
-                return;
-            }
-
-            // Update the frame and fire the event
-            ColorStream.ImageFrame = frame;
-
-            if (ColorFrameAvailable != null)
-            {
-                ColorFrameAvailable(this, new ColorImageFrameEventArgs()
+                if (frame == null)
                 {
-                    Frame = frame
-                });
+                    return;
+                }
+
+                // Update the frame and fire the event
+                ColorStream.ImageFrame = new ColorImageFrame(frame);
+
+                if (ColorFrameAvailable != null)
+                {
+                    ColorFrameAvailable(this, new ColorImageFrameEventArgs()
+                    {
+                        Frame = ColorStream.ImageFrame
+                    });
+                }
             }
         }
     }

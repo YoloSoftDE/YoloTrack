@@ -18,12 +18,11 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             {
                 EnrollmentFeedback feedback = m_identification_api.Enroll(arg.Samples);
 
-                Console.WriteLine("Sample Quality is {0}", feedback.SampleQuality);
-
                 Database.Record record = m_database.CreateRecord(
                     new Database.IdentificationRecord(feedback.IdentificationRecord));
                 record.Image = arg.Faces[0];
                 m_runtime_database[arg.TrackingId].State = RuntimeDatabase.RecordState.Identified;
+                m_runtime_database[arg.TrackingId].Attach(record);
 
                 m_identification_api.Population.append(
                     record.IdentificationRecord.Value, 

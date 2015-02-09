@@ -39,6 +39,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                     {
                         if (entry.Value.State == RuntimeDatabase.RecordState.Identified && entry.Value.DatabaseRecord.IsTarget)
                         {
+                            m_sensor.SkeletonStream.Track(entry.Value.KinectResource.Skeleton.TrackingId);
                             Result = new Arg.TrackingArg()
                             {
                                 TrackingId = entry.Value.KinectResource.Skeleton.TrackingId

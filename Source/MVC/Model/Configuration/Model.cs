@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 namespace YoloTrack.MVC.Model.Configuration
@@ -40,6 +41,7 @@ namespace YoloTrack.MVC.Model.Configuration
             string tmp = new string(' ', 100);
 
             GetPrivateProfileString(section, key, default_value, tmp, tmp.Length, file);
+            tmp = tmp.TrimEnd('\0', ' ');
 
             return tmp;
         }
@@ -86,13 +88,17 @@ namespace YoloTrack.MVC.Model.Configuration
 
             Option.Database db = new Option.Database();
 
-            db.FileName = GetString(FileName, "Database", "FileName");
-            db.RecordLimit = uint.Parse(GetString(FileName, "Database", "RecordLimit"));
+            db.FileName = GetString(FileName, "Database", "FileName", "Database.ydb");
+            db.RecordLimit = uint.Parse(GetString(FileName, "Database", "RecordLimit", "100"));
 
 
             Option.IdentificationData idd = new Option.IdentificationData();
 
-            idd.ConfigurationFileName = GetString(FileName, "Identification", "ConfigFileName");
+            idd.ConfigurationFileName = GetString(FileName, "Identification", "ConfigFileName", "frsdk.cfg");
+            idd.IdentifyThreshold = float.Parse(GetString(FileName, "Identification", "IdentifyThreshold", "0.4"), CultureInfo.InvariantCulture);
+            idd.LearnThreshold = float.Parse(GetString(FileName, "Identification", "LearnThreshold", "0.2"), CultureInfo.InvariantCulture);
+            idd.SampleCount = uint.Parse(GetString(FileName, "Identification", "SampleCount", "5"));
+            idd.IdentificationTimeout = uint.Parse(GetString(FileName, "Identification", "IdentificationTimeout", "3000"));
 
             Option.Logging log = new Option.Logging();
 
@@ -118,6 +124,8 @@ namespace YoloTrack.MVC.Model.Configuration
 
             model.Options = opt;
 
+            model.SaveTo(DefaultFileName);
+
             /* TODO: Is this working */
             return model;
         }
@@ -142,6 +150,10 @@ namespace YoloTrack.MVC.Model.Configuration
 
 
             WriteString(FileName, "Identification", "ConfigFileName", this.Options.IdentificationData.ConfigurationFileName);
+            WriteString(FileName, "Identification", "IdentifyThreshold", this.Options.IdentificationData.IdentifyThreshold.ToString(CultureInfo.InvariantCulture));
+            WriteString(FileName, "Identification", "LearnThreshold", this.Options.IdentificationData.LearnThreshold.ToString(CultureInfo.InvariantCulture));
+            WriteString(FileName, "Identification", "SampleCount", this.Options.IdentificationData.SampleCount.ToString());
+            WriteString(FileName, "Identification", "IdentificationTimeout", this.Options.IdentificationData.IdentificationTimeout.ToString());
 
             WriteString(FileName, "Logging", "Level", this.Options.Logging.LogLevel.ToString());
         }

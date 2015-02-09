@@ -36,4 +36,24 @@ namespace YoloTrack.MVC.Model.Sensor
 
         public ColorImageFormat FrameFormat { get { return m_to_wrap.Format; } }
     }
+    
+    /// <summary>
+    /// Replacement of bullshit
+    /// </summary>
+    public struct ColorImageFrame
+    {
+        public ColorImageFrame(Microsoft.Kinect.ColorImageFrame Original)
+        {
+            Width = Original.Width;
+            Height = Original.Height;
+            BytesPerPixel = Original.BytesPerPixel;
+            PixelData = new byte[Original.PixelDataLength];
+            Original.CopyPixelDataTo(PixelData);
+        }
+
+        public int Width;
+        public int Height;
+        public int BytesPerPixel;
+        public byte[] PixelData;
+    }
 }

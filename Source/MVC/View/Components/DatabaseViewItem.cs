@@ -17,7 +17,6 @@ namespace YoloTrack.MVC.View.Components
         private int m_times_recognized;
         private int m_times_tracked;
 
-
         /// <summary>
         /// Get or set the selected-status
         /// </summary>
@@ -127,6 +126,21 @@ namespace YoloTrack.MVC.View.Components
             {
                 m_times_tracked = value;
                 _set_counters();
+            }
+        }
+
+        /// <summary>
+        /// Get ot set the user profile image
+        /// </summary>
+        public Image Image
+        {
+            get
+            {
+                return m_picturebox_user_image.Image;
+            }
+            set
+            {
+                m_picturebox_user_image.Image = value;
             }
         }
 

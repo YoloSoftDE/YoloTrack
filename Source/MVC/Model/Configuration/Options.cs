@@ -19,6 +19,10 @@ namespace YoloTrack.MVC.Model.Configuration
         public struct IdentificationData
         {
             public string ConfigurationFileName;
+            public float LearnThreshold;
+            public float IdentifyThreshold;
+            public uint SampleCount;
+            public uint IdentificationTimeout;
         }
 
         /// <summary>
@@ -43,21 +47,20 @@ namespace YoloTrack.MVC.Model.Configuration
         public Options(Option.Database db, Option.IdentificationData idd, Option.Logging log)
         {
             /* This must be first, because C# sucks */
-            this.Logging = log;
-
-            this.Database = db;
-            this.IdentificationData = idd;
+            Database = db;
+            Logging = log;
+            IdentificationData = idd;
         }
 
         /// <summary>
         /// Database subtree
         /// </summary>
-        public Option.Database Database { get; protected set; }
+        public Option.Database Database;
 
         /// <summary>
         /// FaceVACS subtree
         /// </summary>
-        public Option.IdentificationData IdentificationData { get; protected set; }
+        public Option.IdentificationData IdentificationData;
 
         /// <summary>
         /// Logging

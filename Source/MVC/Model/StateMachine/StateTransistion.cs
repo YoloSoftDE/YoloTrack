@@ -27,6 +27,11 @@
         protected IdentificationData.Model m_identification_api;
 
         /// <summary>
+        /// 
+        /// </summary>
+        protected Configuration.Model m_configuration;
+
+        /// <summary>
         /// State transistion that must be implemented by each state (state transistion logic)
         /// </summary>
         /// <returns></returns>
@@ -82,6 +87,15 @@
         public void Bind(Database.Model Database)
         {
             m_database = Database;
+        }
+
+        /// <summary>
+        /// Binder to the configurtaion
+        /// </summary>
+        /// <param name="IdentificationAPI"></param>
+        public void Bind(Configuration.Model Configuration)
+        {
+            m_configuration = Configuration;
         }
     } // End class
 } // End namespace

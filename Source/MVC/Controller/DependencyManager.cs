@@ -32,12 +32,14 @@ namespace YoloTrack.MVC.Controller
         private Dictionary<object, List<DependencyAction>> m_dependencies;
         private List<FinalizerMethod> m_finalizers;
         private Func<object> m_accessor;
+        private List<Func<object>> m_prerequisites;
 
         public Dependent(Func<object> Accessor)
         {
             m_accessor = Accessor;
             m_dependencies = new Dictionary<object, List<DependencyAction>>();
             m_finalizers = new List<FinalizerMethod>();
+            m_prerequisites = new List<Func<object>>();
         }
 
         public void Method<TDependency>(Func<TDependency> DependencyAccessor, Action<object, TDependency> Action)
@@ -69,6 +71,11 @@ namespace YoloTrack.MVC.Controller
             });
         }
 
+        public void After<TPrerequisite>(Func<TPrerequisite> Pre)
+        {
+            m_prerequisites.Add(() => (object)Pre());
+        }
+
         public void Initialize(Func<bool> InitializeAction)
         {
             m_initializer = InitializeAction;
@@ -97,6 +104,15 @@ namespace YoloTrack.MVC.Controller
             if (m_accessor() == null && m_initializer != null)
             {
                 if (!m_initializer())
+                {
+                    return false;
+                }
+            }
+
+            // Don't initialize until the prerequisites have been fulfilled
+            foreach (Func<object> pre in m_prerequisites)
+            {
+                if (pre() == null)
                 {
                     return false;
                 }

@@ -78,12 +78,12 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 IdentifyResult result = this.Identify(identificationSamples);
 
                 // 0% - 20% -> Unknown -> Learn
-                if (result.Score <= 0.2)
+                if (result.Score <= m_configuration.Options.IdentificationData.LearnThreshold)
                 {
                     RuntimeDatabase.Record record = m_runtime_database[arg.TrackingId];
                     record.State = RuntimeDatabase.RecordState.Unknown;
                     m_runtime_database[arg.TrackingId] = record;
-
+                    
                     Result = new Arg.LearnArg()
                     {
                         TrackingId = arg.TrackingId,
@@ -91,8 +91,8 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                         Faces = arg.Faces
                     };
                 }
-                // >20% - 50% -> Unidentified -> WaitForBody
-                else if (result.Score <= 0.5)
+                // >20% - 40% -> Unidentified -> WaitForBody
+                else if (result.Score <= m_configuration.Options.IdentificationData.IdentifyThreshold)
                 {
                     RuntimeDatabase.Record record = m_runtime_database[arg.TrackingId];
                     record.State = RuntimeDatabase.RecordState.Unidentified;
@@ -100,7 +100,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
                     Result = new Arg.WaitForBodyArg();
                 }
-                // >50% - 100% -> Identified -> Track
+                // >40% - 100% -> Identified -> Track
                 else
                 {
                     RuntimeDatabase.Record record = m_runtime_database[arg.TrackingId];
