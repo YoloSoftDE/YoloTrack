@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Kinect;
 using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
@@ -18,10 +19,19 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
         {
             int picture_count = 0;
             List<Bitmap> faces = new List<Bitmap>();
+            DateTime start_time = DateTime.Now;
 
-            while (picture_count < 5)
+            while (picture_count < m_configuration.Options.IdentificationData.SampleCount)
             {
                 m_runtime_database.Refresh();
+
+                // Timeout? (too long to keep doing this shit)
+                if ((DateTime.Now - start_time).TotalMilliseconds >= m_configuration.Options.IdentificationData.IdentificationTimeout)
+                {
+                    Result = new Arg.WaitForBodyArg();
+                    Console.WriteLine("WaitTakePicture timed out.");
+                    return;
+                }
                 
                 // Lost skeleton?
                 if (!m_runtime_database.ContainsKey(arg.TrackingId))
@@ -33,7 +43,6 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 RuntimeDatabase.Record record = m_runtime_database[arg.TrackingId];
                 Skeleton skeleton = record.KinectResource.Skeleton;
 
-                // Lost skeleton? TODO: check if still needed
                 if (skeleton.TrackingState == SkeletonTrackingState.NotTracked)
                 {
                     Result = new Arg.WaitForBodyArg();
@@ -55,15 +64,17 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                     continue;
                 }
 
-                ColorImageFrame frame = m_sensor.ColorStream.ImageFrame;
-                if (frame == null)
-                    continue;
+                Sensor.ColorImageFrame frame = m_sensor.ColorStream.ImageFrame;
 
-                //byte[] buffer = new byte[frame.PixelDataLength];
-                byte[] head_picture_data = GetHeadPicture(frame.GetRawPixelData(), record.KinectResource.HeadRectangle);
+                Rectangle head_rectangle = record.KinectResource.HeadRectangle;
+                if (head_rectangle.Width * head_rectangle.Height == 0)
+                {
+                    continue;
+                }
+                byte[] head_picture_data = GetHeadPicture(frame.PixelData, head_rectangle);
 
                 // save head-cutout as Bitmap-Object
-                faces.Add(WriteBitmap(head_picture_data, record.KinectResource.HeadRectangle));
+                faces.Add(WriteBitmap(head_picture_data, head_rectangle));
                 picture_count++;
             }
             
@@ -82,40 +93,21 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
         /// <param name="p"></param>
         /// <param name="rectangle"></param>
         /// <returns></returns>
-        private byte[] GetHeadPicture(byte[] p, Rectangle rectangle)
+        ///        
+        unsafe private byte[] GetHeadPicture(byte[] source, Rectangle rectangle)
         {
-            int x1, y1, sourceIndex, destIndex;
-            if (rectangle.X < 0)
-                x1 = 0;
-            else
-                x1 = rectangle.X;
-
-            if (rectangle.Y < 0)
-                y1 = 0;
-            else
-                y1 = rectangle.Y;
-
-            int x2, y2;
-            x2 = rectangle.X + rectangle.Width;
-            if (x2 >= m_sensor.ColorStream.Width)
-                x2 = m_sensor.ColorStream.Width - 1;
-
-            y2 = rectangle.Y + rectangle.Height;
-            if (y2 >= m_sensor.ColorStream.Height)
-                y2 = m_sensor.ColorStream.Height - 1;
-
-            byte[] cutout = new byte[rectangle.Width * rectangle.Height * 4];
-            destIndex = 0;
-            for (int cy = y1; cy < y2; cy++)
+            int length = rectangle.Width * rectangle.Height * 4;
+            byte[] dest = new byte[length]; 
+            fixed (byte* dest_ptr = &dest[0]) 
             {
-                for (int cx = x1 * 4; cx < x2 * 4; cx++)
+                for (int y = 0; y < rectangle.Height; y++)
                 {
-                    sourceIndex = (4 * m_sensor.ColorStream.Width * cy) + cx;
-                    cutout[destIndex] = p[sourceIndex];
-                    destIndex++;
+                    Marshal.Copy(source, m_sensor.ColorStream.Width * 4 * (y + rectangle.Y) + rectangle.X * 4,
+                                 new IntPtr(dest_ptr + y * rectangle.Width * 4), rectangle.Width * 4);
                 }
             }
-            return cutout;
+
+            return dest;
         }
 
         /// <summary>
@@ -126,7 +118,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
         /// <returns></returns>
         private Bitmap WriteBitmap(byte[] rbg_array, Rectangle rect)
         {
-            Bitmap bmp = new Bitmap(rect.Width, rect.Height);
+            Bitmap bmp = new Bitmap(rect.Width, rect.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
 
             System.Drawing.Imaging.BitmapData bmp_data = bmp.LockBits(
                 new Rectangle(0, 0, rect.Width, rect.Height), 
@@ -135,7 +127,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             IntPtr ptr = bmp_data.Scan0;
             System.Runtime.InteropServices.Marshal.Copy(rbg_array, 0, ptr, rbg_array.Length);
             bmp.UnlockBits(bmp_data);
-
+            
             return bmp;
         }
     } // End class

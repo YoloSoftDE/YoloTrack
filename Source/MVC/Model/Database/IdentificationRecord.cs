@@ -50,8 +50,7 @@ namespace YoloTrack.MVC.Model.Database
         /// <param name="ms"></param>
         public void Unserialize(System.IO.MemoryStream ms)
         {
-            // TODO: FIR Builder required
             throw new NotImplementedException();
-        }
+        }        
     }
 }

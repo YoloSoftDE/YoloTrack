@@ -38,6 +38,9 @@ namespace YoloTrack.MVC.Model.StateMachine.State
             if (result.GetType() == typeof(Arg.WaitTakePictureArg))
                 return new WaitTakePictureState((Arg.WaitTakePictureArg)result);
 
+            if (result.GetType() == typeof(Arg.TrackingArg))
+                return new TrackingState((Arg.TrackingArg)result);
+
             return null;
         }
     } // End class

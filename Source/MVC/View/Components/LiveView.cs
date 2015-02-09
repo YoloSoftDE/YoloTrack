@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace YoloTrack.MVC.View.Components
@@ -14,19 +9,25 @@ namespace YoloTrack.MVC.View.Components
         protected Image m_image = null;
         protected int m_count = 0;
 
-        public LiveView ()
-		{
-			InitializeComponent ();
-			this.DoubleBuffered = true;
-			this.ImageAlign = ContentAlignment.TopLeft;
-        }
-		
-        public ContentAlignment ImageAlign
+        public LiveView()
         {
-            get;
-            set;
+            InitializeComponent(); /* Great code inside here */
+
+            /* Turn on double buffering */
+            this.DoubleBuffered = true;
+
+            /* Set default alignment mode */
+            this.ImageAlign = ContentAlignment.TopLeft;
         }
 
+        /// <summary>
+        /// Get or set the image aligment mode
+        /// </summary>
+        public ContentAlignment ImageAlign { get; set; }
+
+        /// <summary>
+        /// Get or set the image displayed
+        /// </summary>
         public Image Image
         {
             get
@@ -35,30 +36,56 @@ namespace YoloTrack.MVC.View.Components
             }
             set
             {
+                /* Dispose no longer used image
+                 * Will result in a memoryleak otherwise!
+                 */
+                if (m_image != null)
+                    m_image.Dispose();
+
+                /* Store new image */
                 m_image = value;
 
-                /* Invalidate SUCKS!!!!
-                 * PictureBox SUCKS!!!!
-                 */
-                this.Refresh(); // FIXME: may throw InOpEx
 
-                
+
+                /* We're using Refresh() since Invalidate() will
+                 * cause a random unavoidable CrossThreadAccessViolation */
+                try
+                {
+                    this.Refresh();
+                }
+                catch (InvalidOperationException)
+                {
+                    /* We're avoiding the CrossThreadAccessViolation but
+                     * keep getting an InvalidOperationException pure randomly.
+                     * At least we can catch that safely ...
+                     */
+                }
+
+
             }
         }
 
+        /// <summary>
+        /// Refreshes the LiveViews Layout
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnPaint(PaintEventArgs e)
         {
+            /* Skip first draw */
             if (this.Image == null)
             {
                 return;
             }
- 
- 
+
+            /* Calculate AspectRatio */
             float ar = (float)this.Image.Width / (float)this.Image.Height;
             float nheight, nwidth;
             int xpos = 0;
             int ypos = 0;
- 
+
+            /* Calculate new dimensions based on the longer/shorter edge
+             * and matching the aspect-ratio.
+             */
             if ((float)this.ClientRectangle.Height * ar < (float)ClientRectangle.Width)
             {
                 nheight = (float)this.ClientRectangle.Height;
@@ -66,24 +93,25 @@ namespace YoloTrack.MVC.View.Components
             }
             else
             {
-                nheight = (float)this.ClientRectangle.Width * 1/ar;
+                nheight = (float)this.ClientRectangle.Width * 1 / ar;
                 nwidth = (float)this.ClientRectangle.Width;
             }
- 
+
+            /* Calculate Offset-values */
             switch (this.ImageAlign)
             {
                 #region Alignment Top
                 case ContentAlignment.TopLeft:
                     break;
-               
- 
+
+
                 case ContentAlignment.TopRight:
                     if (nwidth < this.ClientRectangle.Width)
                     {
                         xpos = this.ClientRectangle.Width - (int)nwidth;
                     }
                     break;
- 
+
                 case ContentAlignment.TopCenter:
                     if (nwidth < this.ClientRectangle.Width)
                     {
@@ -98,26 +126,26 @@ namespace YoloTrack.MVC.View.Components
                         ypos = (int)((float)(this.ClientRectangle.Height - (int)nheight) / 2);
                     }
                     break;
- 
+
                 case ContentAlignment.MiddleCenter:
                     if (nwidth < this.ClientRectangle.Width)
                     {
                         xpos = (int)((float)(this.ClientRectangle.Width - (int)nwidth) / 2);
                     }
- 
+
                     if (nheight < this.ClientRectangle.Height)
                     {
                         ypos = (int)((float)(this.ClientRectangle.Height - (int)nheight) / 2);
                     }
                     break;
- 
+
                 case ContentAlignment.MiddleRight:
- 
+
                     if (nwidth < this.ClientRectangle.Width)
                     {
                         xpos = this.ClientRectangle.Width - (int)nwidth;
                     }
- 
+
                     if (nheight < this.ClientRectangle.Height)
                     {
                         ypos = (int)((float)(this.ClientRectangle.Height - (int)nheight) / 2);
@@ -131,7 +159,7 @@ namespace YoloTrack.MVC.View.Components
                         ypos = this.ClientRectangle.Height - (int)nheight;
                     }
                     break;
- 
+
                 case ContentAlignment.BottomCenter:
                     if (nheight < this.ClientRectangle.Height)
                     {
@@ -142,7 +170,7 @@ namespace YoloTrack.MVC.View.Components
                         xpos = (int)((float)(this.ClientRectangle.Width - (int)nwidth) / 2);
                     }
                     break;
- 
+
                 case ContentAlignment.BottomRight:
                     if (nheight < this.ClientRectangle.Height)
                     {
@@ -153,15 +181,17 @@ namespace YoloTrack.MVC.View.Components
                         xpos = this.ClientRectangle.Width - (int)nwidth;
                     }
                     break;
- 
+
                 #endregion
- 
+
                 default:
-                    throw new NotImplementedException("FAILERRORFAIL");
+                    /* This error should NEVER appear */
+                    throw new NotImplementedException("Invalid ImageAlign Mode");
             }
- 
-            e.Graphics.Clear(Color.Purple);
- 
+
+            /* Fill Background */
+            e.Graphics.Clear(this.BackColor);
+
             e.Graphics.DrawImage(
                 this.Image, /* Image instance */
                 xpos, /* Target X */

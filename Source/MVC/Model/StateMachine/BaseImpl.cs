@@ -34,6 +34,11 @@ namespace YoloTrack.MVC.Model.StateMachine
         protected Database.Model m_database;
 
         /// <summary>
+        /// Identification API instance to use.
+        /// </summary>
+        protected Configuration.Model m_configuration;
+
+        /// <summary>
         /// Property for the result of the execution step.
         /// </summary>
         public BaseArg Result
@@ -82,7 +87,7 @@ namespace YoloTrack.MVC.Model.StateMachine
         /// <summary>
         /// Binder to the runtime database
         /// </summary>
-        /// <param name="IdentificationAPI"></param>
+        /// <param name=""></param>
         public void Bind(RuntimeDatabase.Model RuntimeDatabase)
         {
             m_runtime_database = RuntimeDatabase;
@@ -91,10 +96,19 @@ namespace YoloTrack.MVC.Model.StateMachine
         /// <summary>
         /// Binder to the database
         /// </summary>
-        /// <param name="IdentificationAPI"></param>
+        /// <param name=""></param>
         public void Bind(Database.Model Database)
         {
             m_database = Database;
+        }
+
+        /// <summary>
+        /// Binder to the configuration
+        /// </summary>
+        /// <param name=""></param>
+        public void Bind(Configuration.Model Configuration)
+        {
+            m_configuration = Configuration;
         }
     } // End class
 } // End namespace

@@ -5,18 +5,32 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FD0E9EB9-03D3-4A98-990A-3C4C5C6EAC84}</ProjectGuid>
+    <ProjectGuid>{3559C0B6-4939-47D8-AF5E-496B0718DA6E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YoloTrack</RootNamespace>
     <AssemblyName>YoloTrack</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,27 +38,30 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="libfrsdknet-8.5.0, Version=8.5.0.0, Culture=neutral, PublicKeyToken=b9feb4b24e2565f5, processorArchitecture=AMD64">
+    <Reference Include="libfrsdknet-8.5.0, Version=8.5.0.0, Culture=neutral, PublicKeyToken=b9feb4b24e2565f5, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\libfrsdknet-8.5.0.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Kinect, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,6 +72,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Source\MVC\Controller\Controller.cs" />
+    <Compile Include="Source\MVC\Controller\DependencyManager.cs" />
     <Compile Include="Source\MVC\Model\Configuration\IConfigurable.cs" />
     <Compile Include="Source\MVC\Model\Configuration\Model.cs" />
     <Compile Include="Source\MVC\Model\Configuration\Options.cs" />
@@ -72,15 +91,72 @@
     <Compile Include="Source\MVC\Model\Sensor\CoordinateMapper.cs" />
     <Compile Include="Source\MVC\Model\Sensor\Model.cs" />
     <Compile Include="Source\MVC\Model\Sensor\SkeletonStream.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Arg\IdentifyArg.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Arg\LearnArg.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Arg\SwitchTargetArg.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Arg\TrackingArg.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Arg\TrackingDecisionArg.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Arg\WaitForBodyArg.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Arg\WaitTakePictureArg.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\BaseArg.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\BaseImpl.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\BaseState.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Impl\IdentifyImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\LearnImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\SwitchTargetImpl.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Impl\TrackingDecisionImpl.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Impl\TrackingImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Impl\Util\CompatibleImage.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Impl\WaitForBodyImpl.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\Impl\WaitTakePictureImpl.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\Model.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\StateTransistion.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\State\IdentifyState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\LearnState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\SwitchTargetState.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\State\TrackingDecisionState.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\State\TrackingState.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\State\WaitForBodyState.cs" />
+    <Compile Include="Source\MVC\Model\StateMachine\State\WaitTakePictureState.cs" />
+    <Compile Include="Source\MVC\View\AboutBox\AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\AboutBox\AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Source\MVC\View\Application\View.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\Application\View.Designer.cs">
+      <DependentUpon>View.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\CrashSafePictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\DatabaseView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\DatabaseView.Designer.cs">
+      <DependentUpon>DatabaseView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\DatabaseViewHeader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\DatabaseViewHeader.Designer.cs">
+      <DependentUpon>DatabaseViewHeader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\DatabaseViewItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\DatabaseViewItem.Designer.cs">
+      <DependentUpon>DatabaseViewItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\DetailEditView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\DetailEditView.Designer.cs">
+      <DependentUpon>DetailEditView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Source\MVC\View\Components\EditLabel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -93,40 +169,21 @@
     <Compile Include="Source\MVC\View\Components\LiveView.Designer.cs">
       <DependentUpon>LiveView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Source\MVC\Controller\Controller.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Arg\IdentifyArg.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Arg\TrackingArg.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Arg\TrackingDecisionArg.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Arg\WaitForBodyArg.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Arg\WaitTakePictureArg.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\BaseArg.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\BaseImpl.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\BaseState.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Impl\IdentifyImpl.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Impl\TrackingDecisionImpl.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Impl\TrackingImpl.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Impl\WaitForBodyImpl.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\Impl\WaitTakePictureImpl.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\State\IdentifyState.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\State\TrackingDecisionState.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\State\TrackingState.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\State\WaitForBodyState.cs" />
-    <Compile Include="Source\MVC\Model\StateMachine\State\WaitTakePictureState.cs" />
-    <Compile Include="Source\MVC\View\Debug\View.cs" />
-    <Compile Include="Source\MVC\View\Application\View.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Source\MVC\View\Application\View.Designer.cs">
-      <DependentUpon>View.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Source\MVC\View\Components\ProfileCard.cs">
+    <Compile Include="Source\MVC\View\Components\VisualTimer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Source\MVC\View\Components\ProfileCard.Designer.cs">
-      <DependentUpon>ProfileCard.cs</DependentUpon>
+    <Compile Include="Source\MVC\View\Components\VisualTimer.Designer.cs">
+      <DependentUpon>VisualTimer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Source\MVC\View\Debug\View.cs" />
     <Compile Include="Source\Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Source\MVC\View\AboutBox\AboutBox.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Source\MVC\View\Application\View.resx">
+      <DependentUpon>View.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -135,19 +192,27 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Source\MVC\View\Components\DatabaseView.resx">
+      <DependentUpon>DatabaseView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Source\MVC\View\Components\DatabaseViewHeader.resx">
+      <DependentUpon>DatabaseViewHeader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Source\MVC\View\Components\DatabaseViewItem.resx">
+      <DependentUpon>DatabaseViewItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Source\MVC\View\Components\DetailEditView.resx">
+      <DependentUpon>DetailEditView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Source\MVC\View\Components\EditLabel.resx">
       <DependentUpon>EditLabel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Source\MVC\View\Components\LiveView.resx">
       <DependentUpon>LiveView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\MVC\View\Application\View.resx">
-      <DependentUpon>View.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Source\MVC\View\Components\ProfileCard.resx">
-      <DependentUpon>ProfileCard.cs</DependentUpon>
+    <EmbeddedResource Include="Source\MVC\View\Components\VisualTimer.resx">
+      <DependentUpon>VisualTimer.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="frsdk.cfg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -169,12 +234,35 @@
     <Content Include="libfrsdk-8.5.0.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="libfrsdknet-8.5.0.dll" />
+    <Content Include="libfrsdknet-8.5.0.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="libiomp5md.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 und x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

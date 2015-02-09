@@ -52,6 +52,7 @@ namespace YoloTrack.MVC.Model.StateMachine
             m_impl.Bind(m_identification_api);
             m_impl.Bind(m_runtime_database);
             m_impl.Bind(m_database);
+            m_impl.Bind(m_configuration);
 
             // Run
             m_impl.Run(m_arg);

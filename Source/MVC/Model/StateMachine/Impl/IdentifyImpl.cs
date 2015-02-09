@@ -30,7 +30,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			/* Run Identification */
             IdentificationFeedback fb = m_identification_api.Identify(samples, 3);
 
-            Console.WriteLine("Sample Quality is {0}", fb.SampleQuality);
+            //Console.WriteLine("Sample Quality is {0}", fb.SampleQuality);
 
 			/* Find the highest matching person */
 			Match winner;
@@ -42,13 +42,13 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 			}
 
             winner = fb.Match[0];
-            Console.WriteLine("Match on FIR[{0}] has Score {1}", winner.name, winner.score.value);
+            //Console.WriteLine("Match on FIR[{0}] has Score {1}", winner.name, winner.score.value);
 
             for (int i = 1; i < fb.Match.Length; i++)
             {
                 Match m = fb.Match[i];
 
-				Console.WriteLine ("Match on FIR[{0}] has Score {1}", m.name, m.score.value);
+				//Console.WriteLine ("Match on FIR[{0}] has Score {1}", m.name, m.score.value);
 				if (m.score.value > winner.score.value) {
 					winner = m;
 				}
@@ -78,12 +78,12 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 IdentifyResult result = this.Identify(identificationSamples);
 
                 // 0% - 20% -> Unknown -> Learn
-                if (result.Score <= 0.2)
+                if (result.Score <= m_configuration.Options.IdentificationData.LearnThreshold)
                 {
                     RuntimeDatabase.Record record = m_runtime_database[arg.TrackingId];
                     record.State = RuntimeDatabase.RecordState.Unknown;
                     m_runtime_database[arg.TrackingId] = record;
-
+                    
                     Result = new Arg.LearnArg()
                     {
                         TrackingId = arg.TrackingId,
@@ -91,8 +91,8 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                         Faces = arg.Faces
                     };
                 }
-                // >20% - 50% -> Unidentified -> WaitForBody
-                else if (result.Score <= 0.5)
+                // >20% - 40% -> Unidentified -> WaitForBody
+                else if (result.Score <= m_configuration.Options.IdentificationData.IdentifyThreshold)
                 {
                     RuntimeDatabase.Record record = m_runtime_database[arg.TrackingId];
                     record.State = RuntimeDatabase.RecordState.Unidentified;
@@ -100,7 +100,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
 
                     Result = new Arg.WaitForBodyArg();
                 }
-                // >50% - 100% -> Identified -> Track
+                // >40% - 100% -> Identified -> Track
                 else
                 {
                     RuntimeDatabase.Record record = m_runtime_database[arg.TrackingId];

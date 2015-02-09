@@ -1,4 +1,4 @@
-﻿namespace YoloTrack.MVC.View.Components
+﻿namespace YoloTrack.Source.MVC.View.Components
 {
     partial class EditLabel
     {
@@ -28,25 +28,42 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label = new System.Windows.Forms.Label();
+            this.m_textbox = new System.Windows.Forms.TextBox();
+            this.m_label = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // label
+            // m_textbox
             // 
-            this.label.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label.Location = new System.Drawing.Point(0, 0);
-            this.label.Name = "label";
-            this.label.Size = new System.Drawing.Size(35, 13);
-            this.label.TabIndex = 0;
-            this.label.Text = "label";
+            this.m_textbox.Location = new System.Drawing.Point(0, 0);
+            this.m_textbox.Margin = new System.Windows.Forms.Padding(0);
+            this.m_textbox.Name = "m_textbox";
+            this.m_textbox.Size = new System.Drawing.Size(53, 20);
+            this.m_textbox.TabIndex = 1;
+            this.m_textbox.Text = "test";
+            this.m_textbox.Visible = false;
+            this.m_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.m_textbox_KeyDown);
+            // 
+            // m_label
+            // 
+            this.m_label.Dock = System.Windows.Forms.DockStyle.Top;
+            this.m_label.Location = new System.Drawing.Point(0, 0);
+            this.m_label.Margin = new System.Windows.Forms.Padding(0);
+            this.m_label.Name = "m_label";
+            this.m_label.Padding = new System.Windows.Forms.Padding(2, 1, 0, 0);
+            this.m_label.Size = new System.Drawing.Size(217, 30);
+            this.m_label.TabIndex = 2;
+            this.m_label.Text = "label1";
+            this.m_label.Click += new System.EventHandler(this.m_label_Click);
             // 
             // EditLabel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.label);
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Controls.Add(this.m_label);
+            this.Controls.Add(this.m_textbox);
             this.Name = "EditLabel";
-            this.Size = new System.Drawing.Size(35, 13);
+            this.Size = new System.Drawing.Size(217, 110);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -54,6 +71,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label;
+        private System.Windows.Forms.TextBox m_textbox;
+        private System.Windows.Forms.Label m_label;
     }
 }

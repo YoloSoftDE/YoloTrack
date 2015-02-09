@@ -13,7 +13,7 @@ namespace YoloTrack.MVC.Model.Sensor
         /// <summary>
         /// Getter for the current skeleton frame
         /// </summary>
-        public SkeletonFrame SkeletonFrame { get; internal set; }
+        public Skeleton[] Skeletons { get; internal set; }
 
         /// <summary>
         /// Constructor.
@@ -23,6 +23,7 @@ namespace YoloTrack.MVC.Model.Sensor
         {
             m_to_wrap = ToWrap;
             m_to_wrap.AppChoosesSkeletons = true;
+            Skeletons = new Skeleton[6];
         }
 
         /// <summary>
