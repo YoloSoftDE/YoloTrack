@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-
 namespace YoloTrack
 {
     static class Program
@@ -13,7 +9,7 @@ namespace YoloTrack
         [STAThread]
         static void Main()
         {
-             MVC.Controller.Controller controller = new MVC.Controller.Controller();
+            MVC.Controller.Controller controller = new MVC.Controller.Controller();
         }
     }
 }

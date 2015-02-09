@@ -7,6 +7,7 @@ using Configuration = YoloTrack.MVC.Model.Configuration.Model;
 using IdentificationData = YoloTrack.MVC.Model.IdentificationData.Model;
 using RuntimeDatabase = YoloTrack.MVC.Model.RuntimeDatabase.Model;
 using Database = YoloTrack.MVC.Model.Database.Model;
+using YoloTrack.MVC.Controller;
 
 namespace YoloTrack.MVC.View.Debug
 {
@@ -23,7 +24,13 @@ namespace YoloTrack.MVC.View.Debug
     /// <summary>
     /// View for very simple console debugging output
     /// </summary>
-    public class View : IConfigurable
+    public class View : IConfigurable, 
+        IBindable<Configuration>,
+        YoloTrack.MVC.Controller.IObserver<Sensor>,
+        YoloTrack.MVC.Controller.IObserver<RuntimeDatabase>,
+        YoloTrack.MVC.Controller.IObserver<StateMachine>,
+        YoloTrack.MVC.Controller.IObserver<IdentificationData>,
+        YoloTrack.MVC.Controller.IObserver<Database>
     {
         /// <summary>
         /// Application configuration model instance.
@@ -41,7 +48,7 @@ namespace YoloTrack.MVC.View.Debug
             if (Level < m_app_config.Options.Logging.LogLevel)
                 return;
 
-            Console.WriteLine("[{0}] ({1}): {2}", Level, Section, Message);
+            System.Console.WriteLine("[{0}] ({1}): {2}", Level, Section, Message);
         }
 
         /// <summary>
@@ -141,11 +148,22 @@ namespace YoloTrack.MVC.View.Debug
         private void _log(object sender, Model.RuntimeDatabase.RecordChangedEventArgs e)
         {
             Model.RuntimeDatabase.Record record = (Model.RuntimeDatabase.Record)sender;
-            _log("Runtime database",
-                String.Format("Record with TrackingId {0} changed, State is {1}",
-                record.KinectResource.Skeleton.TrackingId,
-                record.State),
-                DebugLevel.Info);
+            /*if (record.State == Model.RuntimeDatabase.RecordState.Identified)
+            {
+                _log("Runtime database",
+                    String.Format("Record with TrackingId {0} changed, Identified as Id={1}",
+                    record.KinectResource.Skeleton.TrackingId,
+                    record.DatabaseRecord.Id),
+                    DebugLevel.Info);
+            }
+            else*/
+            {
+                _log("Runtime database",
+                    String.Format("Record with TrackingId {0} changed, State is {1}",
+                    record.KinectResource.Skeleton.TrackingId,
+                    record.State),
+                    DebugLevel.Info);
+            }
         }
 
         /// <summary>

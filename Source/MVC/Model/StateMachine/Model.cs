@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using YoloTrack.MVC.Controller;
 using YoloTrack.MVC.Model.Configuration;
 
 namespace YoloTrack.MVC.Model.StateMachine
@@ -27,7 +28,12 @@ namespace YoloTrack.MVC.Model.StateMachine
     /// <summary>
     /// State machine model
     /// </summary>
-    public class Model : IConfigurable
+    public class Model : IConfigurable, 
+        IBindable<Configuration.Model>, 
+        IBindable<Sensor.Model>, 
+        IBindable<IdentificationData.Model>, 
+        IBindable<RuntimeDatabase.Model>, 
+        IBindable<Database.Model>
     {
         /// <summary>
         /// Fired on each state change.
@@ -78,13 +84,13 @@ namespace YoloTrack.MVC.Model.StateMachine
                 throw new StateMachineException("State machine already running");
 
             if (m_app_conf == null)
-                throw new StackOverflowException("Appconfig not bound");
+                throw new StateMachineException("Appconfig not bound");
 
             if (m_identification_api == null)
-                throw new StackOverflowException("No identification API bound");
+                throw new StateMachineException("No identification API bound");
 
             if (m_sensor == null)
-                throw new StackOverflowException("No sensor bound");
+                throw new StateMachineException("No sensor bound");
 
             m_terminate = false;
             m_worker = new Thread(new ThreadStart(_work));
@@ -98,6 +104,7 @@ namespace YoloTrack.MVC.Model.StateMachine
         public void Terminate()
         {
             m_terminate = true;
+            m_worker.Join();
         }
 
         /// <summary>
@@ -124,6 +131,7 @@ namespace YoloTrack.MVC.Model.StateMachine
                 current_state.Bind(m_sensor);
                 current_state.Bind(m_runtime_database);
                 current_state.Bind(m_database);
+                current_state.Bind(m_app_conf);
                 next_state = current_state.Next();
 
                 // Fire event 'OnStateChange'

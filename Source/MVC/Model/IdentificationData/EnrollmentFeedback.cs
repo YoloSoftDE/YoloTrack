@@ -94,8 +94,8 @@ namespace YoloTrack.MVC.Model.IdentificationData
         /// </summary>
         public void success(FIR nfir)
         {
-            Console.WriteLine("successful enrollment, \tFIR[id, size] = " +
-                "[\"{0}\", \"{1}\"]", nfir.version(), nfir.size());
+            //Console.WriteLine("successful enrollment, \tFIR[id, size] = " +
+            //    "[\"{0}\", \"{1}\"]", nfir.version(), nfir.size());
             this.IdentificationRecord = nfir;
         }
 

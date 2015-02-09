@@ -31,17 +31,14 @@ namespace YoloTrack.MVC.Model.Database
             set
             {
                 m_id = value;
-                if (RecordChanged != null)
-                {
-                    RecordChanged(this, new RecordChangedEventArgs());
-                }
+                OnRecordChanged();
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public IdentificationRecord IdentificationRecord { get; private set; }
+        public IdentificationRecord IdentificationRecord { get; set; }
 
         /// <summary>
         /// MetaInfo, FirstName
@@ -52,10 +49,7 @@ namespace YoloTrack.MVC.Model.Database
             set
             {
                 m_first_name = value;
-                if (RecordChanged != null)
-                {
-                    RecordChanged(this, new RecordChangedEventArgs());
-                }
+                OnRecordChanged();
             }
         }
 
@@ -69,10 +63,7 @@ namespace YoloTrack.MVC.Model.Database
             set
             {
                 m_last_name = value;
-                if (RecordChanged != null)
-                {
-                    RecordChanged(this, new RecordChangedEventArgs());
-                }
+                OnRecordChanged();
             }
         }
 
@@ -86,10 +77,7 @@ namespace YoloTrack.MVC.Model.Database
             set
             {
                 m_image = value;
-                if (RecordChanged != null)
-                {
-                    RecordChanged(this, new RecordChangedEventArgs());
-                }
+                OnRecordChanged();
             }
         }
 
@@ -106,25 +94,19 @@ namespace YoloTrack.MVC.Model.Database
         /// <summary>
         /// Increments the times recognized counter
         /// </summary>
-        public void IncrementTimesRecognized()
+        public void IncrementTimesRecognized(int Step = 1)
         {
-            TimesRecognized++;
-            if (RecordChanged != null)
-            {
-                RecordChanged(this, new RecordChangedEventArgs());
-            }
+            TimesRecognized += Step;
+            OnRecordChanged();
         }
 
         /// <summary>
         /// Increments the Times Tracked counter
         /// </summary>
-        public void IncrementTimesTracked()
+        public void IncrementTimesTracked(int Step = 1)
         {
-            TimesTracked++;
-            if (RecordChanged != null)
-            {
-                RecordChanged(this, new RecordChangedEventArgs());
-            }
+            TimesTracked += Step;
+            OnRecordChanged();
         }
 
         /// <summary>
@@ -137,10 +119,7 @@ namespace YoloTrack.MVC.Model.Database
             set
             {
                 m_is_target = value;
-                if (RecordChanged != null)
-                {
-                    RecordChanged(this, new RecordChangedEventArgs());
-                }
+                OnRecordChanged();
             }
         }
 
@@ -154,10 +133,7 @@ namespace YoloTrack.MVC.Model.Database
             set
             {
                 m_learned_at = value;
-                if (RecordChanged != null)
-                {
-                    RecordChanged(this, new RecordChangedEventArgs());
-                }
+                OnRecordChanged();
             }
         }
 
@@ -171,10 +147,7 @@ namespace YoloTrack.MVC.Model.Database
             set
             {
                 m_runtime_record = value;
-                if (RecordChanged != null)
-                {
-                    RecordChanged(this, new RecordChangedEventArgs());
-                }
+                OnRecordChanged();
             }
         }
 
@@ -185,10 +158,18 @@ namespace YoloTrack.MVC.Model.Database
         {
             IdentificationRecord = IdentificationInformation;
             this.Id = Id;
-            FirstName = "<Vorname>";
-            LastName = "<Nachname>";
+            FirstName = "";
+            LastName = "";
             Image = new System.Drawing.Bitmap(1, 1); // TODO
             LearnedAt = new DateTime();
+        }
+
+        protected void OnRecordChanged()
+        {
+            if (RecordChanged != null)
+            {
+                RecordChanged(this, new RecordChangedEventArgs());
+            }
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Microsoft.Kinect;
+using YoloTrack.MVC.Controller;
 
 namespace YoloTrack.MVC.Model.RuntimeDatabase
 {
@@ -42,7 +43,8 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
     /// All information that is required directly during runtime is stored here, except of those
     /// information that belongs into the "main" database.
     /// </summary>
-    public class Model : Dictionary<int, Record>
+    public class Model : Dictionary<int, Record>, 
+        IBindable<Sensor.Model>
     {
         /// <summary>
         /// Fired on addition of a record
@@ -148,10 +150,17 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
             m_container_modification_mutex.WaitOne();
 
             Record record = this[Key];
+            Database.Record database_record = record.DatabaseRecord;
+
             base.Remove(Key);
 
             // Release lock
             m_container_modification_mutex.ReleaseMutex();
+
+            if (database_record != null)
+            {
+                database_record.RuntimeRecord = null;
+            }
 
             if (RecordRemoved != null)
             {
@@ -168,12 +177,7 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
         /// </summary>
         public void Refresh()
         {
-            SkeletonFrame frame = m_sensor.SkeletonStream.SkeletonFrame;
-            if (frame == null)
-                return;
-
-            Skeleton[] skeletons = new Skeleton[frame.SkeletonArrayLength];
-            frame.CopySkeletonDataTo(skeletons);
+            Skeleton[] skeletons = m_sensor.SkeletonStream.Skeletons;
 
             // Lock the container for changes
             //m_container_modification_mutex.WaitOne();
@@ -196,10 +200,7 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
                 }
                 else
                 {
-                    //Record record_to_update = this[skeleton.TrackingId];
-                    //record_to_update.KinectResource.UpdateTo(skeleton);
                     this[skeleton.TrackingId].KinectResource.UpdateTo(skeleton);
-                    //this[skeleton.TrackingId] = record_to_update;
                 }
             }
 
@@ -227,10 +228,34 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
                 if (!present)
                     Remove(id);
             }
-
             // Release lock
-            //m_container_modification_mutex.ReleaseMutex();
             return;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Record SelectLeastIdentifyAttempts()
+        {
+            Record least = null;
+            foreach (KeyValuePair<int, RuntimeDatabase.Record> entry in this)
+            {
+                if (entry.Value.State == RuntimeDatabase.RecordState.Unidentified ||
+                    entry.Value.State == RuntimeDatabase.RecordState.Unknown)
+                {
+                    if (least == null || least.IdentifyAttempts > entry.Value.IdentifyAttempts)
+                    {
+                        least = entry.Value;
+                    }
+                }
+            }
+
+            if (least != null)
+            {
+                least.IdentifyAttempts++;
+            }
+            return least;
         }
 
         #region Foreign model bindings

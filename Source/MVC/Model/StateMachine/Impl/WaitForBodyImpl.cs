@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 
 namespace YoloTrack.MVC.Model.StateMachine.Impl
 {
@@ -19,20 +20,37 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                 m_runtime_database.Refresh();
 
                 // Search for those RuntimeInfos that need clarification (maybe identification?)
-                foreach (KeyValuePair<int, RuntimeDatabase.Record> entry in m_runtime_database)
+                RuntimeDatabase.Record record = m_runtime_database.SelectLeastIdentifyAttempts();
+                if (record != null)
                 {
-                    if (entry.Value.State == RuntimeDatabase.RecordState.Unidentified ||
-                        entry.Value.State == RuntimeDatabase.RecordState.Unknown)
+                    // Enable tracking for joint-orientations
+                    m_sensor.SkeletonStream.Track(record.KinectResource.Skeleton.TrackingId);
+                    Result = new Arg.WaitTakePictureArg()
                     {
-                        // Enable tracking for joint-orientations
-                        m_sensor.SkeletonStream.Track(entry.Key);
-                        Result = new Arg.WaitTakePictureArg()
-                        {
-                            TrackingId = entry.Key
-                        };
-                        return;
-                    }
+                        TrackingId = record.KinectResource.Skeleton.TrackingId
+                    };
+                    return;
                 }
+
+                // Iterate again and search for identified targets
+                if (m_database.HasTarget)
+                {
+                    foreach (KeyValuePair<int, RuntimeDatabase.Record> entry in m_runtime_database)
+                    {
+                        if (entry.Value.State == RuntimeDatabase.RecordState.Identified && entry.Value.DatabaseRecord.IsTarget)
+                        {
+                            m_sensor.SkeletonStream.Track(entry.Value.KinectResource.Skeleton.TrackingId);
+                            Result = new Arg.TrackingArg()
+                            {
+                                TrackingId = entry.Value.KinectResource.Skeleton.TrackingId
+                            };
+                            return;
+                        }
+                    }
+
+                }
+
+                Thread.Sleep(50);
             }
         }
     } // End class
