@@ -197,10 +197,20 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
         {
             if (DatabaseRecord != null)
             {
-                throw new RuntimeDatabaseException("DatabaseRecord already bound");
+                throw new RuntimeDatabaseException("Record already bound to database record");
             }
 
             DatabaseRecord = Record;
+            State = RecordState.Identified;
+        }
+
+        /// <summary>
+        /// Detaches the database record from the record.
+        /// </summary>
+        public void Detach()
+        {
+            DatabaseRecord = null;
+            State = RecordState.Unidentified;
         }
 
         /// <summary>

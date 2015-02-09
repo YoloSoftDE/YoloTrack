@@ -12,6 +12,7 @@ using Database = YoloTrack.MVC.Model.Database.Model;
 
 using DebugView = YoloTrack.MVC.View.Debug.View;
 using ApplicationView = YoloTrack.MVC.View.Application.View;
+using System.Collections.Generic;
 
 #endregion
 
@@ -138,11 +139,18 @@ namespace YoloTrack.MVC.Controller
 
                     d.Bind(() => m_identification_data);
 
+                    d.After(() => m_configuration);
+
                     d.Finalize(() =>
                     {
-                        m_database.LoadFromOrEmpty("test.ydb"); //m_configuration.Options.Database.FileName);
+                        m_database.LoadFromOrEmpty(m_configuration.Options.Database.FileName);
                         m_database.RecordAdded += new EventHandler<Model.Database.RecordAddedEventArgs>(OnDatabaseRecordAdded);
                         m_database.RecordRemoved += new EventHandler<Model.Database.RecordRemovedEventArgs>(OnDatabaseRecordRemoved);
+
+                        foreach (KeyValuePair<int, Model.Database.Record> record in m_database)
+                        {
+                            record.Value.RecordChanged += OnDatabaseRecordChanged;
+                        }
                     });
                 }
             );
@@ -207,10 +215,12 @@ namespace YoloTrack.MVC.Controller
             m_app_view.DatabaseItemImageChanged += m_app_view_DatabaseItemImageChanged;
             m_app_view.DatabaseMergeRequested += m_app_view_DatabaseMergeRequested;
             m_app_view.DatabaseItemDeleteRequested += m_app_view_DatabaseItemDeleteRequested;
+            m_app_view.TrackingRequested += m_app_view_TrackingRequested;
+            m_app_view.HaltTrackingRequested += m_app_view_HaltTrackingRequested;
+            m_app_view.FormClosed += m_app_view_FormClosed;
 
             m_app_view.RepeatInitTimeout += m_app_view_RepeatInitTimeout;
 
-<<<<<<< HEAD
             // Checks the status of the application and shows error messages if needed
             _check_status();
 
@@ -218,39 +228,23 @@ namespace YoloTrack.MVC.Controller
             Application.Run(m_app_view);
         }
 
-        void m_app_view_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            /* Main Form Requested Closing*/
-
-            /* Shutdown State Machine */
-            m_state_machine.Terminate();
-
-            /* Shutdown Kinect Sensor */
-            // #ichkannohneapinichtarbeiten!
-            
-            /* Shutdown Cognitec API */
-            /* Nothing to do here */
-
-            /* Shutdown Database */
-
-            /* > Store Database as file */
-            m_database.SaveTo("test.ydb");
-
-        }
-
+        /// <summary>
+        /// Checks the status of the application models and shows eorror messages on failure
+        /// </summary>
+        /// <returns></returns>
         private bool _check_status()
         {
             // Error handling on Sensor
             if (m_sensor == null)
             {
-                m_app_view.ShowFailure(m_error_message, FailureType.Sensor);
+                m_app_view.DisplayFailure(m_error_message, FailureType.Sensor);
                 return false;
             }
 
             // Error handling on Identification API
             if (m_identification_data == null)
             {
-                m_app_view.ShowFailure(m_error_message, FailureType.IdentificationAPI);
+                m_app_view.DisplayFailure(m_error_message, FailureType.IdentificationAPI);
                 return false;
             }
 
@@ -402,29 +396,32 @@ namespace YoloTrack.MVC.Controller
         /// <param name="e"></param>
         void OnDatabaseRecordAdded(object sender, Model.Database.RecordAddedEventArgs e)
         {
-            m_database.SaveTo("test.ydb");
+            m_database.Save();
 
-            e.Record.RecordChanged += new EventHandler<Model.Database.RecordChangedEventArgs>(OnDatabaseRecordChanged);
+            e.Record.RecordChanged += OnDatabaseRecordChanged;
         }
 
         /// <summary>
-        /// 
+        /// Called when a database item has been changed.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        /// 
         void OnDatabaseRecordChanged(object sender, Model.Database.RecordChangedEventArgs e)
         {
-            m_database.SaveTo("test.ydb");
+            m_database.Save();
         }
 
         /// <summary>
-        /// 
+        /// Called when a database record has been removed.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         void OnDatabaseRecordRemoved(object sender, Model.Database.RecordRemovedEventArgs e)
         {
-            m_database.SaveTo("test.ydb");
+            m_database.Save();
+
+            e.Record.RecordChanged -= OnDatabaseRecordChanged;
         }
 
         #endregion
@@ -456,7 +453,6 @@ namespace YoloTrack.MVC.Controller
         private void m_app_view_DatabaseItemImageChanged(object sender, View.Application.DatabaseItemImageChangedEventArgs e)
         {
             m_database[e.DatabaseId].Image = (System.Drawing.Bitmap)e.Image;
-            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
         }
 
         /// <summary>
@@ -467,7 +463,6 @@ namespace YoloTrack.MVC.Controller
         private void m_app_view_DatabaseItemLastNameChanged(object sender, View.Application.DatabaseItemLastNameChangedEventArgs e)
         {
             m_database[e.DatabaseId].LastName = e.LastName;
-            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
         }
 
         /// <summary>
@@ -478,7 +473,6 @@ namespace YoloTrack.MVC.Controller
         private void m_app_view_DatabaseItemFirstNameChanged(object sender, View.Application.DatabaseItemFirstNameChangedEventArgs e)
         {
             m_database[e.DatabaseId].FirstName = e.FirstName;
-            m_app_view.ShowRecordDetail(m_database[e.DatabaseId]);
         }
 
         /// <summary>
@@ -516,6 +510,49 @@ namespace YoloTrack.MVC.Controller
         private void m_app_view_DatabaseItemDeleteRequested(object sender, View.Application.DatabaseItemDeleteRequestEventArgs e)
         {
             m_database.Remove(e.DatabaseId);
+        }
+
+        /// <summary>
+        /// Called when the form closing is requested
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void m_app_view_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            /* Main Form Requested Closing*/
+
+            /* Shutdown State Machine */
+            m_state_machine.Abort();
+
+            /* Shutdown Kinect Sensor */
+            m_sensor.Stop();
+
+            /* Shutdown Cognitec API */
+            /* Nothing to do here */
+
+            /* Shutdown Database */
+            /* > Store Database as file */
+            m_database.SaveTo(m_configuration.Options.Database.FileName);
+        }
+
+        /// <summary>
+        /// Called when the user requested a track change
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void m_app_view_TrackingRequested(object sender, View.Application.TrackingRequestedEventArgs e)
+        {
+            m_database.SetTarget(e.DatabaseId);
+        }
+
+        /// <summary>
+        /// Called when the user requests to stop tracking
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void m_app_view_HaltTrackingRequested(object sender, EventArgs e)
+        {
+            m_database.ReleaseTarget();
         }
 
         string m_error_message = "";

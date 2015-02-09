@@ -150,10 +150,17 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
             m_container_modification_mutex.WaitOne();
 
             Record record = this[Key];
+            Database.Record database_record = record.DatabaseRecord;
+
             base.Remove(Key);
 
             // Release lock
             m_container_modification_mutex.ReleaseMutex();
+
+            if (database_record != null)
+            {
+                database_record.RuntimeRecord = null;
+            }
 
             if (RecordRemoved != null)
             {
@@ -170,12 +177,7 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
         /// </summary>
         public void Refresh()
         {
-            SkeletonFrame frame = m_sensor.SkeletonStream.SkeletonFrame;
-            if (frame == null)
-                return;            
-            
-            Skeleton[] skeletons = new Skeleton[frame.SkeletonArrayLength];
-            frame.CopySkeletonDataTo(skeletons);
+            Skeleton[] skeletons = m_sensor.SkeletonStream.Skeletons;
 
             // Lock the container for changes
             //m_container_modification_mutex.WaitOne();
@@ -226,7 +228,6 @@ namespace YoloTrack.MVC.Model.RuntimeDatabase
                 if (!present)
                     Remove(id);
             }
-
             // Release lock
             return;
         }

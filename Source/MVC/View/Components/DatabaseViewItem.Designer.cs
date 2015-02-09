@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.picture_box_image = new System.Windows.Forms.PictureBox();
+            this.m_picturebox_user_image = new Components.CrashSafePictureBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label_name = new System.Windows.Forms.Label();
@@ -38,7 +38,7 @@
             this.label_text_counters = new System.Windows.Forms.Label();
             this.label_learned_at = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picture_box_image)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_picturebox_user_image)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -51,7 +51,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 66F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Controls.Add(this.picture_box_image, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.m_picturebox_user_image, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(1, 1);
@@ -61,16 +61,17 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(298, 64);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // picture_box_image
+            // m_picturebox_user_image
             // 
-            this.picture_box_image.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.picture_box_image.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.picture_box_image.ErrorImage = null;
-            this.picture_box_image.Location = new System.Drawing.Point(3, 3);
-            this.picture_box_image.Name = "picture_box_image";
-            this.picture_box_image.Size = new System.Drawing.Size(60, 58);
-            this.picture_box_image.TabIndex = 1;
-            this.picture_box_image.TabStop = false;
+            this.m_picturebox_user_image.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.m_picturebox_user_image.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m_picturebox_user_image.ErrorImage = null;
+            this.m_picturebox_user_image.Location = new System.Drawing.Point(3, 3);
+            this.m_picturebox_user_image.Name = "m_picturebox_user_image";
+            this.m_picturebox_user_image.Size = new System.Drawing.Size(60, 58);
+            this.m_picturebox_user_image.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.m_picturebox_user_image.TabIndex = 1;
+            this.m_picturebox_user_image.TabStop = false;
             // 
             // tableLayoutPanel2
             // 
@@ -168,7 +169,7 @@
             this.MouseEnter += new System.EventHandler(this.DatabaseViewItem_MouseEnter);
             this.MouseLeave += new System.EventHandler(this.DatabaseViewItem_MouseLeave);
             this.tableLayoutPanel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.picture_box_image)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_picturebox_user_image)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -181,7 +182,7 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.PictureBox picture_box_image;
+        private Components.CrashSafePictureBox m_picturebox_user_image;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label_id;

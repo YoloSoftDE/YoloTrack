@@ -9,7 +9,6 @@ namespace YoloTrack.MVC.View.Components
     /// </summary>
     public partial class DetailEditView : UserControl
     {
-<<<<<<< HEAD
         public event EventHandler<FirstNameChangedEventArgs> FirstNameChanged;
 
         public event EventHandler<LastNameChangedEventArgs> LastNameChanged;
@@ -113,6 +112,9 @@ namespace YoloTrack.MVC.View.Components
             }
         }
 
+        /// <summary>
+        /// Get or set the UserImage
+        /// </summary>
         public Image Image
         {
             get
@@ -162,11 +164,6 @@ namespace YoloTrack.MVC.View.Components
         private DateTime m_learned_at;
         private Image m_image;
         private bool m_is_tracked;
-        
-	/// <summary>
-        /// Get or set the UserImage
-        /// </summary>
-        public Image Image { get; set; }
 
         /// <summary>
         /// Default constructor
@@ -176,8 +173,8 @@ namespace YoloTrack.MVC.View.Components
             InitializeComponent();
             DoubleBuffered = true;
 
-            label_first_name.Text = "";
-            label_last_name.Text = "";
+            m_label_first_name.Text = "";
+            m_label_last_name.Text = "";
         }
 
         private void DetailEditView_Load(object sender, EventArgs e)
@@ -220,12 +217,9 @@ namespace YoloTrack.MVC.View.Components
                 {
                     ImageChanged(this, new ImageChangedEventArgs()
                     {
-                        Image = Bitmap.FromFile(openFileDialog1.FileName)
+                        Image = Bitmap.FromFile(openFileDialog.FileName)
                     });
                 }
-                /* Apply Image */
-                this.Image = Image.FromFile(this.openFileDialog.FileName);
-                this.m_userImage.Image = this.Image;
             }
         }
 
@@ -237,7 +231,7 @@ namespace YoloTrack.MVC.View.Components
         private void m_userImage_MouseEnter(object sender, EventArgs e)
         {
             /* Change BG-Color if no image present */
-            if (Image == null)
+            if (m_userImage == null)
             {
                 this.m_userImage.BackColor = SystemColors.ControlDark;
             }
@@ -264,23 +258,23 @@ namespace YoloTrack.MVC.View.Components
         {
             if (TrackingId > 0)
             {
-                label_rt_info.Text = "Current assigned TrackingId is " +
-                    TrackingId.ToString() + ", " +
-                    IdentifyAttempts.ToString() + " attempts required for identification.";
+                m_label_trackingid.Text = "Current assigned TrackingId is " + TrackingId.ToString();
+                m_label_identify_attempts.Text = IdentifyAttempts.ToString() + " attempts required for identification.";
             } else
             {
-                label_rt_info.Text = "Currently not in view range.";
+                m_label_trackingid.Text = "Currently not in view range.";
+                m_label_identify_attempts.Text = "";
             }
         }
 
         private void _show_first_name()
         {
-            label_first_name.Text = FirstName;
+            m_label_first_name.Text = FirstName;
         }
 
         private void _show_last_name()
         {
-            label_last_name.Text = LastName;
+            m_label_last_name.Text = LastName;
         }
 
         private void _show_counters()
@@ -335,7 +329,7 @@ namespace YoloTrack.MVC.View.Components
 
         private void _show_image()
         {
-            pb_image.Image = Image;
+            m_userImage.Image = Image;
         }
 
         private void _show_learned_at()
@@ -358,25 +352,7 @@ namespace YoloTrack.MVC.View.Components
 
         private void button_track_CheckedChanged(object sender, EventArgs e)
         {
-            if (button_track.Checked)
-            {
-                if (TrackingRequest != null)
-                {
-                    TrackingRequest(this, new TrackingRequestEventArgs()
-                    {
-                        DatabaseId = Id
-                    });
-                }
-            } else
-            {
-                if (HaltTrackingRequest != null)
-                {
-                    HaltTrackingRequest(this, new HaltTrackingRequestEventArgs()
-                    {
-                        DatabaseId = Id
-                    });
-                }
-            }
+            
         }
 
         private void label_first_name_TextChanged(object sender, EventArgs e)
@@ -385,7 +361,7 @@ namespace YoloTrack.MVC.View.Components
             {
                 FirstNameChanged(this, new FirstNameChangedEventArgs()
                 {
-                    FirstName = label_first_name.Text
+                    FirstName = m_label_first_name.Text
                 });
             }
         }
@@ -396,7 +372,7 @@ namespace YoloTrack.MVC.View.Components
             {
                 LastNameChanged(this, new LastNameChangedEventArgs()
                 {
-                    LastName = label_last_name.Text
+                    LastName = m_label_last_name.Text
                 });
             }
         }
@@ -409,6 +385,30 @@ namespace YoloTrack.MVC.View.Components
                 {
                     DatabaseId = Id
                 });
+            }
+        }
+
+        private void button_track_Click(object sender, EventArgs e)
+        {
+            if (button_track.Checked)
+            {
+                if (TrackingRequest != null)
+                {
+                    TrackingRequest(this, new TrackingRequestEventArgs()
+                    {
+                        DatabaseId = Id
+                    });
+                }
+            }
+            else
+            {
+                if (HaltTrackingRequest != null)
+                {
+                    HaltTrackingRequest(this, new HaltTrackingRequestEventArgs()
+                    {
+                        DatabaseId = Id
+                    });
+                }
             }
         }
     }

@@ -118,11 +118,20 @@
     <Compile Include="Source\MVC\Model\StateMachine\State\TrackingState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\WaitForBodyState.cs" />
     <Compile Include="Source\MVC\Model\StateMachine\State\WaitTakePictureState.cs" />
+    <Compile Include="Source\MVC\View\AboutBox\AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Source\MVC\View\AboutBox\AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Source\MVC\View\Application\View.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Source\MVC\View\Application\View.Designer.cs">
       <DependentUpon>View.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Source\MVC\View\Components\CrashSafePictureBox.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Source\MVC\View\Components\DatabaseView.cs">
       <SubType>UserControl</SubType>
@@ -169,6 +178,9 @@
     <Compile Include="Source\MVC\View\Debug\View.cs" />
     <Compile Include="Source\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Source\MVC\View\AboutBox\AboutBox.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Source\MVC\View\Application\View.resx">
       <DependentUpon>View.cs</DependentUpon>
     </EmbeddedResource>

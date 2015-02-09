@@ -21,12 +21,12 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
             List<Bitmap> faces = new List<Bitmap>();
             DateTime start_time = DateTime.Now;
 
-            while (picture_count < 5)
+            while (picture_count < m_configuration.Options.IdentificationData.SampleCount)
             {
                 m_runtime_database.Refresh();
 
                 // Timeout? (too long to keep doing this shit)
-                if ((DateTime.Now - start_time).TotalSeconds >= 3)
+                if ((DateTime.Now - start_time).TotalMilliseconds >= m_configuration.Options.IdentificationData.IdentificationTimeout)
                 {
                     Result = new Arg.WaitForBodyArg();
                     Console.WriteLine("WaitTakePicture timed out.");
@@ -64,15 +64,17 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
                     continue;
                 }
 
-                ColorImageFrame frame = m_sensor.ColorStream.ImageFrame;
-                if (frame == null)
-                    continue;
+                Sensor.ColorImageFrame frame = m_sensor.ColorStream.ImageFrame;
 
-                //byte[] buffer = new byte[frame.PixelDataLength];
-                byte[] head_picture_data = GetHeadPicture(frame.GetRawPixelData(), record.KinectResource.HeadRectangle);
+                Rectangle head_rectangle = record.KinectResource.HeadRectangle;
+                if (head_rectangle.Width * head_rectangle.Height == 0)
+                {
+                    continue;
+                }
+                byte[] head_picture_data = GetHeadPicture(frame.PixelData, head_rectangle);
 
                 // save head-cutout as Bitmap-Object
-                faces.Add(WriteBitmap(head_picture_data, record.KinectResource.HeadRectangle));
+                faces.Add(WriteBitmap(head_picture_data, head_rectangle));
                 picture_count++;
             }
             
@@ -116,7 +118,7 @@ namespace YoloTrack.MVC.Model.StateMachine.Impl
         /// <returns></returns>
         private Bitmap WriteBitmap(byte[] rbg_array, Rectangle rect)
         {
-            Bitmap bmp = new Bitmap(rect.Width, rect.Height);
+            Bitmap bmp = new Bitmap(rect.Width, rect.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
 
             System.Drawing.Imaging.BitmapData bmp_data = bmp.LockBits(
                 new Rectangle(0, 0, rect.Width, rect.Height), 

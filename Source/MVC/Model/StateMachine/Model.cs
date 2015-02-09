@@ -104,6 +104,7 @@ namespace YoloTrack.MVC.Model.StateMachine
         public void Terminate()
         {
             m_terminate = true;
+            m_worker.Join();
         }
 
         /// <summary>
@@ -130,6 +131,7 @@ namespace YoloTrack.MVC.Model.StateMachine
                 current_state.Bind(m_sensor);
                 current_state.Bind(m_runtime_database);
                 current_state.Bind(m_database);
+                current_state.Bind(m_app_conf);
                 next_state = current_state.Next();
 
                 // Fire event 'OnStateChange'

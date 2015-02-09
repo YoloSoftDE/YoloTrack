@@ -56,7 +56,27 @@ namespace YoloTrack.MVC.Model.Database
         public int LastId { get; private set; }
 
         /// <summary>
-        /// 
+        /// The location where the database was loaded from.
+        /// </summary>
+        private string m_file_name;
+
+        /// <summary>
+        /// Database save restriction
+        /// </summary>
+        private Semaphore m_sem_save_limit;
+        private Mutex m_mutex_save_limit;
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public Model()
+        {
+            m_sem_save_limit = new Semaphore(4, 4);
+            m_mutex_save_limit = new Mutex();
+        }
+
+        /// <summary>
+        /// Record factory
         /// </summary>
         /// <returns></returns>
         public Record CreateRecord(IdentificationRecord IdentificationRecord)
@@ -226,18 +246,80 @@ namespace YoloTrack.MVC.Model.Database
         }
 
         /// <summary>
+        /// Sets the target which should be tracked
+        /// </summary>
+        /// <param name="DatabaseId"></param>
+        public void SetTarget(int DatabaseId)
+        { 
+            // Lock the container for changes
+            m_container_modification_mutex.WaitOne();
+
+            foreach (KeyValuePair<int, Record> p in this)
+            {
+                if (p.Key == DatabaseId)
+                {
+                    p.Value.IsTarget = true;
+                } else
+                {
+                    p.Value.IsTarget = false;
+                }
+            }
+
+            // Release lock
+            m_container_modification_mutex.ReleaseMutex();
+        }
+
+        /// <summary>
+        /// Releases the target from tracking
+        /// </summary>
+        public void ReleaseTarget()
+        {
+            SetTarget(0);
+        }
+
+        /// <summary>
         /// Saves the database to the given filename.
         /// </summary>
         /// <param name="FileName"></param>
         public void SaveTo(string FileName)
         {
+            if (!m_sem_save_limit.WaitOne(20))
+            {
+                return;
+            }
+            m_mutex_save_limit.WaitOne();
+
             // Serialize to memory stream and write out to file
             MemoryStream ms = new MemoryStream();
-            _serialize_to(ms);
+            _write_magic_bytes(ms);
+            try
+            {
+                _serialize_to(ms);
+            } catch (Exception)
+            {
+                // Release mutexe , close shit and leave this crappy place (ALL ABORT THE SHIP!)
+                ms.Close();
+                m_mutex_save_limit.ReleaseMutex();
+                m_sem_save_limit.Release(1);
+                // ... one more time
+                SaveTo(FileName);
+                return;
+            }
             FileStream fs = new FileStream(FileName, FileMode.Create, FileAccess.ReadWrite);
             ms.WriteTo(fs);
             ms.Close();
             fs.Close();
+
+            m_mutex_save_limit.ReleaseMutex();
+            m_sem_save_limit.Release(1);
+        }
+
+        /// <summary>
+        /// Saves the database to the same file it was loaded from.
+        /// </summary>
+        public void Save()
+        {
+            SaveTo(m_file_name);
         }
 
         /// <summary>
@@ -266,6 +348,12 @@ namespace YoloTrack.MVC.Model.Database
             }
             fs.Close();
             ms.Seek(0, SeekOrigin.Begin);
+            m_file_name = FileName;
+
+            if (!_read_magic_bytes(ms))
+            {
+                throw new BadImageFormatException("Bad database file. Fileformat not supported.");
+            }
             _unserialize_from(ms);
 
             ms.Close();
@@ -287,6 +375,27 @@ namespace YoloTrack.MVC.Model.Database
         }
 
         /// <summary>
+        /// Checks if the file starts with the proper magic bytes whatever.
+        /// </summary>
+        /// <param name="Stream"></param>
+        /// <returns></returns>
+        public bool _read_magic_bytes(MemoryStream Stream)
+        {
+            BinaryReader reader = new BinaryReader(Stream);
+            return reader.ReadInt32() == 0x304c3059;
+        }
+
+        /// <summary>
+        /// Writes magic bytes as file format marker to the stream
+        /// </summary>
+        /// <param name="Stream"></param>
+        public void _write_magic_bytes(MemoryStream Stream)
+        {
+            BinaryWriter writer = new BinaryWriter(Stream);
+            writer.Write(0x304c3059);
+        }
+
+        /// <summary>
         /// Binder for the identification API
         /// </summary>
         /// <param name="IdentificationAPI"></param>
@@ -302,16 +411,30 @@ namespace YoloTrack.MVC.Model.Database
         /// <param name="RecordIds"></param>
         public void Merge(int Master, int[] SlaveIds)
         {
+            // Update RuntimeDatabase
+            foreach (int slave_id in SlaveIds)
+            {
+                if (base[slave_id].RuntimeRecord != null)
+                {
+                    base[slave_id].RuntimeRecord.Detach();
+                    base[slave_id].RuntimeRecord.Attach(base[Master]);
+                }
+            }
+
+            // Generate merge list and remove obsolete items from database
             Cognitec.FRsdk.FIR[] merge_list = new Cognitec.FRsdk.FIR[1+SlaveIds.Length];
             merge_list[0] = base[Master].IdentificationRecord.Value;
             for (int i = 0; i < SlaveIds.Length; i++)
             {
                 int obsolete_record_id = SlaveIds[i];
-                merge_list[i+1] = base[obsolete_record_id].IdentificationRecord.Value;
+                merge_list[i + 1] = base[obsolete_record_id].IdentificationRecord.Value;
+                base[Master].IncrementTimesRecognized(base[obsolete_record_id].TimesRecognized);
+                base[Master].IncrementTimesTracked(base[obsolete_record_id].TimesTracked);
                 Remove(obsolete_record_id);
             }
 
             base[Master].IdentificationRecord = new IdentificationRecord(m_identification_api.Merge(merge_list));
+
             // Update population accordingly
             m_identification_api.Population.remove(Master.ToString());
             m_identification_api.Population.append(base[Master].IdentificationRecord.Value, Master.ToString());
