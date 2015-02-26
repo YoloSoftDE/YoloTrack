@@ -367,6 +367,7 @@ namespace YoloTrack.MVC.Model.Database
         /// <returns></returns>
         public void LoadFromOrEmpty(string FileName)
         {
+            m_file_name = FileName;
             if (System.IO.File.Exists(FileName))
             {
                 LoadFrom(FileName);
